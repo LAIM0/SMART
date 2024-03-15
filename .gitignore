@@ -1,0 +1,8 @@
+# Ignore les fichiers .DS_Store
+.DS_Store
+
+# Ignore les fichiers générés par WebStorm
+.idea/
+
+# Ignore les fichiers générés par Visual Studio Code
+.vscode/
