@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoEcoexya
+      - MONGO_INITDB_ROOT_PASSWORD=83pb9wM9F5fKxV
+    networks:
+      - mynetwork
+
+  node-app:
+    build: ./node-app
+    container_name: node-app
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./node-app:/app
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_USERNAME=mongoEcoexya
+      - MONGO_PASSWORD=83pb9wM9F5fKxV
+      - MONGO_HOSTNAME=mongo
+      - MONGO_PORT=27017
+      - MONGO_DB=dbEcoexya
+    networks:
+      - mynetwork
+
+  react-app:
+    build: ./react-app
+    container_name: react-app
+    ports:
+      - "3000:80" # Mappez le port 80 du conteneur (Nginx) au port 3000 de l'hôte
+    volumes:
+      - ./react-app:/app
+      - /app/node_modules
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  mongo_data:
