@@ -22,10 +22,6 @@ app.use(cors());
 
 // Options to pass to mongodb to avoid deprecation warnings
 const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
   authSource: "admin" // Souvent nécessaire si vous avez spécifié un utilisateur admin pour MongoDB
 };
 

@@ -1,5 +1,5 @@
 # Définir l'image de base à utiliser pour l'environnement Node.js
-FROM node:16 AS build
+FROM node:18 AS build
 
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /usr/src/app
@@ -16,14 +16,20 @@ COPY . .
 # Construire l'application React pour la production
 RUN npm run build
 
-# Utiliser Nginx pour servir l'application React construite
-FROM nginx:alpine
+# Étape 2: Servir l'application
+FROM node:alpine as runner
 
-# Copier les fichiers construits depuis l'étape de construction à Nginx
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
+WORKDIR /usr/src/app
 
-# Exposer le port 80 pour accéder à l'application React
-EXPOSE 80
+# Copier le build depuis l'étape de construction
+COPY --from=build /usr/src/app/next.config.js ./
+COPY --from=build /usr/src/app/public ./public
+COPY --from=build /usr/src/app/.next ./.next
+COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/package.json ./package.json
 
-# Démarrer Nginx et servir l'application
-CMD ["nginx", "-g", "daemon off;"]
+# Exposer le port (le port par défaut de Next.js est 3000)
+EXPOSE 3000
+
+# Démarrer l'application Next.js
+CMD ["npm", "start"]
