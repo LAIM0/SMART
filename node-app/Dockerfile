@@ -16,7 +16,6 @@ COPY . .
 # Compiler l'application TypeScript en JavaScript
 COPY build-app-nest.sh .
 RUN chmod +x build-app-nest.sh
-#RUN ./build-app-nest.sh
 #RUN npm run build
 
 # Exposer le port sur lequel l'application va écouter
