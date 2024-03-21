@@ -21,7 +21,7 @@ export class UserController {
         const users = await this.userService.findAll();
         if (users.length > 0) {
             // Assumant que vous voulez afficher le nom du premier utilisateur
-            return `Hello Client! There is one record in the database for ${users[0].name}`;
+            return `Hello Client! There is one record in the database for ${users[0].lastName}`;
         } else {
             return "No users found";
         }
