@@ -35,10 +35,10 @@ services:
     build: ./react-app
     container_name: react-app
     ports:
-      - "3000:80" # Mappez le port 80 du conteneur (Nginx) au port 3000 de l'hôte
+      - "3000:3000" # Mappez le port 80 du conteneur (Nginx) au port 3000 de l'hôte
     volumes:
-      - ./react-app:/app
-      - /app/node_modules
+      - ./react-app:/usr/src/app
+      - /usr/src/app/node_modules
     networks:
       - mynetwork
 

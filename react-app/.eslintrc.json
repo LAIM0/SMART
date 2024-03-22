@@ -1,0 +1,17 @@
+{
+  "overrides": [
+    {
+      "files": ["pages/index.js"],
+      "rules": {
+      }
+    }
+  ],
+  "extends": ["airbnb", "airbnb-typescript"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    // Personnalisez vos règles ici
+  }
+}
