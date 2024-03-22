@@ -11,5 +11,7 @@ else
 fi
 
 # Démarrer l'application en mode production
-echo "Démarrage de l'application en mode production..."
-npm run start:prod
+# echo "Démarrage de l'application en mode production..."
+# npm run start:prod
+echo "Démarrage de l'application en mode dev..."
+npm run start:dev
