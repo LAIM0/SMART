@@ -32,4 +32,5 @@ COPY --from=build /usr/src/app/package.json ./package.json
 EXPOSE 3000
 
 # Démarrer l'application Next.js
-CMD ["npm", "start"]
+#CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
