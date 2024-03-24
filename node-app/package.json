@@ -2,7 +2,7 @@
   "name": "node-app",
   "version": "1.0.0",
   "description": "My Node.js application",
-  "main": "server.js",
+  "main": "main.js",
   "scripts": {
     "build": "npx nest build",
     "format": "prettier --write \\\\\\\"../src/**/*.ts\\\\\\\" \\\\\\\"../test/**/*.ts\\\\\\\"",
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@nestjs/common": "^10.3.4",
-"@nestjs/core": "^10.3.4",
+    "@nestjs/core": "^10.3.4",
     "@nestjs/mongoose": "^10.0.4",
     "@nestjs/platform-express": "^10.3.4",
     "concurrently": "^3.6.1",
