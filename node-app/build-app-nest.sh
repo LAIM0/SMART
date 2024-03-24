@@ -1,5 +1,6 @@
 #!/bin/sh
 echo "Construction de l'application NestJS..."
+npm install @nestjs/cli
 npx nest build
 
 # Vérifier si le dossier /dist existe

@@ -2,7 +2,7 @@
   "name": "node-app",
   "version": "1.0.0",
   "description": "My Node.js application",
-  "main": "server.js",
+  "main": "main.js",
   "scripts": {
     "build": "npx nest build",
     "format": "prettier --write \\\\\\\"../src/**/*.ts\\\\\\\" \\\\\\\"../test/**/*.ts\\\\\\\"",

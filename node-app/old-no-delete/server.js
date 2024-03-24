@@ -1,4 +1,4 @@
-const express = require("express");
+/*const express = require("express");
 const mongoose = require("mongoose");
 const cors = require('cors');
 
@@ -16,7 +16,7 @@ console.log(mongoUri)
  * Setup services
  */
 
-// Initiliase an express server
+/*// Initiliase an express server
 const app = express();
 app.use(cors());
 
@@ -47,10 +47,10 @@ db.once("open", () => console.log("Successfully connected to mongo"));
 // Setup routes to respond to client
 app.get("/welcome", async (req, res) => {
   console.log("Client request received");
-  const user = await User.find().exec();
-  console.log(user[0].name);
+  const User = await User.find().exec();
+  console.log(User[0].name);
   res.send(
-    `Hello Client! There is one record in the database for ${user[0].name}`
+    `Hello Client! There is one record in the database for ${User[0].name}`
   );
 });
 
@@ -78,17 +78,17 @@ User.findOne({ name: userName })
       console.log(`L'utilisateur ${userName} existe déjà`);
     } else {
       // L'utilisateur n'existe pas, créer et enregistrer le nouvel utilisateur
-      const user = new User({ name: userName });
-      return user.save(); // Sauvegarder le nouvel utilisateur et retourner la promesse pour le chaînage
+      const User = new User({ name: userName });
+      return User.save(); // Sauvegarder le nouvel utilisateur et retourner la promesse pour le chaînage
     }
   })
-  .then(user => {
-    if (user) {
+  .then(User => {
+    if (User) {
       // Si un nouvel utilisateur a été sauvegardé, afficher un message de confirmation
-      console.log(`${user.name} saved to the database`);
+      console.log(`${User.name} saved to the database`);
     }
     // Si l'utilisateur existait déjà, cette partie du code ne sera pas exécutée
   })
   .catch(err => console.log(err)); // Gérer les erreurs potentielles
 
-app.listen(3001, () => console.log(`Listening on port ${3001}`));
+app.listen(3001, () => console.log(`Listening on port ${3001}`));*/
