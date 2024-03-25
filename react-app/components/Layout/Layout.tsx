@@ -1,7 +1,7 @@
 /* eslint-disable */
-import React, { useEffect, useState } from 'react';
-import { Flex } from '@chakra-ui/react';
-import Sidebar from '../Sidebar/Sidebar';
+import React, { useEffect, useState } from "react";
+import { Flex } from "@chakra-ui/react";
+import Sidebar from "../Sidebar/Sidebar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,10 +16,10 @@ function Layout({ children }: LayoutProps): JSX.Element {
     };
 
     handleResize(); // Appel initial pour définir la largeur de la fenêtre
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -27,8 +27,8 @@ function Layout({ children }: LayoutProps): JSX.Element {
     <Flex>
       <Sidebar />
       <Flex
-        marginLeft={windowWidth < 500 ? '0px' : '250px'}
-        p="54px"
+        marginLeft={windowWidth < 500 ? "0px" : "250px"}
+        p="32px"
         flexDirection="column"
         justifyContent="left"
         w="100%"

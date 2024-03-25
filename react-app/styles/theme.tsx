@@ -11,7 +11,9 @@ const theme = extendTheme({
       300: "#54C8C3"
       // Ajoutez d'autres nuances de couleur selon vos besoins
       // Ajoutez d'autres palettes de couleurs selon vos besoins
-    }
+    },
+    tertiary: "#F8F8F8"
+    // Ajoutez d'autres nuances de couleur selon vos besoins
   },
   radii: {
     sm: "4px", // Petit rayon
