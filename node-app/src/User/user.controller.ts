@@ -48,9 +48,9 @@ export class UserController {
     ) {
       const saltOrRounds = 10;
       const hashedPassword = await bcrypt.hash(userPassword, saltOrRounds);
-      const result = await this.userService.createUser(
+      const result = await this.userService.create(
         userName,
-        hashePas,
+        hashedPassword,
       );
       return {
         msg: 'User successfully registered',
