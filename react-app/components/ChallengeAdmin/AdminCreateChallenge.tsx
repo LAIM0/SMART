@@ -1,0 +1,173 @@
+import React, { useState, useEffect } from "react";
+import FormCreateChallenge from "./FormCreateChallenge";
+import axios from "axios";
+import {
+  FormControl,
+  Input,
+  Flex,
+  Button,
+  Select,
+  Heading,
+  Textarea,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure
+} from "@chakra-ui/react";
+
+interface Category {
+  _id: string;
+  categoryName: string;
+}
+
+interface ChallengeData {
+  _id: string;
+  title: string;
+  description: string;
+  points: number;
+  category: string;
+  endDate: Date;
+}
+
+function AdminChallenge() {
+  const [challenges, setChallenges] = useState<ChallengeData[]>([]);
+
+  const [currentChallenge, setCurrentChallenge] =
+    useState<ChallengeData | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get<ChallengeData[]>(
+          "http://localhost:3001/challenges/all"
+        );
+        setChallenges(response.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données:", error);
+      }
+    };
+
+    fetchData();
+  }, [challenges]);
+
+  // State for first modal
+  const {
+    isOpen: isOpenFormModal,
+    onOpen: onOpenFormModal,
+    onClose: onCloseFormModal
+  } = useDisclosure();
+
+  // State for second modal
+  const {
+    isOpen: isOpenDeleteModal,
+    onOpen: onOpenDeleteModal,
+    onClose: onCloseDeleteModal
+  } = useDisclosure();
+
+  const clearCurrentChallenge = () => {
+    setCurrentChallenge(null);
+  };
+
+  const deleteChallenge = async () => {
+    try {
+      const response = await axios.delete<ChallengeData[]>(
+        `http://localhost:3001/challenges/delete/${currentChallenge?._id}`
+      );
+      setChallenges(
+        challenges.filter(
+          (challenge) => challenge._id !== currentChallenge?._id
+        )
+      );
+    } catch (error) {
+      console.error("Erreur lors de la suppression des données:", error);
+    }
+  };
+
+  return (
+    <Flex flexDirection="column">
+      <Button onClick={onOpenFormModal}>Ajouter un défi</Button>
+      <TableContainer>
+        <Table variant="simple">
+          <TableCaption>Imperial to metric conversion factors</TableCaption>
+          <Thead>
+            <Tr>
+              <Th>Nom du défi</Th>
+              <Th>Description</Th>
+              <Th isNumeric>Points</Th>
+            </Tr>
+          </Thead>
+          {challenges.map((challenge) => (
+            <Tr
+              onClick={() => {
+                onOpenDeleteModal(); // Appeler la fonction onOpen
+                setCurrentChallenge(challenge); // Appeler setCurrentChallenge avec le défi actuel
+              }}
+              key={challenge._id}
+              _hover={{ bg: "lightgray", cursor: "pointer" }}
+            >
+              <Td>{challenge.title}</Td>
+              <Td>{challenge.description}</Td>
+              <Td>{challenge.points}</Td>
+            </Tr>
+          ))}
+        </Table>
+      </TableContainer>
+      <Modal isOpen={isOpenDeleteModal} onClose={onCloseDeleteModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{currentChallenge?.title}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>{currentChallenge?.description}</ModalBody>
+
+          <ModalFooter>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={() => {
+                onCloseDeleteModal();
+                clearCurrentChallenge();
+              }}
+            >
+              Close
+            </Button>
+            <Button
+              color="white"
+              bg="#E00261"
+              onClick={() => {
+                deleteChallenge();
+                onCloseDeleteModal();
+              }}
+            >
+              Supprimer
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isOpenFormModal} onClose={onCloseFormModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Ajouter un défi</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormCreateChallenge />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </Flex>
+  );
+}
+
+export default AdminChallenge;

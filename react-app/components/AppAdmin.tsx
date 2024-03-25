@@ -1,8 +1,7 @@
 /* eslint-disable */
-import Layout from "./Layout/Layout";
 import React from "react";
 import { useGlobalState } from "./../contexts/Context";
-import Challenges from "../components/Challenges";
+import LayoutAdmin from "../components/Layout/LayoutAdmin";
 import AdminCreateChallenge from "./ChallengeAdmin/AdminCreateChallenge";
 
 function App(): JSX.Element {
@@ -10,11 +9,10 @@ function App(): JSX.Element {
 
   return (
     <div>
-      <Layout>
-        {globalState === "Classement" && <div>Classement</div>}
-        {globalState === "Defis" && <Challenges />}
-        {globalState === "Profil" && <div>Profil</div>}
-      </Layout>
+      <LayoutAdmin>
+        {globalState === "Utilisateurs" && <div>Utilisateurs</div>}
+        {globalState === "Defis" && <AdminCreateChallenge />}
+      </LayoutAdmin>
     </div>
   );
 }

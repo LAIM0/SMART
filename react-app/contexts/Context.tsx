@@ -10,8 +10,11 @@ interface GlobalState {
 const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
 
 // Création du fournisseur de contexte avec les props typées
-export const GlobalStateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [globalState, setGlobalState] = useState<string>("Classement"); // Définissez votre état initial ici
+export const GlobalStateProvider: React.FC<{ children: ReactNode }> = ({
+  children
+}) => {
+  const [globalState, setGlobalState] = useState<string>("Classement");
+  // Définissez votre état initial ici
 
   return (
     <GlobalStateContext.Provider value={{ globalState, setGlobalState }}>
