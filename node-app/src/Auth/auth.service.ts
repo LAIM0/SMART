@@ -7,8 +7,12 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
       constructor(private readonly usersService: UserService) {}
       
       async validateUser(username: string, password: string): Promise<any> {
+        console.log("username passed :", username);
+        console.log("password passed :", password);
         const user = await this.usersService.getUser(username);
+        console.log(user);
         const passwordValid = await bcrypt.compare(password, user.passwordHash)
+        
         if (!user) {
             throw new NotAcceptableException('could not find the user');
           }

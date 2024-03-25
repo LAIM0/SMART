@@ -10,14 +10,16 @@ import {
   import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
   import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
   import { UserService } from './user.service';
+import { AuthService } from 'src/Auth/auth.service';
   @Controller('users')
   export class UserController {
     constructor(private readonly usersService: UserService) {}
     //signup
     @Post('/signup')
     async addUser(
+        
       @Body('password') userPassword: string,
-      @Body('email') userName: string,
+      @Body('username') userName: string,
     ) {
       const saltOrRounds = 10;
       const hashedPassword = await bcrypt.hash(userPassword, saltOrRounds);
@@ -30,6 +32,7 @@ import {
         userName: result.email
       };
     }
+
     //Post / Login
     @UseGuards(LocalAuthGuard)
     @Post('/login')
@@ -37,6 +40,7 @@ import {
       return {User: req.user,
               msg: 'User logged in'};
     }
+
      //Get / protected
     @UseGuards(AuthenticatedGuard)
     @Get('/protected')

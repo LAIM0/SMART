@@ -15,9 +15,9 @@ export class UserService {
     return newUser.save();
   }
 
-  async getUser(userName: string) {
-    const username = userName.toLowerCase();
-    const user = await this.userModel.findOne({ username });
+  async getUser(email: string) {
+    const username = email.toLowerCase();
+    const user = await this.userModel.findOne({ email });
     return user;
   }
     // async create(userName: string): Promise<User> {
