@@ -9,5 +9,17 @@ export class CategoryService {
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
   ) {}
 
+  async findAll(): Promise<Category[]> {
+    return this.categoryModel.find().exec();
+  }
+
+  async findByCategoryName(name: string): Promise<Category> {
+    return this.categoryModel.findOne({ categoryName: name }).exec();
+  }
+
+  async create(challengeData: Partial<Category>): Promise<Category> {
+    const createdChallenge = new this.categoryModel(challengeData);
+    return createdChallenge.save();
+  }
   
 }
