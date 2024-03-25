@@ -18,13 +18,13 @@ export class User {
   firstName: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Team' })
-  teamId: Types.ObjectId;
+  teamId?: Types.ObjectId;
 
   @Prop({ required: true })
   isAdmin: boolean;
 
   @Prop()
-  profilePicture: string;
+  profilePicture?: string;
 
   @Prop({ default: 0 })
   level: number;

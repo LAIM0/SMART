@@ -1,7 +1,19 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserService } from './user.service';
 import { User } from './user.schema';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
+import * as bcrypt from 'bcryptjs';
+import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
+import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
+import { UserService } from './user.service';
+import { AuthService } from 'src/Auth/auth.service';
 
 @Controller('users')
 export class UserController {
@@ -27,6 +39,25 @@ export class UserController {
       return 'No users found';
     }
   }
+    //signup
+    @Post('/signup')
+    async addUser(
+        
+      @Body('password') userPassword: string,
+      @Body('username') userName: string,
+    ) {
+      const saltOrRounds = 10;
+      const hashedPassword = await bcrypt.hash(userPassword, saltOrRounds);
+      const result = await this.userService.createUser(
+        userName,
+        hashePas,
+      );
+      return {
+        msg: 'User successfully registered',
+        userName: result.email
+      };
+    }
+  
 
   @Get('/score')
   async score(): Promise<string> {
@@ -36,8 +67,29 @@ export class UserController {
       return `Hello Client! There is one record in the database for ${users[0].lastName}`;
     } else {
       return 'No users found';
+    
     }
   }
+    
+      //Post / Login
+    @UseGuards(LocalAuthGuard)
+    @Post('/login')
+    login(@Request() req): any {
+      return {User: req.user,
+              msg: 'User logged in'};
+    }
 
-  // Vous pouvez ajouter d'autres points de terminaison selon les besoins de votre application
+
+     //Get / protected
+    @UseGuards(AuthenticatedGuard)
+    @Get('/protected')
+    getHello(@Request() req): string {
+      return req.user;
+    }
+     //Get / logout
+    @Get('/logout')
+      logout(@Request() req): any {
+        req.session.destroy();
+        return { msg: 'The user session has ended' }
+      }
 }
