@@ -12,22 +12,22 @@ export class User {
   passwordHash: string;
 
   @Prop()
-  lastName: string;
+  lastName?: string;
 
   @Prop()
-  firstName: string;
+  firstName?: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Team' })
-  teamId: Types.ObjectId;
+  teamId?: Types.ObjectId;
 
   @Prop()
-  isAdmin: boolean;
+  isAdmin?: boolean;
 
   @Prop()
-  profilePicture: string;
+  profilePicture?: string;
 
   @Prop()
-  level: number;
+  level?: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -8,6 +8,7 @@ import { ChallengeModule } from './Challenge/challenge.module';
 import { TeamModule } from './Team/team.module';
 import { CategoryModule } from './Category/category.module';
 import { CompletedModule } from './Completed/completed.module';
+import { AuthModule } from './Auth/auth.module';
 
 const mongoUsername = process.env.MONGO_USERNAME;
 const mongoPassword = process.env.MONGO_PASSWORD;
@@ -23,6 +24,7 @@ const mongoDb = process.env.MONGO_DB;
     TeamModule,
     CategoryModule,
     CompletedModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

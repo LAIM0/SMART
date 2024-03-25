@@ -1,31 +1,52 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import { UserService } from './user.service';
-import { User } from './user.schema';
-
-@Controller('users')
-export class UserController {
-    constructor(private readonly userService: UserService) {}
-
-    @Post()
-    async create(@Body('name') userName: string): Promise<User> {
-        return this.userService.create(userName);
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    UseGuards,
+    Request,
+  } from '@nestjs/common';
+  import * as bcrypt from 'bcryptjs';
+  import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
+  import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
+  import { UserService } from './user.service';
+  @Controller('users')
+  export class UserController {
+    constructor(private readonly usersService: UserService) {}
+    //signup
+    @Post('/signup')
+    async addUser(
+      @Body('password') userPassword: string,
+      @Body('email') userName: string,
+    ) {
+      const saltOrRounds = 10;
+      const hashedPassword = await bcrypt.hash(userPassword, saltOrRounds);
+      const result = await this.usersService.createUser(
+        userName,
+        hashedPassword,
+      );
+      return {
+        msg: 'User successfully registered',
+        userName: result.email
+      };
     }
-
-    @Get()
-    async findAll(): Promise<User[]> {
-        return this.userService.findAll();
+    //Post / Login
+    @UseGuards(LocalAuthGuard)
+    @Post('/login')
+    login(@Request() req): any {
+      return {User: req.user,
+              msg: 'User logged in'};
     }
-
-    @Get('/welcome')
-    async welcome(): Promise<string> {
-        const users = await this.userService.findAll();
-        if (users.length > 0) {
-            // Assumant que vous voulez afficher le nom du premier utilisateur
-            return `Hello Client! There is one record in the database for ${users[0].lastName}`;
-        } else {
-            return "No users found";
-        }
+     //Get / protected
+    @UseGuards(AuthenticatedGuard)
+    @Get('/protected')
+    getHello(@Request() req): string {
+      return req.user;
     }
-
-    // Vous pouvez ajouter d'autres points de terminaison selon les besoins de votre application
-}
+     //Get / logout
+    @Get('/logout')
+      logout(@Request() req): any {
+        req.session.destroy();
+        return { msg: 'The user session has ended' }
+      }
+  }
