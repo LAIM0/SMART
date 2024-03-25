@@ -13,5 +13,9 @@ export class ChallengeService {
     return this.challengeModel.find().exec();
   }
 
+  async create(challengeData: Partial<Challenge>): Promise<Challenge> {
+    const createdChallenge = new this.challengeModel(challengeData);
+    return createdChallenge.save();
+  }
   
 }
