@@ -19,12 +19,12 @@ export class UserService {
     const user = await this.userModel.findOne({ email });
     return user;
   }
-    async create(userName: string, password :string): Promise<User> {
+    async create(userName: string, password :string, lastName:string, firstName :string, isAdmin :boolean): Promise<User> {
         const existingUser = await this.userModel.findOne({ name: userName });
         if (existingUser) {
             return existingUser;
         }
-        const newUser = new this.userModel({ email: userName, passwordHash:password });
+        const newUser = new this.userModel({ email: userName, passwordHash:password, lastName:lastName, firstName:firstName, isAdmin:isAdmin });
         return newUser.save();
     }
 

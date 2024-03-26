@@ -1,6 +1,7 @@
 // pages/login.tsx
+/* eslint-disable */
 import { useState } from 'react';
-import { Box, Button, Container, FormControl, FormLabel, Heading, Input, VStack, Alert, AlertIcon } from '@chakra-ui/react';
+import { Flex, Box, Button,Text,Link,Image, Container,Stack, FormControl, FormLabel, Heading, Input, VStack, Alert, AlertIcon } from '@chakra-ui/react';
 
 interface LoginResponse {
   message: string;
@@ -35,30 +36,79 @@ export default function Login() {
     }
   };
 
-  return (
-    <Container centerContent>
-      <Box width="full" maxWidth="md" mt="5">
-        <Heading mb="5">Login</Heading>
-        <form onSubmit={handleLogin}>
-          <VStack spacing="4">
-            {loginResponse && (
-              <Alert status={loginResponse.status}>
-                <AlertIcon />
-                {loginResponse.message}
-              </Alert>
-            )}
-            <FormControl isRequired>
-              <FormLabel htmlFor="username">Username</FormLabel>
-              <Input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel htmlFor="password">Password</FormLabel>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            </FormControl>
-            <Button type="submit" colorScheme="blue" width="full">Login</Button>
-          </VStack>
-        </form>
-      </Box>
-    </Container>
-  );
+    return (
+      <Flex
+        align="center"
+        justify="center"
+        height="100vh"
+        p={6}
+        backgroundColor="gray.50"
+      >
+        <Box
+          p={8}
+          maxWidth="400px"
+          borderWidth="0.05px"
+          borderRadius="lg"
+          borderColor="gray.200"
+          boxShadow="xl"
+          backgroundColor="white"
+          rounded="2xl" // Plus arrondi
+        >
+          {/* <Box textAlign="center" mb={6}>
+            <Image src= "../components/Sidebar/Ecoexya.png" alt="Logo" maxWidth="200px" mx="auto" />
+          </Box> */}
+  
+          <form onSubmit={handleLogin}>
+            <Stack spacing={4}>
+              <FormControl id="username">
+                <FormLabel>Adresse email</FormLabel>
+                <Input
+                  type="email"
+                  size="lg"
+                  variant='outline'
+                  placeholder='yanice.boady@insa-lyon.fr'
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  bg="white"
+                  borderColor="E2E8F0" // Couleur du contour
+                  _hover={{ borderColor: '#166879' }}
+                  _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500' }}
+                  rounded="xl" // Plus arrondi
+                />
+              </FormControl>
+              <FormControl id="password">
+                <FormLabel>Mot de passe</FormLabel>
+                <Input
+                  placeholder='*******'
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  bg="white"
+                  borderColor="gray.300" // Couleur du contour
+                  _hover={{ borderColor: 'gray.400' }}
+                  _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500' }}
+                  rounded="xl" // Plus arrondi
+                />
+              </FormControl>
+              <Button colorScheme='teal'
+                type="submit"
+                
+                size="lg"
+                fontSize="md"
+                width="full"
+                rounded="xl" // Bouton plus arrondi
+              >
+                Se connecter
+              </Button>
+            </Stack>
+          </form>
+          <Text textAlign="center" fontSize="sm" mt={4}>
+            <Link color="blue.600" href="/forgot-password" textDecoration="underline">
+              Mot de passe oublié ?
+            </Link>
+          </Text>
+        </Box>
+      </Flex>
+    );
+  
 }

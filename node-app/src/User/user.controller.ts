@@ -19,11 +19,7 @@ import { AuthService } from 'src/Auth/auth.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.createUser(createUserDto);
-  }
-
+  
   @Get()
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
@@ -41,17 +37,19 @@ export class UserController {
   }
     //signup
     @Post('/signup')
-    async addUser(
+    async addUser(@Body() createUserDto: CreateUserDto): Promise<{ msg: string, userName: string }>
         
-      @Body('password') userPassword: string,
-      @Body('username') userName: string,
-    ) {
+     {
       const saltOrRounds = 10;
-      const hashedPassword = await bcrypt.hash(userPassword, saltOrRounds);
-      const result = await this.userService.create(
-        userName,
-        hashedPassword,
-      );
+      const hashedPassword = await bcrypt.hash(createUserDto.passwordHash, saltOrRounds);
+      const newUser = {
+        email: createUserDto.email,
+        passwordHash: hashedPassword,
+        lastName: createUserDto.lastName,
+        firstName: createUserDto.firstName,
+        isAdmin: createUserDto.isAdmin
+      };
+      const result = await this.userService.createUser(newUser);
       return {
         msg: 'User successfully registered',
         userName: result.email
