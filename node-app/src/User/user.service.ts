@@ -33,4 +33,25 @@ export class UserService {
   }
 
   // Ajoutez d'autres méthodes selon les besoins, par exemple pour chercher, mettre à jour ou supprimer des utilisateurs
+
+  async getDefisCompletedUser(userId: Types.ObjectId) {
+    const userWithChallenges = this.userModel
+      .findById(userId)
+      .populate({
+        path: 'challengesCompletedId',
+      })
+      .exec();
+
+    if (!userWithChallenges) {
+      throw new Error('User not found');
+    }
+    return userWithChallenges;
+    // let totalScore = 0;
+    // const challenges = userWithChallenges.Completed;
+    // challenges.forEach((challenge) => {
+    //   totalScore += challenge.points; // Assurez-vous que `points` est un champ dans `CompletedChallenge`
+    // });
+
+    // return { challenges, totalScore };
+  }
 }
