@@ -19,4 +19,16 @@ export class ChallengeService {
     const createdChallenge = new this.challengeModel(challenge);
     return createdChallenge.save();
   }
+  
+  async delete(id: number): Promise<void> {
+    try {
+    this.challengeModel.deleteOne({ _id: id });
+      await this.challengeModel.deleteOne({ _id: id });
+
+      console.log("Données supprimées avec succès");
+    } catch (error) {
+      console.error("Erreur lors de la suppression des données :", error);
+      throw error;
+    }
+  }
 }

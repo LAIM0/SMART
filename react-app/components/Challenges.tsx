@@ -1,15 +1,33 @@
 /* eslint-disable */
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Box, Flex, Card, Heading, Text } from "@chakra-ui/react";
+import Challenge from "./Challenge";
+
+interface Category {
+  categoryName: string;
+  _id: string;
+}
+
+interface ChallengeData {
+  _id: string;
+  title: string;
+  description: string;
+  points: number;
+  category: string;
+  endDate: Date;
+}
 
 function Challenges() {
-  const [challenges, setChallenge] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [challenges, setChallenges] = useState<ChallengeData[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get("http://localhost:3001/categories/all");
+      const response = await axios.get<Category[]>(
+        "http://localhost:3001/categories/all"
+      );
       setCategories(response.data);
     };
 
@@ -19,10 +37,10 @@ function Challenges() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
+        const response = await axios.get<ChallengeData[]>(
           "http://localhost:3001/challenges/all"
         );
-        setChallenge(response.data);
+        setChallenges(response.data);
       } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
       }
@@ -31,11 +49,33 @@ function Challenges() {
     fetchData();
   }, []);
 
-  const Tous = { categoryName: "Tous" };
-  const [currentCategory, setCurrentCategory] = useState(Tous);
+  const Tous: Category = { categoryName: "Tous", _id: "" };
+  const [currentCategory, setCurrentCategory] = useState<Category>(Tous);
+  const [currentChallenge, setCurrentChallenge] =
+    useState<ChallengeData | null>(null);
+
+  const clearCurrentChallenge = () => {
+    setCurrentChallenge(null);
+  };
 
   return (
-    <Flex flexDirection="column" gap={4} bg="#F8F8F8" p={8} overflow="hidden">
+    <Flex
+      flexDirection="column"
+      gap={4}
+      bg="#F8F8F8"
+      p={8}
+      overflow="hidden"
+      height={currentChallenge ? "100vh" : "auto"}
+    >
+      {currentChallenge && (
+        <Challenge
+          title={currentChallenge.title}
+          description={currentChallenge.description}
+          days={3}
+          points={currentChallenge.points}
+          clear={clearCurrentChallenge}
+        />
+      )}
       <Heading>Défis</Heading>
       <Flex
         p={3}
@@ -46,21 +86,21 @@ function Challenges() {
         overflowX="scroll"
       >
         <Box
-          bg={"Tous" === currentCategory.categoryName ? "#166879" : "white"}
+          bg={currentCategory.categoryName === "Tous" ? "#166879" : "white"}
           onClick={() => setCurrentCategory(Tous)}
           _hover={{
             bg:
-              "Tous" === currentCategory.categoryName ? "166879" : "lightgray",
+              currentCategory.categoryName === "Tous" ? "166879" : "lightgray",
             cursor: "pointer"
           }}
           borderRadius={4}
-          color={"Tous" === currentCategory.categoryName ? "white" : "#166879"}
+          color={currentCategory.categoryName === "Tous" ? "white" : "#166879"}
           px={4}
           py={2}
           textAlign="center"
           fontSize={12}
           fontWeight={
-            "Tous" === currentCategory.categoryName ? "bold" : "normal"
+            currentCategory.categoryName === "Tous" ? "bold" : "normal"
           }
         >
           <Heading size="sm">Tous</Heading>
@@ -72,7 +112,7 @@ function Challenges() {
                 ? "#166879"
                 : "white"
             }
-            key={category}
+            key={category._id}
             onClick={() => setCurrentCategory(category)}
             _hover={{
               bg:
@@ -103,14 +143,14 @@ function Challenges() {
       </Flex>
       <Heading>À relever</Heading>
       {challenges.map((challenge) => (
-        <Flex wrap="wrap">
+        <Flex wrap="wrap" key={challenge._id}>
           {(currentCategory.categoryName === "Tous" ||
             currentCategory._id === challenge.category) && (
             <Card
+              onClick={() => setCurrentChallenge(challenge)}
               boxShadow="md"
               borderRadius={12}
               bg="white"
-              key={challenge._id}
               p={4}
               gap={2}
               maxWidth="400px"
@@ -142,7 +182,9 @@ function Challenges() {
                 >
                   <Text fontWeight="bold">
                     {Math.floor(
-                      (challenge.endDate - new Date()) / (1000 * 60 * 60 * 24)
+                      (new Date(challenge.endDate).getTime() -
+                        new Date().getTime()) /
+                        (1000 * 60 * 60 * 24)
                     )}{" "}
                     jours
                   </Text>

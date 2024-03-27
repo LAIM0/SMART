@@ -4,7 +4,8 @@ import { ChakraProvider, Button } from "@chakra-ui/react";
 import { GlobalStateProvider } from "./../contexts/Context";
 import theme from "./../styles/theme";
 import Challenges from "../components/Challenges";
-import AdminCreateChallenge from "../components/AdminCreateChallenge";
+import Layout from "../components/Layout/Layout";
+import AppAdmin from "../components/AppAdmin";
 
 const Admin = () => {
   return (
@@ -13,7 +14,7 @@ const Admin = () => {
       {/* Utilisez ChakraProvider pour englober votre app */}
       <div className="App">
         <GlobalStateProvider>
-          <AdminCreateChallenge />
+          <AppAdmin />
         </GlobalStateProvider>
       </div>
     </ChakraProvider>

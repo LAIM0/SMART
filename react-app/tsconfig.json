@@ -20,7 +20,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js", // Ajoutez cette ligne pour inclure les fichiers JS
-    "components/Challenges.jsx"
+    "components/Challenges.tsx"
   ],
   "exclude": ["node_modules"]
 }
