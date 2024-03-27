@@ -16,6 +16,7 @@ import {
   Center
 } from '@chakra-ui/react';
 import logoApp from '../Sidebar/Ecoexya.png';
+import ForgotPasswordForm from './ForgotPasswordForm.tsx';
 
 interface LoginResponse {
   message: string;
@@ -30,6 +31,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
+  const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
   
 
   const handleLogin = async (event: React.FormEvent) => {
@@ -65,6 +67,7 @@ export default function LoginForm() {
         <Image src={logoApp.src} w="160px" alt="logo" m={4} />
         </Box>
         <Box my={4} textAlign="left">
+        {!showForgotPassword && ( 
         <form onSubmit={handleLogin}>
   <FormControl isRequired>
     <FormLabel>Adresse email</FormLabel>
@@ -91,7 +94,8 @@ export default function LoginForm() {
     </InputRightElement>
   </InputGroup>
   </FormControl>
-  <Button
+  <Button 
+  bg="#166879" color="white"
     //variantColor="teal"
     variant="outline"
     type="submit"
@@ -103,7 +107,16 @@ export default function LoginForm() {
     'Se connecter'
   )}
   </Button>
+
+  
 </form>
+        )}
+{!showForgotPassword && (
+          <Button variant="link" mt={4} onClick={() => setShowForgotPassword(true)}>
+            Mot de passe oublié ?
+          </Button>
+        )}
+        {showForgotPassword && <ForgotPasswordForm />}
 {loginResponse && loginResponse.status === 'error' && (
             <Box color="red.500">{loginResponse.message}</Box>
           )}

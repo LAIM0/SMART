@@ -8,9 +8,19 @@ import { UserInterface } from './interfaces/user.interface';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async createUser(user: UserInterface): Promise<User> {
-    const newUser = new this.userModel(user);
+  // async createUser(user: UserInterface): Promise<User> {
+  //   const newUser = new this.userModel(user);
+  //   return newUser.save();
+  // }
+
+  async createUser(email:string, password:string, lastName:string, firstName:string, isAdmin:boolean, teamId:string): Promise<User> {
+    console.log("createUser");
+    const newUser = new this.userModel({ email: email, passwordHash:password, lastName:lastName, firstName:firstName, isAdmin:isAdmin, teamId:teamId }); 
     return newUser.save();
+  }
+
+  async resetPassword(email: string, hashedPassword: string): Promise<void> {
+    await this.userModel.updateOne({ email }, { passwordHash: hashedPassword });
   }
 
 
@@ -31,6 +41,9 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
   }
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).exec();
+  } 
 
   // Ajoutez d'autres méthodes selon les besoins, par exemple pour chercher, mettre à jour ou supprimer des utilisateurs
 }

@@ -54,21 +54,23 @@ export default function SignupForm() {
       if (passwordhash !== confirmPassword) {
         throw new Error("Passwords don't match");
       }
-      const selectedTeamData = teams.find(team => team.id === selectedTeam.id);;
+      console.log("selectedData",selectedTeam);
+      //const selectedTeamData = teams.find(team => team.id === selectedTeam.id);
+      //console.log(selectedTeamData);
       
-      if (!selectedTeamData) {
-        throw new Error('Selected team not found');
-      }
+      // if (!selectedTeamData) {
+      //   throw new Error('Selected team not found');
+      // }
 
       
-      const requestData = { email, passwordhash, lastName, firstName, isAdmin: false, teamId: selectedTeamData };
+      const requestData = { email, passwordhash, lastName, firstName, isAdmin: false, teamId: selectedTeam };
       console.log('Request Data:', requestData);
       const response = await fetch('http://localhost:3001/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-          body: JSON.stringify({ email,passwordhash, lastName,firstName ,isAdmin:false,teamId: selectedTeamData}),
+          body: JSON.stringify({ email,passwordhash, lastName,firstName ,isAdmin:false,teamId: selectedTeam}),
         
       });
      
@@ -76,7 +78,7 @@ export default function SignupForm() {
       console.log(response);
 
       setIsLoading(false);
-      if (!response.ok) throw new Error('Login failed');
+      if (!response.ok) throw new Error('Sign up failed');
 
       const data = await response.json();
       window.location.href = '/login';
@@ -117,7 +119,7 @@ export default function SignupForm() {
             <FormControl isRequired mt={6}>
               <FormLabel>Email</FormLabel>
                 <Input
-                  type="Adresse email"
+                  type="email"
                   placeholder="laurie.bleuton@coexya.eu"
                   size="lg"
                   onChange={event => setUsername(event.currentTarget.value)}
@@ -127,7 +129,7 @@ export default function SignupForm() {
               <FormLabel>Mot de passe</FormLabel>
               <InputGroup>
               <Input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? 'text' : 'passwordHash'}
                 placeholder="*******"
                 size="lg"
                 onChange={event => setPassword(event.currentTarget.value)}
@@ -143,7 +145,7 @@ export default function SignupForm() {
               <FormLabel>Confirmation du mot de passe </FormLabel>
               <InputGroup>
               <Input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? 'text' : 'passwordHash'}
                 placeholder="*******"
                 size="lg"
                 onChange={event => setConfirmPassword(event.currentTarget.value)}
@@ -171,7 +173,7 @@ export default function SignupForm() {
                 ))}
               </Select>
             </FormControl>
-            <Button
+            <Button bg="#166879" color="white"
             variant="outline"
             type="submit"
             width="full"

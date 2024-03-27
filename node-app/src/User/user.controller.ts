@@ -14,11 +14,13 @@ import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
 import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
 import { UserService } from './user.service';
 import { AuthService } from 'src/Auth/auth.service';
+import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
+  private readonly jwtService: JwtService
   
   @Get()
   async findAll(): Promise<User[]> {
@@ -37,7 +39,9 @@ export class UserController {
   }
   @Post('/signup')
   async addUser(@Body() createUserDto: CreateUserDto): Promise<{ msg: string, userName: string }> {
+    
     try {
+      console.log("test Sign");
       const saltOrRounds = 10;
       const hashedPassword = await bcrypt.hash(createUserDto.passwordHash, saltOrRounds);
       const newUser = {
@@ -52,7 +56,12 @@ export class UserController {
       // Log the user data before calling createUser method
       console.log('User data:', newUser);
   
-      const result = await this.userService.createUser(newUser);
+      const result = await this.userService.createUser(createUserDto.email,
+        hashedPassword,
+        createUserDto.lastName,
+        createUserDto.firstName,
+        createUserDto.isAdmin,
+        createUserDto.teamId);
   
       return {
         msg: 'User successfully registered',
@@ -63,7 +72,29 @@ export class UserController {
       return { msg: error.message, userName: '' };
     }
   }
-  
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<{ msg: string }> {
+    try {
+      const saltOrRounds = 10;
+      const hashedPassword = await bcrypt.hash(resetPasswordDto.password, saltOrRounds);
+      await this.userService.resetPassword(resetPasswordDto.email, hashedPassword);
+      return { msg: 'Password reset successful' };
+    } catch (error) {
+      console.log(error);
+      return { msg: error.message };
+    }
+  } 
+  // @Post('forgot-password')
+  // async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto): Promise<void> {
+  //   const user = await this.userService.findByEmail(forgotPasswordDto.email);
+  //   if (!user) {
+  //     throw new NotFoundException('User not found');
+  //   }
+  //   const token = this.jwtService.sign({ email: user.email }, { expiresIn: '1h' });
+  //   // Envoi de l'e-mail de réinitialisation de mot de passe avec le lien contenant le token
+  //   // Vous pouvez utiliser des services comme SendGrid, Nodemailer, etc., pour envoyer des e-mails
+  // }
   
 
   @Get('/score')

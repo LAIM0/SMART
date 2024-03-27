@@ -26,7 +26,7 @@ export class CreateUserDto {
   firstName: string;
 
   @IsNotEmpty()
-  teamId?: Types.ObjectId;
+  teamId: string;
 
   @IsBoolean()
   isAdmin: boolean;
