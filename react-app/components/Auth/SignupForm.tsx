@@ -23,7 +23,7 @@ export default function SignupForm() {
     const [email, setUsername] = useState<string>('');
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
-    const [passwordhash, setPassword] = useState<string>('');
+    const [passwordHash, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [teams, setTeams] = useState<{ id: string; name: string }[]>([]);
     const [error, setError] = useState('');
@@ -51,7 +51,7 @@ export default function SignupForm() {
 
     // Implement your API call here. Replace the URL with your login endpoint
     try {
-      if (passwordhash !== confirmPassword) {
+      if (passwordHash !== confirmPassword) {
         throw new Error("Passwords don't match");
       }
       console.log("selectedData",selectedTeam);
@@ -63,14 +63,14 @@ export default function SignupForm() {
       // }
 
       
-      const requestData = { email, passwordhash, lastName, firstName, isAdmin: false, teamId: selectedTeam };
+      const requestData = { email, passwordHash, lastName, firstName, isAdmin: false, teamId: selectedTeam };
       console.log('Request Data:', requestData);
       const response = await fetch('http://localhost:3001/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-          body: JSON.stringify({ email,passwordhash, lastName,firstName ,isAdmin:false,teamId: selectedTeam}),
+          body: JSON.stringify({ email,passwordHash, lastName,firstName ,isAdmin:false,teamId: selectedTeam}),
         
       });
      

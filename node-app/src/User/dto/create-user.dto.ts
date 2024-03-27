@@ -36,5 +36,5 @@ export class CreateUserDto {
   profilePicture?: string;
 
   @IsOptional()
-  level: number;
+  level?: number;
 }
