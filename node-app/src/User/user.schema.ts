@@ -5,29 +5,32 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop({ unique: true })
+  @Prop({ unique: true, required: true })
   email: string;
 
-  @Prop({ unique: true })
+  @Prop({ required: true })
   passwordHash: string;
 
-  @Prop()
+  @Prop({ required: true })
   lastName: string;
 
-  @Prop()
+  @Prop({ required: true })
   firstName: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Team' })
-  teamId: Types.ObjectId;
+  teamId?: Types.ObjectId;
 
-  @Prop()
+  @Prop({ required: true })
   isAdmin: boolean;
 
   @Prop()
-  profilePicture: string;
+  profilePicture?: string;
 
-  @Prop()
+  @Prop({ default: 0 })
   level: number;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Completed' }] })
+  challengesCompleted: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
