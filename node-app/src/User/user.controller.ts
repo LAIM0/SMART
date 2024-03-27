@@ -41,7 +41,6 @@ export class UserController {
   async addUser(@Body() createUserDto: CreateUserDto): Promise<{ msg: string, userName: string }> {
     
     try {
-      console.log('Request Body:', createUserDto);
       console.log("test Sign");
       const saltOrRounds = 10;
       const hashedPassword = await bcrypt.hash(createUserDto.passwordHash, saltOrRounds);
