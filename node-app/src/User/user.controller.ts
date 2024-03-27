@@ -35,11 +35,9 @@ export class UserController {
       return 'No users found';
     }
   }
-    //signup
-    @Post('/signup')
-    async addUser(@Body() createUserDto: CreateUserDto): Promise<{ msg: string, userName: string }>
-        
-     {
+  @Post('/signup')
+  async addUser(@Body() createUserDto: CreateUserDto): Promise<{ msg: string, userName: string }> {
+    try {
       const saltOrRounds = 10;
       const hashedPassword = await bcrypt.hash(createUserDto.passwordHash, saltOrRounds);
       const newUser = {
@@ -47,14 +45,25 @@ export class UserController {
         passwordHash: hashedPassword,
         lastName: createUserDto.lastName,
         firstName: createUserDto.firstName,
-        isAdmin: createUserDto.isAdmin
+        isAdmin: createUserDto.isAdmin,
+        teamId: createUserDto.teamId
       };
+  
+      // Log the user data before calling createUser method
+      console.log('User data:', newUser);
+  
       const result = await this.userService.createUser(newUser);
+  
       return {
         msg: 'User successfully registered',
         userName: result.email
       };
+    } catch (error) {
+      console.log(error);
+      return { msg: error.message, userName: '' };
     }
+  }
+  
   
 
   @Get('/score')

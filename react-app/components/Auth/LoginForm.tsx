@@ -11,9 +11,11 @@ import {
   Button,
   CircularProgress,
   InputRightElement,
-  Icon,InputGroup
+  Icon,InputGroup,
+  Image,
+  Center
 } from '@chakra-ui/react';
-
+import logoApp from '../Sidebar/Ecoexya.png';
 
 interface LoginResponse {
   message: string;
@@ -28,6 +30,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
+  
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent form from submitting and refreshing the page
@@ -45,10 +48,11 @@ export default function LoginForm() {
       });
 
       setIsLoading(false);
+      
       if (!response.ok) throw new Error('Login failed');
 
-      const data = await response.json();
       setLoginResponse({ message: 'Login successful!', status: 'success' });
+      window.location.href = '/';
       // Redirect the user or update the state based on the successful login
     } catch (error) {
       setLoginResponse({ message: error instanceof Error ? error.message : 'An error occurred', status: 'error' });
@@ -56,14 +60,14 @@ export default function LoginForm() {
   };
   return (
     <Flex width="full" align="center" justifyContent="center" minHeight="100vh">
-      <Box p={8} maxWidth="500px" borderWidth={0} borderRadius={8} boxShadow="lg">
+      <Box p={8} maxWidth="500px" borderWidth={0} borderRadius={8} boxShadow="lg"  display="flex" flexDirection="column" alignItems="center">
         <Box textAlign="center">
-          <Heading>Login</Heading>
+        <Image src={logoApp.src} w="160px" alt="logo" m={4} />
         </Box>
         <Box my={4} textAlign="left">
         <form onSubmit={handleLogin}>
   <FormControl isRequired>
-    <FormLabel>Email</FormLabel>
+    <FormLabel>Adresse email</FormLabel>
     <Input
       type="email"
       placeholder="test@test.com"
@@ -72,7 +76,7 @@ export default function LoginForm() {
     />
   </FormControl>
   <FormControl isRequired mt={6}>
-    <FormLabel>Password</FormLabel>
+    <FormLabel>Mot de passe</FormLabel>
     <InputGroup>
     <Input
       type={showPassword ? 'text' : 'password'}
@@ -88,7 +92,7 @@ export default function LoginForm() {
   </InputGroup>
   </FormControl>
   <Button
-    variantColor="teal"
+    //variantColor="teal"
     variant="outline"
     type="submit"
     width="full"
@@ -96,10 +100,13 @@ export default function LoginForm() {
   >{isLoading ? (
     <CircularProgress isIndeterminate size="24px" color="teal" />
   ) : (
-    'Sign In'
+    'Se connecter'
   )}
   </Button>
 </form>
+{loginResponse && loginResponse.status === 'error' && (
+            <Box color="red.500">{loginResponse.message}</Box>
+          )}
         </Box>
       </Box>
     </Flex>
