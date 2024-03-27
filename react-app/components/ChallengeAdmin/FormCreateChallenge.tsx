@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -7,25 +8,9 @@ import {
   Button,
   Select,
   Heading,
-  Textarea,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure
+  Textarea
 } from "@chakra-ui/react";
+import { DatePicker } from "react-rainbow-components";
 
 interface Category {
   _id: string;
@@ -46,7 +31,7 @@ function FormCreateChallenge() {
   const [description, setDescription] = useState<string>("");
   const [points, setPoints] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<Date>(new Date());
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,7 +55,7 @@ function FormCreateChallenge() {
     setDescription("");
     setPoints("");
     setCategory("");
-    setEndDate("");
+    setEndDate(new Date());
   };
 
   const [categories, setCategories] = useState<Category[]>([]);
@@ -86,17 +71,13 @@ function FormCreateChallenge() {
     fetchData();
   }, []);
 
+  const handleEndDateChange = () => {
+    setEndDate(new Date());
+  };
+
   return (
-    <FormControl width={500}>
-      <Flex
-        flexDirection="column"
-        gap={4}
-        p={8}
-        m={8}
-        bg="#FAFAFA"
-        borderRadius={8}
-      >
-        <Heading>Ajouter un défi</Heading>
+    <FormControl>
+      <Flex flexDirection="column" gap={4} borderRadius={8}>
         <Input
           placeholder="Titre du défi"
           value={title}
@@ -132,13 +113,15 @@ function FormCreateChallenge() {
             </option>
           ))}
         </Select>
-        <Input
-          placeholder="Échéance du défi"
-          focusBorderColor="#166879"
-          onChange={(e) => setEndDate(e.target.value)}
-          isRequired={true}
-          bg="white"
-        />
+        <DatePicker
+          id="datePicker-1"
+          value={endDate}
+          onChange={(e) => {
+            setEndDate(e);
+          }}
+          label="DatePicker Label"
+          formatStyle="large"
+        />{" "}
         <Button bg="#166879" color="white" onClick={handleSubmit}>
           Créer un challenge
         </Button>

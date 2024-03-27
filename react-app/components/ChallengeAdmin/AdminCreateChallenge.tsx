@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React, { useState, useEffect } from "react";
 import FormCreateChallenge from "./FormCreateChallenge";
 import axios from "axios";
@@ -97,11 +98,17 @@ function AdminChallenge() {
   };
 
   return (
-    <Flex flexDirection="column">
-      <Button onClick={onOpenFormModal}>Ajouter un défi</Button>
-      <TableContainer>
+    <Flex flexDirection="column" gap="16px">
+      <Button
+        bg="primary.300"
+        color="white"
+        width="fit-content"
+        onClick={onOpenFormModal}
+      >
+        Ajouter un défi
+      </Button>
+      <TableContainer bg="white" borderRadius={16}>
         <Table variant="simple">
-          <TableCaption>Imperial to metric conversion factors</TableCaption>
           <Thead>
             <Tr>
               <Th>Nom du défi</Th>
@@ -158,7 +165,7 @@ function AdminChallenge() {
       </Modal>
       <Modal isOpen={isOpenFormModal} onClose={onCloseFormModal}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent bg="#F8F8F8" p="24px">
           <ModalHeader>Ajouter un défi</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
