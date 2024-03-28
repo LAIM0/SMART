@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+/* eslint-disable */
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   FormControl,
   Input,
@@ -9,7 +10,7 @@ import {
   Heading,
   Textarea
 } from "@chakra-ui/react";
-import { DatePicker } from "react-rainbow-components";
+//import { DatePicker } from "react-rainbow-components";
 
 interface Category {
   _id: string;
@@ -113,7 +114,7 @@ function FormCreateChallenge() {
             </option>
           ))}
         </Select>
-        <DatePicker
+        {/* <DatePicker
           id="datePicker-1"
           value={endDate}
           onChange={(e) => {
@@ -121,7 +122,7 @@ function FormCreateChallenge() {
           }}
           placeholder="Échéance du défi"
           formatStyle="large"
-        />{" "}
+        />{" "} */}
         <Button bg="#166879" color="white" onClick={handleSubmit}>
           Créer un challenge
         </Button>
