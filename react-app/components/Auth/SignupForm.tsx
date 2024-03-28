@@ -43,7 +43,9 @@ export default function SignupForm() {
       fetchData();
     }, []);
   
-    
+    const handleLoginClick = () => {
+      window.location.href = '/login';
+    };
 
     const handleSignup = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent form from submitting and refreshing the page
@@ -183,6 +185,9 @@ export default function SignupForm() {
           ) : (
             'Sign Up'
           )}
+          </Button>
+          <Button variant="link" mt={4} onClick={handleLoginClick}>
+            J'ai déjà un compte
           </Button>
           {error && <Box color="red.500">{error}</Box>}
         </form>

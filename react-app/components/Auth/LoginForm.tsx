@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import logoApp from '../Sidebar/Ecoexya.png';
 import ForgotPasswordForm from './ForgotPasswordForm.tsx';
+import SignupForm from './SignupForm';
 
 interface LoginResponse {
   message: string;
@@ -32,7 +33,11 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
   const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
+  const [showSignUp, setShowSignUp] = useState<boolean>(true);
   
+  const handleSignupClick = () => {
+    window.location.href = '/signup';
+  };
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent form from submitting and refreshing the page
@@ -117,6 +122,13 @@ export default function LoginForm() {
           </Button>
         )}
         {showForgotPassword && <ForgotPasswordForm />}
+        <br></br>
+        {!showForgotPassword && showSignUp && (
+            <Button variant="link" mt={4} onClick={handleSignupClick}>
+              S'inscrire
+            </Button>
+          )}
+         
 {loginResponse && loginResponse.status === 'error' && (
             <Box color="red.500">{loginResponse.message}</Box>
           )}
