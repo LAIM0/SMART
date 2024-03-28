@@ -145,53 +145,124 @@ function Challenges() {
       {challenges.map((challenge) => (
         <Flex wrap="wrap" key={challenge._id}>
           {(currentCategory.categoryName === "Tous" ||
-            currentCategory._id === challenge.category) && (
-            <Card
-              onClick={() => setCurrentChallenge(challenge)}
-              boxShadow="md"
-              borderRadius={12}
-              bg="white"
-              p={4}
-              gap={2}
-              maxWidth="400px"
-              marginBottom={2}
-              transition="transform 0.3s ease"
-              _hover={{
-                transform: "translate(20px)",
-                cursor: "pointer"
-              }}
-            >
-              <Heading size="md">{challenge.title}</Heading>
-              <p>{challenge.description}</p>
-              <Flex gap={2}>
-                <Box
-                  width="auto"
-                  bg="#166879"
-                  color="white"
-                  p={2}
-                  borderRadius={8}
-                >
-                  <Text fontWeight="bold">{challenge.points} pts</Text>
-                </Box>
-                <Box
-                  width="auto"
-                  bg="#4FD1C5"
-                  color="white"
-                  p={2}
-                  borderRadius={8}
-                >
-                  <Text fontWeight="bold">
-                    {Math.floor(
-                      (new Date(challenge.endDate).getTime() -
-                        new Date().getTime()) /
-                        (1000 * 60 * 60 * 24)
-                    )}{" "}
-                    jours
-                  </Text>
-                </Box>
-              </Flex>
-            </Card>
-          )}
+            currentCategory._id === challenge.category) &&
+            Math.floor(
+              (new Date(challenge.endDate).getTime() - new Date().getTime()) /
+                (1000 * 60 * 60 * 24)
+            ) >= 0 && (
+              <Card
+                onClick={() => setCurrentChallenge(challenge)}
+                boxShadow="md"
+                borderRadius={12}
+                bg="white"
+                p={4}
+                gap={2}
+                maxWidth="400px"
+                marginBottom={2}
+                transition="transform 0.3s ease"
+                _hover={{
+                  transform: "translate(20px)",
+                  cursor: "pointer"
+                }}
+              >
+                <Heading size="md">{challenge.title}</Heading>
+                <p>{challenge.description}</p>
+                <Flex gap={2}>
+                  <Box
+                    width="auto"
+                    bg="#166879"
+                    color="white"
+                    p={2}
+                    borderRadius={8}
+                  >
+                    <Text fontWeight="bold">{challenge.points} pts</Text>
+                  </Box>
+                  <Box
+                    width="auto"
+                    bg="#4FD1C5"
+                    color="white"
+                    p={2}
+                    borderRadius={8}
+                  >
+                    <Text fontWeight="bold">
+                      {Math.floor(
+                        (new Date(challenge.endDate).getTime() -
+                          new Date().getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      ) == 0
+                        ? "Aujourd'hui"
+                        : Math.floor(
+                            (new Date(challenge.endDate).getTime() -
+                              new Date().getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          ) + " jours"}
+                    </Text>
+                  </Box>
+                </Flex>
+              </Card>
+            )}
+        </Flex>
+      ))}
+      <Heading>À relever</Heading>
+      {challenges.map((challenge) => (
+        <Flex wrap="wrap" key={challenge._id}>
+          {(currentCategory.categoryName === "Tous" ||
+            currentCategory._id === challenge.category) &&
+            Math.floor(
+              (new Date(challenge.endDate).getTime() - new Date().getTime()) /
+                (1000 * 60 * 60 * 24)
+            ) < 0 && (
+              <Card
+                onClick={() => setCurrentChallenge(challenge)}
+                boxShadow="md"
+                borderRadius={12}
+                bg="white"
+                p={4}
+                gap={2}
+                maxWidth="400px"
+                marginBottom={2}
+                transition="transform 0.3s ease"
+                _hover={{
+                  transform: "translate(20px)",
+                  cursor: "pointer"
+                }}
+              >
+                <Heading size="md">{challenge.title}</Heading>
+                <p>{challenge.description}</p>
+                <Flex gap={2}>
+                  <Box
+                    width="auto"
+                    bg="#166879"
+                    color="white"
+                    p={2}
+                    borderRadius={8}
+                  >
+                    <Text fontWeight="bold">{challenge.points} pts</Text>
+                  </Box>
+                  <Box
+                    width="auto"
+                    bg="#4FD1C5"
+                    color="white"
+                    p={2}
+                    borderRadius={8}
+                  >
+                    <Text fontWeight="bold">
+                      {Math.floor(
+                        (new Date(challenge.endDate).getTime() -
+                          new Date().getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      ) == 0
+                        ? "Aujourd'hui"
+                        : Math.floor(
+                            (new Date(challenge.endDate).getTime() -
+                              new Date().getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          ) + " jours"}
+                    </Text>
+                  </Box>
+                </Flex>
+              </Card>
+            )}
         </Flex>
       ))}
     </Flex>
