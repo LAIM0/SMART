@@ -15,13 +15,12 @@ import { UserService } from './user.service';
 import { AuthService } from 'src/Auth/auth.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
-//import { JwtService } from '@nestjs/jwt';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
   //private readonly jwtService: JwtService
-  
+
   @Get()
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
@@ -38,34 +37,40 @@ export class UserController {
     }
   }
   @Post('/signup')
-  async addUser(@Body() createUserDto: CreateUserDto): Promise<{ msg: string, userName: string }> {
-    
+  async addUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<{ msg: string; userName: string }> {
     try {
-      console.log("test Sign");
+      console.log('test Sign');
       const saltOrRounds = 10;
-      const hashedPassword = await bcrypt.hash(createUserDto.passwordHash, saltOrRounds);
+      const hashedPassword = await bcrypt.hash(
+        createUserDto.passwordHash,
+        saltOrRounds,
+      );
       const newUser = {
         email: createUserDto.email,
         passwordHash: hashedPassword,
         lastName: createUserDto.lastName,
         firstName: createUserDto.firstName,
         isAdmin: createUserDto.isAdmin,
-        teamId: createUserDto.teamId
+        teamId: createUserDto.teamId,
       };
-  
+
       // Log the user data before calling createUser method
       console.log('User data:', newUser);
-  
-      const result = await this.userService.createUser(createUserDto.email,
+
+      const result = await this.userService.createUser(
+        createUserDto.email,
         hashedPassword,
         createUserDto.lastName,
         createUserDto.firstName,
         createUserDto.isAdmin,
-        createUserDto.teamId);
-  
+        createUserDto.teamId,
+      );
+
       return {
         msg: 'User successfully registered',
-        userName: result.email
+        userName: result.email,
       };
     } catch (error) {
       console.log(error);
@@ -74,17 +79,25 @@ export class UserController {
   }
 
   @Post('reset-password')
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<{ msg: string }> {
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ): Promise<{ msg: string }> {
     try {
       const saltOrRounds = 10;
-      const hashedPassword = await bcrypt.hash(resetPasswordDto.password, saltOrRounds);
-      await this.userService.resetPassword(resetPasswordDto.email, hashedPassword);
+      const hashedPassword = await bcrypt.hash(
+        resetPasswordDto.password,
+        saltOrRounds,
+      );
+      await this.userService.resetPassword(
+        resetPasswordDto.email,
+        hashedPassword,
+      );
       return { msg: 'Password reset successful' };
     } catch (error) {
       console.log(error);
       return { msg: error.message };
     }
-  } 
+  }
   // @Post('forgot-password')
   // async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto): Promise<void> {
   //   const user = await this.userService.findByEmail(forgotPasswordDto.email);
@@ -95,17 +108,16 @@ export class UserController {
   //   // Envoi de l'e-mail de réinitialisation de mot de passe avec le lien contenant le token
   //   // Vous pouvez utiliser des services comme SendGrid, Nodemailer, etc., pour envoyer des e-mails
   // }
-  
 
   @Get('/score')
-  async score(@Body() scoreCheckDto: ScoreCheckDto): Promise<User> {
+  async score(@Body() scoreCheckDto: ScoreCheckDto) {
     const userId = scoreCheckDto.userId;
-    const defisCompleted = await this.userService.getDefisCompletedUser(userId);
-    if (!defisCompleted) {
+    const score = await this.userService.getScoreUser(userId);
+    if (!score) {
       // Assumant que vous voulez afficher le nom du premier utilisateur
-      console.log("No element found, User doesn't exists");
+      console.log("No score found, error : @Get('/score')");
     }
-    return defisCompleted;
+    return score;
   }
 
   //Post / Login

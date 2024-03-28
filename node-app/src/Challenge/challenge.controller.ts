@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
 import { ChallengeService } from './challenge.service';
 import { Challenge } from './challenge.schema';
 import { CreateChallengeDto } from './dto/create-challenge.dto';
+import { Types } from 'mongoose';
 
 @Controller('challenges')
 export class ChallengeController {
@@ -20,5 +21,9 @@ export class ChallengeController {
   @Delete('/delete/:id')
   async deleteChallenge(@Param('id') id: number) {
     return this.challengeService.delete(id);
+  }
+  @Get('/byId')
+  async getById(@Body() challengeId: Types.ObjectId) {
+    return this.challengeService.getById(challengeId);
   }
 }
