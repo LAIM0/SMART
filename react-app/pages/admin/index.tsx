@@ -6,7 +6,7 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/challenges");
+    router.push("/admin/challenges");
   }, [router]);
 
   return null; // Ou un indicateur de chargement pendant que la redirection est en cours

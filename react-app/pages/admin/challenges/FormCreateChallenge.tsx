@@ -24,6 +24,7 @@ interface ChallengeData {
   points: number; // Changement du type de 'points' en number
   category: string;
   endDate: Date;
+  pedagogicalExplanation: string;
 }
 
 function FormCreateChallenge() {
@@ -32,6 +33,8 @@ function FormCreateChallenge() {
   const [points, setPoints] = useState<number>(); // Initialisation à 0
   const [category, setCategory] = useState<string>("");
   const [endDate, setEndDate] = useState<Date>(new Date());
+  const [pedagogicalExplanation, setPedagogicalExplanation] =
+    useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +44,7 @@ function FormCreateChallenge() {
       description,
       points,
       category,
+      pedagogicalExplanation,
       endDate: challengeDate
     };
     axios
@@ -56,6 +60,7 @@ function FormCreateChallenge() {
     setPoints(0); // Remise à zéro
     setCategory("");
     setEndDate(new Date());
+    setPedagogicalExplanation("");
   };
 
   const [categories, setCategories] = useState<Category[]>([]);
@@ -78,14 +83,16 @@ function FormCreateChallenge() {
   return (
     <FormControl>
       <Flex flexDirection="column" gap={4} borderRadius={8}>
-        <Input
-          placeholder="Titre du défi"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          focusBorderColor="#166879"
-          isRequired={true}
-          bg="white"
-        />
+        <FormControl isRequired>
+          <Input
+            placeholder="Titre du défi"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            focusBorderColor="#166879"
+            isRequired={true}
+            bg="white"
+          />
+        </FormControl>
         <Textarea
           placeholder="Description du défi"
           focusBorderColor="#166879"
@@ -102,7 +109,7 @@ function FormCreateChallenge() {
           bg="white"
         />
         <Select
-          placeholder="Select option"
+          placeholder="Catégorie du défi"
           focusBorderColor="#166879"
           onChange={(e) => setCategory(e.target.value)}
           isRequired={true}
@@ -116,13 +123,20 @@ function FormCreateChallenge() {
         </Select>
         {/* <DatePicker
           id="datePicker-1"
-          value={endDate}
           onChange={(e) => {
             setEndDate(e);
           }}
           placeholder="Échéance du défi"
           formatStyle="large"
+          borderRadius="semi-rounded"
         />{" "} */}
+        <Textarea
+          placeholder="Explication Pédagoqique"
+          focusBorderColor="#166879"
+          onChange={(e) => setPedagogicalExplanation(e.target.value)}
+          isRequired={true}
+          bg="white"
+        />
         <Button bg="#166879" color="white" onClick={handleSubmit}>
           Créer un challenge
         </Button>

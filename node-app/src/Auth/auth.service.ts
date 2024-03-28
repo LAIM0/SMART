@@ -18,7 +18,9 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
           }
         if (user && passwordValid) {
           return {
+            id: user.id,
             userName: user.email
+
           };
         }
         return null;

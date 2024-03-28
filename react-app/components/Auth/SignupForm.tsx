@@ -38,6 +38,15 @@ export default function SignupForm() {
         const response = await axios.get("http://localhost:3001/teams");
         setTeams(response.data);
         console.log("Response data:", response.data);
+        if (response.data.length === 0) {
+          const defaultTeam = await axios.post('http://localhost:3001/teams/default', {
+            name: 'Equipe par défaut',
+            
+          });
+          console.log('Default team added:', defaultTeam.data);
+          // Mettre à jour la liste des équipes après l'ajout de l'équipe par défaut
+          setTeams([defaultTeam.data]);
+        }
       };
   
       fetchData();

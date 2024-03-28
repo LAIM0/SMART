@@ -32,7 +32,7 @@ function Layout({ children }: LayoutProps): JSX.Element {
         flexDirection="column"
         justifyContent="left"
         w="100%"
-        h="100vh"
+        h="auto"
         bg="#F8F8F8"
         display="inline"
       >

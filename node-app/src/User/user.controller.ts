@@ -139,4 +139,13 @@ export class UserController {
     req.session.destroy();
     return { msg: 'The user session has ended' };
   }
+
+  @UseGuards(AuthenticatedGuard)
+  @Get('me')
+  getLoggedInUser(@Request() req) {
+    const { id, userName } = req.user; // Supposons que req.user contient l'id et le nom d'utilisateur de l'utilisateur connecté
+    
+    console.log(req.user);
+    return { id, email: userName };
+  }
 }
