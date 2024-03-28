@@ -14,6 +14,8 @@ import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
 import { UserService } from './user.service';
 import { AuthService } from 'src/Auth/auth.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
+import { Completed } from 'src/Completed/completed.schema';
+import { Challenge } from 'src/Challenge/challenge.schema';
 
 @Controller('users')
 export class UserController {
@@ -59,14 +61,14 @@ export class UserController {
   }
 
   @Get('/score')
-  async score(@Body() scoreCheckDto: ScoreCheckDto): Promise<User> {
+  async score(@Body() scoreCheckDto: ScoreCheckDto) {
     const userId = scoreCheckDto.userId;
-    const defisCompleted = await this.userService.getDefisCompletedUser(userId);
-    if (!defisCompleted) {
+    const score = await this.userService.getScoreUser(userId);
+    if (!score) {
       // Assumant que vous voulez afficher le nom du premier utilisateur
-      console.log("No element found, User doesn't exists");
+      console.log("No score found, error : @Get('/score')");
     }
-    return defisCompleted;
+    return score;
   }
 
   //Post / Login

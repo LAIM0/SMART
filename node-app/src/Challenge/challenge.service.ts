@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Challenge, ChallengeDocument } from './challenge.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { ChallengeInterface } from './interfaces/challenge.interface';
 
 @Injectable()
@@ -18,5 +18,9 @@ export class ChallengeService {
   async create(challenge: ChallengeInterface): Promise<Challenge> {
     const createdChallenge = new this.challengeModel(challenge);
     return createdChallenge.save();
+  }
+
+  async getById(challengeId: Types.ObjectId): Promise<Challenge> {
+    return this.challengeModel.findById(challengeId).exec();
   }
 }
