@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { ChakraProvider, Button } from "@chakra-ui/react";
 import { GlobalStateProvider } from "./../contexts/Context";
 import theme from "./../styles/theme";
-import Challenges from "../components/Challenges";
+import Challenges from "../components/Challenges/Challenges";
 import Layout from "../components/Layout/Layout";
 import AppAdmin from "../components/AppAdmin";
 

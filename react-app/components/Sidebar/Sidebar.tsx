@@ -70,7 +70,7 @@ const Sidebar = () => {
     };
   }, []);
 
-  const { globalState, setGlobalState } = useGlobalState();
+  //const { globalState, setGlobalState } = useGlobalState();
 
   return (
     <Flex
@@ -102,24 +102,24 @@ const Sidebar = () => {
           borderRadius="md"
           alignItems="center"
           fontSize={windowWidth < 500 ? "12px" : "auto"}
-          color={page.name === globalState ? "white" : "grey.800"}
-          fontWeight={page.name === globalState ? "bold" : "light"}
+          //color={page.name === globalState ? "white" : "grey.800"}
+          //fontWeight={page.name === globalState ? "bold" : "light"}
           _hover={{
-            bg: page.name === globalState ? "primary.100" : "#F1F1F1",
+            //bg: page.name === globalState ? "primary.100" : "#F1F1F1",
             cursor: "pointer"
           }}
-          bg={page.name === globalState ? "primary.100" : "auto"}
-          onClick={() => setGlobalState(page.name)}
+          //bg={page.name === globalState ? "primary.100" : "auto"}
+          //onClick={() => setGlobalState(page.name)}
           transition="background 0.3s ease, fontWeight 0.8s ease"
         >
           <IconNavbar
             d={findPageByName({ pageName: page.name })?.path}
-            fill={page.name === globalState ? "#166879" : "transparent"}
+            fill={page.name === "test" ? "#166879" : "transparent"}
             //transition="fill 0.3s ease, stroke 0.3s ease"
           ></IconNavbar>
           <Text
             color="primary.300"
-            fontWeight={page.name === globalState ? "bold" : "light"}
+            //fontWeight={page.name === globalState ? "bold" : "light"}
             lineHeight={1}
             fontSize={windowWidth < 500 ? "12px" : "16px"}
           >

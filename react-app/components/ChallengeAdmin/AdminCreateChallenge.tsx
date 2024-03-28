@@ -41,6 +41,7 @@ interface ChallengeData {
   points: number;
   category: string;
   endDate: Date;
+  pedagogicalExplanation: string;
 }
 
 function AdminChallenge() {
@@ -111,9 +112,11 @@ function AdminChallenge() {
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th>Nom du défi</Th>
-              <Th>Description</Th>
-              <Th isNumeric>Points</Th>
+              <Th width="20%">Nom du défi</Th>
+              <Th width="60%">Description</Th>
+              <Th width="20%" isNumeric>
+                Points
+              </Th>
             </Tr>
           </Thead>
           {challenges.map((challenge) => (
@@ -125,9 +128,9 @@ function AdminChallenge() {
               key={challenge._id}
               _hover={{ bg: "lightgray", cursor: "pointer" }}
             >
-              <Td>{challenge.title}</Td>
-              <Td>{challenge.description}</Td>
-              <Td>{challenge.points}</Td>
+              <Td width="20%">{challenge.title}</Td>
+              <Td width="60%">{challenge.description}</Td>
+              <Td width="20%">{challenge.points}</Td>
             </Tr>
           ))}
         </Table>

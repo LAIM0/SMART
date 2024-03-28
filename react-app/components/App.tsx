@@ -2,7 +2,7 @@
 import Layout from "./Layout/Layout";
 import React from "react";
 import { useGlobalState } from "./../contexts/Context";
-import Challenges from "../components/Challenges";
+import Challenges from "./Challenges/Challenges";
 import AdminCreateChallenge from "./ChallengeAdmin/AdminCreateChallenge";
 
 function App(): JSX.Element {

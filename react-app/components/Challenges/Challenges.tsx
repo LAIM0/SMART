@@ -1,0 +1,296 @@
+/* eslint-disable */
+
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Box, Flex, Card, Heading, Text } from "@chakra-ui/react";
+import Challenge from "./Challenge";
+
+interface Category {
+  categoryName: string;
+  _id: string;
+}
+
+interface ChallengeData {
+  _id: string;
+  title: string;
+  description: string;
+  points: number;
+  category: string;
+  endDate: Date;
+  pedagogicalExplanation: string;
+}
+
+interface UserData {
+  _id: string;
+  email: string;
+}
+
+function Challenges() {
+  const [challenges, setChallenges] = useState<ChallengeData[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [user, setUser] = useState<UserData[]>([]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const response = await axios.get<UserData[]>(
+  //       "http://localhost:3001/users/me"
+  //     );
+  //     setUser(response.data);
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get<Category[]>(
+        "http://localhost:3001/categories/all"
+      );
+      setCategories(response.data);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get<ChallengeData[]>(
+          "http://localhost:3001/challenges/all"
+        );
+        setChallenges(response.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const Tous: Category = { categoryName: "Tous", _id: "" };
+  const [currentCategory, setCurrentCategory] = useState<Category>(Tous);
+  const [currentChallenge, setCurrentChallenge] =
+    useState<ChallengeData | null>(null);
+
+  const clearCurrentChallenge = () => {
+    setCurrentChallenge(null);
+  };
+
+  const dateGap = (endDate: Date): number => {
+    return (
+      Math.floor(
+        (new Date(endDate).getTime() - new Date().getTime()) /
+          (1000 * 60 * 60 * 24)
+      ) + 1
+    );
+  };
+
+  challenges.sort((a, b) => (a.points > b.points ? 1 : -1));
+  challenges.sort((a, b) => (dateGap(a.endDate) > dateGap(b.endDate) ? 1 : -1));
+
+  return (
+    <Flex
+      flexDirection="column"
+      gap={4}
+      bg="#F8F8F8"
+      p={8}
+      overflow="hidden"
+      height={currentChallenge ? "100vh" : "auto"}
+    >
+      {currentChallenge && (
+        <Challenge
+          title={currentChallenge.title}
+          description={currentChallenge.description}
+          days={3}
+          points={currentChallenge.points}
+          clear={clearCurrentChallenge}
+          pedagogicalExplanation={currentChallenge.pedagogicalExplanation}
+        />
+      )}
+      <Heading>Défis</Heading>
+      <Flex
+        p={3}
+        gap={3}
+        bg="white"
+        borderRadius={8}
+        boxShadow="sm"
+        overflowX="scroll"
+      >
+        <Box
+          bg={currentCategory.categoryName === "Tous" ? "#166879" : "white"}
+          onClick={() => setCurrentCategory(Tous)}
+          _hover={{
+            bg:
+              currentCategory.categoryName === "Tous" ? "166879" : "lightgray",
+            cursor: "pointer"
+          }}
+          borderRadius={4}
+          color={currentCategory.categoryName === "Tous" ? "white" : "#166879"}
+          px={4}
+          py={2}
+          textAlign="center"
+          fontSize={12}
+          fontWeight={
+            currentCategory.categoryName === "Tous" ? "bold" : "normal"
+          }
+        >
+          <Heading size="sm">Tous</Heading>
+        </Box>
+        {categories.map((category) => (
+          <Box
+            bg={
+              category.categoryName === currentCategory.categoryName
+                ? "#166879"
+                : "white"
+            }
+            key={category._id}
+            onClick={() => setCurrentCategory(category)}
+            _hover={{
+              bg:
+                category.categoryName === currentCategory.categoryName
+                  ? "166879"
+                  : "lightgray",
+              cursor: "pointer"
+            }}
+            borderRadius={4}
+            color={
+              category.categoryName === currentCategory.categoryName
+                ? "white"
+                : "#166879"
+            }
+            px={4}
+            py={2}
+            textAlign="center"
+            fontSize={12}
+            fontWeight={
+              category.categoryName === currentCategory.categoryName
+                ? "bold"
+                : "normal"
+            }
+          >
+            <Heading size="sm">{category.categoryName}</Heading>
+          </Box>
+        ))}
+      </Flex>
+      <Heading marginTop="24px">À relever</Heading>
+      <Flex className="challengeList" flexDirection="row" flexWrap="wrap">
+        {challenges.map((challenge) => (
+          <div>
+            {(currentCategory.categoryName === "Tous" ||
+              currentCategory._id === challenge.category) &&
+              dateGap(challenge.endDate) >= 0 && (
+                <Card
+                  key={challenge._id}
+                  onClick={() => setCurrentChallenge(challenge)}
+                  boxShadow="md"
+                  borderRadius={12}
+                  bg="white"
+                  p={4}
+                  gap={2}
+                  maxWidth="500px"
+                  minWidth="300px"
+                  marginBottom={8}
+                  marginRight={8}
+                  transition="transform 0.3s ease"
+                  _hover={{
+                    transform: "translate(20px)",
+                    cursor: "pointer"
+                  }}
+                >
+                  <Heading size="md">{challenge.title}</Heading>
+                  <Text minHeight="40px">{challenge.description}</Text>
+                  <Flex gap={2}>
+                    <Box
+                      width="auto"
+                      bg="#166879"
+                      color="white"
+                      p={2}
+                      borderRadius={8}
+                    >
+                      <Text fontWeight="bold">{challenge.points} pts</Text>
+                    </Box>
+                    <Box
+                      width="auto"
+                      bg="#4FD1C5"
+                      color="white"
+                      p={2}
+                      borderRadius={8}
+                    >
+                      <Text fontWeight="bold">
+                        {dateGap(challenge.endDate) === 0
+                          ? "Aujourd'hui"
+                          : dateGap(challenge.endDate) + " jours"}
+                      </Text>
+                    </Box>
+                  </Flex>
+                </Card>
+              )}
+          </div>
+        ))}
+      </Flex>
+
+      <Heading>Relevés récemment</Heading>
+      <Flex wrap="wrap" gap={0}>
+        {challenges.map((challenge) => (
+          <div>
+            {(currentCategory.categoryName === "Tous" ||
+              currentCategory._id === challenge.category) &&
+              dateGap(challenge.endDate) < 0 && (
+                <Card
+                  key={challenge._id}
+                  onClick={() => setCurrentChallenge(challenge)}
+                  boxShadow="md"
+                  borderRadius={12}
+                  bg="#166879"
+                  p={4}
+                  gap={2}
+                  maxWidth="500px"
+                  minWidth="300px"
+                  marginBottom={8}
+                  marginRight={8}
+                  transition="transform 0.3s ease"
+                  _hover={{
+                    transform: "translate(20px)",
+                    cursor: "pointer"
+                  }}
+                >
+                  <Heading size="md" color="white">
+                    {challenge.title}{" "}
+                  </Heading>
+                  <Text minHeight="40px" color="white">
+                    {challenge.description}
+                  </Text>
+                  <Flex gap={2}>
+                    <Box
+                      width="auto"
+                      bg="white"
+                      color="#166879"
+                      p={2}
+                      borderRadius={8}
+                    >
+                      <Text fontWeight="bold">{challenge.points} pts</Text>
+                    </Box>
+                    <Box
+                      width="auto"
+                      bg="#4FD1C5"
+                      color="white"
+                      p={2}
+                      borderRadius={8}
+                    >
+                      <Text fontWeight="bold">
+                        {dateGap(challenge.endDate) == 0
+                          ? "Aujourd'hui"
+                          : dateGap(challenge.endDate) + " jours"}
+                      </Text>
+                    </Box>
+                  </Flex>
+                </Card>
+              )}
+          </div>
+        ))}
+      </Flex>
+    </Flex>
+  );
+}
+
+export default Challenges;

@@ -1,7 +1,15 @@
 /* eslint-disable */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Flex, Card, Heading, Text, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Card,
+  Heading,
+  Text,
+  IconButton,
+  Button
+} from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 
 interface ChallengeProps {
@@ -10,6 +18,7 @@ interface ChallengeProps {
   points: number;
   days: number;
   clear: () => void;
+  pedagogicalExplanation: string;
 }
 
 const Challenge: React.FC<ChallengeProps> = ({
@@ -17,7 +26,8 @@ const Challenge: React.FC<ChallengeProps> = ({
   description,
   points,
   days,
-  clear
+  clear,
+  pedagogicalExplanation
 }) => {
   return (
     <Flex
@@ -58,11 +68,21 @@ const Challenge: React.FC<ChallengeProps> = ({
           </Box>
         </Flex>
       </Flex>
-      <Flex flexDirection="column" px="54px" py="16px">
+      <Flex
+        gap={4}
+        flexDirection="column"
+        px="54px"
+        py="16px"
+        boxShadow="0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
+      >
         <Heading size="md">Description</Heading>
         <p>{description}</p>
         <Heading size="md">Ressources</Heading>
-        <Text>{description}</Text>
+        <Text>{pedagogicalExplanation}</Text>
+
+        <Button bg="#54C8C3" width="fit-content" color="white" boxShadow="md">
+          Valider le défi
+        </Button>
       </Flex>
     </Flex>
   );
