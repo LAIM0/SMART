@@ -14,11 +14,14 @@ import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
 import { UserService } from './user.service';
 import { AuthService } from 'src/Auth/auth.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
+import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
+//import { JwtService } from '@nestjs/jwt';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
+  //private readonly jwtService: JwtService
+  
   @Get()
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
@@ -34,29 +37,65 @@ export class UserController {
       return 'No users found';
     }
   }
-  //signup
   @Post('/signup')
-  async addUser(
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<{ msg: string; userName: string }> {
-    const saltOrRounds = 10;
-    const hashedPassword = await bcrypt.hash(
-      createUserDto.passwordHash,
-      saltOrRounds,
-    );
-    const newUser = {
-      email: createUserDto.email,
-      passwordHash: hashedPassword,
-      lastName: createUserDto.lastName,
-      firstName: createUserDto.firstName,
-      isAdmin: createUserDto.isAdmin,
-    };
-    const result = await this.userService.createUser(newUser);
-    return {
-      msg: 'User successfully registered',
-      userName: result.email,
-    };
+  async addUser(@Body() createUserDto: CreateUserDto): Promise<{ msg: string, userName: string }> {
+    
+    try {
+      console.log("test Sign");
+      const saltOrRounds = 10;
+      const hashedPassword = await bcrypt.hash(createUserDto.passwordHash, saltOrRounds);
+      const newUser = {
+        email: createUserDto.email,
+        passwordHash: hashedPassword,
+        lastName: createUserDto.lastName,
+        firstName: createUserDto.firstName,
+        isAdmin: createUserDto.isAdmin,
+        teamId: createUserDto.teamId
+      };
+  
+      // Log the user data before calling createUser method
+      console.log('User data:', newUser);
+  
+      const result = await this.userService.createUser(createUserDto.email,
+        hashedPassword,
+        createUserDto.lastName,
+        createUserDto.firstName,
+        createUserDto.isAdmin,
+        createUserDto.teamId);
+  
+      return {
+        msg: 'User successfully registered',
+        userName: result.email
+      };
+    } catch (error) {
+      console.log(error);
+      return { msg: error.message, userName: '' };
+    }
   }
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<{ msg: string }> {
+    try {
+      const saltOrRounds = 10;
+      const hashedPassword = await bcrypt.hash(resetPasswordDto.password, saltOrRounds);
+      await this.userService.resetPassword(resetPasswordDto.email, hashedPassword);
+      return { msg: 'Password reset successful' };
+    } catch (error) {
+      console.log(error);
+      return { msg: error.message };
+    }
+  } 
+  // @Post('forgot-password')
+  // async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto): Promise<void> {
+  //   const user = await this.userService.findByEmail(forgotPasswordDto.email);
+  //   if (!user) {
+  //     throw new NotFoundException('User not found');
+  //   }
+  //   const token = this.jwtService.sign({ email: user.email }, { expiresIn: '1h' });
+  //   // Envoi de l'e-mail de réinitialisation de mot de passe avec le lien contenant le token
+  //   // Vous pouvez utiliser des services comme SendGrid, Nodemailer, etc., pour envoyer des e-mails
+  // }
+  
 
   @Get('/score')
   async score(@Body() scoreCheckDto: ScoreCheckDto): Promise<User> {

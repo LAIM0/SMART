@@ -8,16 +8,15 @@ import {
   ColorModeProvider,
   CSSReset
 } from '@chakra-ui/react';
-import LoginForm from '../components/Auth/LoginForm';
+import SignupForm from '../components/Auth/SignupForm';
 
-export default function LogIn() {
+export default function SignUp() {
   return (
     <ThemeProvider theme={theme}>
       <ColorModeProvider>
         <CSSReset />
-        <LoginForm />
+        <SignupForm />
       </ColorModeProvider>
     </ThemeProvider>
   );
 }
-

@@ -6,6 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 import { Types } from 'mongoose';
+import { ObjectId } from 'mongoose';
 
 export class CreateUserDto {
   @IsEmail()
@@ -24,8 +25,8 @@ export class CreateUserDto {
   @IsNotEmpty()
   firstName: string;
 
-  @IsOptional()
-  teamId?: Types.ObjectId;
+  @IsNotEmpty()
+  teamId: string;
 
   @IsBoolean()
   isAdmin: boolean;
@@ -35,5 +36,5 @@ export class CreateUserDto {
   profilePicture?: string;
 
   @IsOptional()
-  level: number;
+  level?: number;
 }
