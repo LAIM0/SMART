@@ -1,4 +1,3 @@
-/*eslint-disable*/
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -10,7 +9,7 @@ import {
   Heading,
   Textarea
 } from "@chakra-ui/react";
-//import { DatePicker } from "react-rainbow-components";
+import { DatePicker } from "react-rainbow-components";
 
 interface Category {
   _id: string;
@@ -21,7 +20,7 @@ interface ChallengeData {
   _id: string;
   title: string;
   description: string;
-  points: number;
+  points: number; // Changement du type de 'points' en number
   category: string;
   endDate: Date;
 }
@@ -29,7 +28,7 @@ interface ChallengeData {
 function FormCreateChallenge() {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [points, setPoints] = useState<string>("");
+  const [points, setPoints] = useState<number>(); // Initialisation à 0
   const [category, setCategory] = useState<string>("");
   const [endDate, setEndDate] = useState<Date>(new Date());
 
@@ -53,7 +52,7 @@ function FormCreateChallenge() {
       });
     setTitle("");
     setDescription("");
-    setPoints("");
+    setPoints(0); // Remise à zéro
     setCategory("");
     setEndDate(new Date());
   };
@@ -94,9 +93,10 @@ function FormCreateChallenge() {
           bg="white"
         />
         <Input
+          type="number" // Utilisation d'un champ de type nombre
           placeholder="Points"
           focusBorderColor="#166879"
-          onChange={(e) => setPoints(e.target.value)}
+          onChange={(e) => setPoints(parseInt(e.target.value))} // Conversion en nombre entier
           isRequired={true}
           bg="white"
         />
@@ -113,15 +113,15 @@ function FormCreateChallenge() {
             </option>
           ))}
         </Select>
-        {/* <DatePicker
+        <DatePicker
           id="datePicker-1"
           value={endDate}
           onChange={(e) => {
             setEndDate(e);
           }}
-          label="DatePicker Label"
+          placeholder="Échéance du défi"
           formatStyle="large"
-        />{" "} */}
+        />{" "}
         <Button bg="#166879" color="white" onClick={handleSubmit}>
           Créer un challenge
         </Button>
