@@ -58,6 +58,18 @@ function Challenges() {
     setCurrentChallenge(null);
   };
 
+  const dateGap = (endDate: Date): number => {
+    return (
+      Math.floor(
+        (new Date(endDate).getTime() - new Date().getTime()) /
+          (1000 * 60 * 60 * 24)
+      ) + 1
+    );
+  };
+
+  challenges.sort((a, b) => (a.points > b.points ? 1 : -1));
+  challenges.sort((a, b) => (dateGap(a.endDate) > dateGap(b.endDate) ? 1 : -1));
+
   return (
     <Flex
       flexDirection="column"
@@ -143,14 +155,12 @@ function Challenges() {
       </Flex>
       <Heading>À relever</Heading>
       {challenges.map((challenge) => (
-        <Flex wrap="wrap" key={challenge._id}>
+        <Flex className="challengeList" flexDirection="row">
           {(currentCategory.categoryName === "Tous" ||
             currentCategory._id === challenge.category) &&
-            Math.floor(
-              (new Date(challenge.endDate).getTime() - new Date().getTime()) /
-                (1000 * 60 * 60 * 24)
-            ) >= 0 && (
+            dateGap(challenge.endDate) >= 0 && (
               <Card
+                key={challenge._id}
                 onClick={() => setCurrentChallenge(challenge)}
                 boxShadow="md"
                 borderRadius={12}
@@ -185,17 +195,9 @@ function Challenges() {
                     borderRadius={8}
                   >
                     <Text fontWeight="bold">
-                      {Math.floor(
-                        (new Date(challenge.endDate).getTime() -
-                          new Date().getTime()) /
-                          (1000 * 60 * 60 * 24)
-                      ) == 0
+                      {dateGap(challenge.endDate) === 0
                         ? "Aujourd'hui"
-                        : Math.floor(
-                            (new Date(challenge.endDate).getTime() -
-                              new Date().getTime()) /
-                              (1000 * 60 * 60 * 24)
-                          ) + " jours"}
+                        : dateGap(challenge.endDate) + " jours"}
                     </Text>
                   </Box>
                 </Flex>
@@ -203,20 +205,17 @@ function Challenges() {
             )}
         </Flex>
       ))}
-      <Heading>À relever</Heading>
+      <Heading>Relevés récemment</Heading>
       {challenges.map((challenge) => (
-        <Flex wrap="wrap" key={challenge._id}>
+        <Flex wrap="wrap" key={challenge._id} gap={0}>
           {(currentCategory.categoryName === "Tous" ||
             currentCategory._id === challenge.category) &&
-            Math.floor(
-              (new Date(challenge.endDate).getTime() - new Date().getTime()) /
-                (1000 * 60 * 60 * 24)
-            ) < 0 && (
+            dateGap(challenge.endDate) < 0 && (
               <Card
                 onClick={() => setCurrentChallenge(challenge)}
                 boxShadow="md"
                 borderRadius={12}
-                bg="white"
+                bg="#166879"
                 p={4}
                 gap={2}
                 maxWidth="400px"
@@ -227,13 +226,15 @@ function Challenges() {
                   cursor: "pointer"
                 }}
               >
-                <Heading size="md">{challenge.title}</Heading>
-                <p>{challenge.description}</p>
+                <Heading size="md" color="white">
+                  {challenge.title}{" "}
+                </Heading>
+                <Text color="white">{challenge.description}</Text>
                 <Flex gap={2}>
                   <Box
                     width="auto"
-                    bg="#166879"
-                    color="white"
+                    bg="white"
+                    color="#166879"
                     p={2}
                     borderRadius={8}
                   >
@@ -247,17 +248,9 @@ function Challenges() {
                     borderRadius={8}
                   >
                     <Text fontWeight="bold">
-                      {Math.floor(
-                        (new Date(challenge.endDate).getTime() -
-                          new Date().getTime()) /
-                          (1000 * 60 * 60 * 24)
-                      ) == 0
+                      {dateGap(challenge.endDate) == 0
                         ? "Aujourd'hui"
-                        : Math.floor(
-                            (new Date(challenge.endDate).getTime() -
-                              new Date().getTime()) /
-                              (1000 * 60 * 60 * 24)
-                          ) + " jours"}
+                        : dateGap(challenge.endDate) + " jours"}
                     </Text>
                   </Box>
                 </Flex>
