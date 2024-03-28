@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import theme from "../../styles/theme";
+import { useRouter } from "next/router";
+import { getById } from "../../api/challenges";
 import {
   Box,
   Flex,
@@ -15,23 +17,27 @@ import {
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import Layout from "../../components/Layout/Layout";
 
-interface ChallengeProps {
+interface ChallengeData {
   title: string;
   description: string;
   points: number;
   days: number;
-  clear: () => void;
   pedagogicalExplanation: string;
 }
 
-const Challenge: React.FC<ChallengeProps> = ({
-  title,
-  description,
-  points,
-  days,
-  clear,
-  pedagogicalExplanation
-}) => {
+const Challenge: React.FC = () => {
+  const router = useRouter();
+
+  const [currentChallenge, setCurrentChallenge] = useState<ChallengeData>();
+
+  async function fetchCurrentChallenge() {
+    const fetchChallenge: ChallengeData = await getById(
+      router.query.id as string
+    );
+    console.log(fetchChallenge);
+    setCurrentChallenge(fetchChallenge);
+  }
+  fetchCurrentChallenge();
   return (
     <ChakraProvider theme={theme}>
       <Layout>
@@ -61,9 +67,9 @@ const Challenge: React.FC<ChallengeProps> = ({
               fontSize="20px"
               icon={<ArrowBackIcon />}
               width="fit-content"
-              onClick={clear}
+              onClick={() => router.push("/challenges")}
             />
-            <Heading size="lg">{title}</Heading>
+            <Heading size="lg">{currentChallenge?.title}</Heading>
             <Flex gap={2}>
               <Box
                 width="auto"
@@ -72,7 +78,7 @@ const Challenge: React.FC<ChallengeProps> = ({
                 p={2}
                 borderRadius={8}
               >
-                <Text fontWeight="bold">{points} pts</Text>
+                <Text fontWeight="bold">{currentChallenge?.points} pts</Text>
               </Box>
               <Box
                 width="auto"
@@ -81,7 +87,7 @@ const Challenge: React.FC<ChallengeProps> = ({
                 p={2}
                 borderRadius={8}
               >
-                <Text fontWeight="bold">{days} jours</Text>
+                <Text fontWeight="bold">{currentChallenge?.days} jours</Text>
               </Box>
             </Flex>
           </Flex>
@@ -93,9 +99,9 @@ const Challenge: React.FC<ChallengeProps> = ({
             boxShadow="0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
           >
             <Heading size="md">Description</Heading>
-            <p>{description}</p>
+            <p>{currentChallenge?.description}</p>
             <Heading size="md">Ressources</Heading>
-            <Text>{pedagogicalExplanation}</Text>
+            <Text>{currentChallenge?.pedagogicalExplanation}</Text>
 
             <Button
               bg="#54C8C3"

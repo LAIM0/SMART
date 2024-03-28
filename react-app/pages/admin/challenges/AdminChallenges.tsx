@@ -44,7 +44,7 @@ interface ChallengeData {
   pedagogicalExplanation: string;
 }
 
-function AdminChallenge() {
+function AdminChallenges() {
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
 
   const [currentChallenge, setCurrentChallenge] =
@@ -180,4 +180,4 @@ function AdminChallenge() {
   );
 }
 
-export default AdminChallenge;
+export default AdminChallenges;

@@ -1,9 +1,11 @@
-/* eslint-disable */
-
+/*eslint-disable*/
+import Layout from "../../components/Layout/Layout";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Box, Flex, Card, Heading, Text } from "@chakra-ui/react";
-import Challenge from "./Challenge";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "../../styles/theme";
+import { useRouter } from "next/router";
 
 interface Category {
   categoryName: string;
@@ -25,7 +27,9 @@ interface UserData {
   email: string;
 }
 
-function Challenges() {
+const Challenges: React.FC = () => {
+  const router = useRouter();
+
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [user, setUser] = useState<UserData[]>([]);
@@ -69,12 +73,6 @@ function Challenges() {
 
   const Tous: Category = { categoryName: "Tous", _id: "" };
   const [currentCategory, setCurrentCategory] = useState<Category>(Tous);
-  const [currentChallenge, setCurrentChallenge] =
-    useState<ChallengeData | null>(null);
-
-  const clearCurrentChallenge = () => {
-    setCurrentChallenge(null);
-  };
 
   const dateGap = (endDate: Date): number => {
     return (
@@ -89,24 +87,7 @@ function Challenges() {
   challenges.sort((a, b) => (dateGap(a.endDate) > dateGap(b.endDate) ? 1 : -1));
 
   return (
-    <Flex
-      flexDirection="column"
-      gap={4}
-      bg="#F8F8F8"
-      p={8}
-      overflow="hidden"
-      height={currentChallenge ? "100vh" : "auto"}
-    >
-      {currentChallenge && (
-        <Challenge
-          title={currentChallenge.title}
-          description={currentChallenge.description}
-          days={3}
-          points={currentChallenge.points}
-          clear={clearCurrentChallenge}
-          pedagogicalExplanation={currentChallenge.pedagogicalExplanation}
-        />
-      )}
+    <div>
       <Heading>Défis</Heading>
       <Flex
         p={3}
@@ -181,7 +162,7 @@ function Challenges() {
               dateGap(challenge.endDate) >= 0 && (
                 <Card
                   key={challenge._id}
-                  onClick={() => setCurrentChallenge(challenge)}
+                  onClick={() => router.push("/challenges/" + challenge._id)}
                   boxShadow="md"
                   borderRadius={12}
                   bg="white"
@@ -238,7 +219,7 @@ function Challenges() {
               dateGap(challenge.endDate) < 0 && (
                 <Card
                   key={challenge._id}
-                  onClick={() => setCurrentChallenge(challenge)}
+                  onClick={() => router.push("/challenges/" + challenge._id)}
                   boxShadow="md"
                   borderRadius={12}
                   bg="#166879"
@@ -289,8 +270,8 @@ function Challenges() {
           </div>
         ))}
       </Flex>
-    </Flex>
+    </div>
   );
-}
+};
 
 export default Challenges;

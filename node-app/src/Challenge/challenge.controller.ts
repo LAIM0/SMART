@@ -22,8 +22,8 @@ export class ChallengeController {
   async deleteChallenge(@Param('id') id: number) {
     return this.challengeService.delete(id);
   }
-  @Get('/byId')
-  async getById(@Body() challengeId: Types.ObjectId) {
+  @Get('/byId/:id')
+  async getById(@Param('id') challengeId: Types.ObjectId) {
     return this.challengeService.getById(challengeId);
   }
 }
