@@ -18,6 +18,7 @@ import {
 import logoApp from '../Sidebar/Ecoexya.png';
 import ForgotPasswordForm from './ForgotPasswordForm.tsx';
 import SignupForm from './SignupForm';
+import { useRouter } from 'next/router';
 
 interface LoginResponse {
   message: string;
@@ -25,6 +26,7 @@ interface LoginResponse {
 }
 
 export default function LoginForm() {
+  const router = useRouter();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
   const [loginResponse, setLoginResponse] = useState<LoginResponse | null>(null);
@@ -36,7 +38,7 @@ export default function LoginForm() {
   const [showSignUp, setShowSignUp] = useState<boolean>(true);
   
   const handleSignupClick = () => {
-    window.location.href = '/signup';
+    router.push('/signup');
   };
 
   const handleLogin = async (event: React.FormEvent) => {
@@ -59,7 +61,7 @@ export default function LoginForm() {
       if (!response.ok) throw new Error('Login failed');
 
       setLoginResponse({ message: 'Login successful!', status: 'success' });
-      window.location.href = '/';
+      router.push('/challenges');
       // Redirect the user or update the state based on the successful login
     } catch (error) {
       setLoginResponse({ message: error instanceof Error ? error.message : 'An error occurred', status: 'error' });

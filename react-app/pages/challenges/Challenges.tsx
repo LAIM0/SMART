@@ -45,6 +45,26 @@ const Challenges: React.FC = () => {
   //   fetchData();
   // }, []);
 
+  // useEffect(() => {
+  //   const checkAuthentication = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:3001/users/check");
+  //       console.log(response.data);
+  //       if (!response.data.loggedIn) {
+  //         router.push("/login");
+  //       }
+  //     } catch (error) {
+  //       if (error.response && error.response.status === 302) {
+  //         router.push("/login");
+  //       } else {
+  //         console.error("Erreur lors de la vérification de l'authentification:", error);
+  //       }
+  //     }
+  //   };
+
+  //   checkAuthentication();
+  // }, [router]);
+  
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get<Category[]>(
