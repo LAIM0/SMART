@@ -6,14 +6,14 @@ import { CompletedSchema } from './completed.schema';
 import { UserSchema } from 'src/User/user.schema';
 import { ChallengeModule } from 'src/Challenge/challenge.module';
 import { ChallengeService } from 'src/Challenge/challenge.service';
-import { ChallengeSchema } from 'src/Challenge/challenge.schema';
+import { Challenge, ChallengeSchema } from 'src/Challenge/challenge.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: 'Completed', schema: CompletedSchema },
       { name: 'User', schema: UserSchema },
-      { name: 'Challenge', schema: ChallengeSchema },
+      { name: Challenge.name, schema: ChallengeSchema },
     ]),
   ],
   controllers: [CompletedController],

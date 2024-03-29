@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { Team } from './team.schema';
 import { CreateTeamDto } from './dto/team.dto';
 import { TeamDto } from './dto/team.dto';
+import { Types } from 'mongoose';
+import { TeamIdDto } from './dto/teamId.dto';
 
 @Controller('teams')
 export class TeamController {
@@ -16,7 +18,7 @@ export class TeamController {
   @Post()
   async create(@Body() createTeamDto: CreateTeamDto): Promise<TeamDto> {
     return this.teamService.create(createTeamDto);
-  } 
+  }
 
   @Post('default')
   async createDefaultTeam() {
@@ -31,5 +33,12 @@ export class TeamController {
     }
   }
 
-  
+  @Get('getUsers')
+  async getUsers(@Query() teamIdDto: TeamIdDto) {
+    try {
+      return this.teamService.getUsers(teamIdDto);
+    } catch (error) {
+      throw new Error('Unable to get users of team: ' + error.message);
+    }
+  }
 }

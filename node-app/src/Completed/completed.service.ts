@@ -5,6 +5,7 @@ import { Model, Types } from 'mongoose';
 import { CompletedInterface } from './interfaces/completed.interface';
 import { User } from 'src/User/user.schema';
 import { ChallengeService } from 'src/Challenge/challenge.service';
+import { Challenge } from 'src/Challenge/challenge.schema';
 
 @Injectable()
 export class CompletedService {
@@ -19,36 +20,22 @@ export class CompletedService {
     return this.completedModel.find().exec();
   }
 
-  async create(completed: CompletedInterface): Promise<User> {
+  async create(completed: CompletedInterface): Promise<Completed> {
     const createdCompleted = new this.completedModel(completed);
-    await createdCompleted.save();
-
-    // Association avec l'utilisateur
-    // modifié
-    try {
-      const updatedResult = await this.userModel.findByIdAndUpdate(
-        completed.userId,
-        {
-          $push: { challengesCompleted: completed },
-        },
-        { new: true, safe: true, upsert: true },
-      );
-      console.log(updatedResult);
-    } catch (error) {
-      console.log(error);
-
-      return this.userModel.findById(completed.userId).exec();
-    }
+    return createdCompleted.save();
   }
-  async getUserCompleteds(UserId: Types.ObjectId): Promise<Completed[]> {
+
+  async getUserCompleteds(
+    UserId: Types.ObjectId,
+  ): Promise<{ completed: Completed; challenge: Challenge }[]> {
     const completeds = await this.completedModel.find({ userId: UserId });
     console.log(completeds);
     const completedsWithChallenges = await Promise.all(
-      completeds.map(async (completed) => {
-        const challenge = await this.challengeService.getById(
-          completed.challengeId,
+      completeds.map(async (completedChall) => {
+        const chall = await this.challengeService.getById(
+          completedChall.challengeId,
         );
-        return { ...completed.toObject(), challenge };
+        return { completed: completedChall.toObject(), challenge: chall };
       }),
     );
 

@@ -5,12 +5,12 @@ import { User, UserDocument } from './user.schema';
 import { CompletedWithChallenge } from './interfaces/challengeScore.interface';
 import { Completed, CompletedDocument } from 'src/Completed/completed.schema';
 import { CompletedService } from 'src/Completed/completed.service';
+import { Challenge } from 'src/Challenge/challenge.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @InjectModel(Completed.name)
     private completedService: CompletedService,
   ) {}
 
@@ -76,34 +76,52 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  // Ajoutez d'autres méthodes selon les besoins, par exemple pour chercher, mettre à jour ou supprimer des utilisateurs
-
-  async getDefisCompletedUser(userId: Types.ObjectId) {
-    const userWithChallenges = await this.userModel
-      .findById(userId)
-      .populate({
-        path: 'challengesCompleted',
-        model: 'Completed',
-        populate: {
-          path: 'challengeId',
-          model: 'Challenge',
-        },
-      })
-      .exec();
-
-    if (!userWithChallenges) {
+  async getScoreUserWithDetails(
+    UserId: Types.ObjectId,
+  ): Promise<{ user: User; score: number }> {
+    // Récupère les détails de l'utilisateur
+    const user = await this.userModel.findById(UserId);
+    if (!user) {
       throw new Error('User not found');
     }
-    return userWithChallenges.challengesCompleted;
+
+    // Récupère les challenges complétés par l'utilisateur
+    const completedChallenges =
+      await this.completedService.getUserCompleteds(UserId);
+    let totalScore = completedChallenges.reduce(
+      (acc, current) =>
+        acc + JSON.parse(JSON.stringify(current)).challenge.points,
+      0,
+    );
+
+    // Ajoute le score total à l'objet utilisateur
+    return { user: user.toObject(), score: totalScore };
   }
 
-  async getScoreUser(UserId: Types.ObjectId): Promise<Completed[]> {
-    const test = await this.completedService.findAll();
-    // const test = await this.completedService.getUserCompleteds(UserId);
-    return test;
+  async getRanking(): Promise<{ user: User; score: number }[]> {
+    const users = await this.userModel.find();
+    if (!users || users.length === 0) {
+      throw new Error('No users found');
+    }
 
-    // let totalScore = 0;
-    // challengesCompleted.forEach((completed) => {
-    //   totalScore += completed.challengeId!.points;
+    const usersScoresPromises = users.map(async (user) => {
+      const completedChallenges = await this.completedService.getUserCompleteds(
+        user.id,
+      );
+      let totalScore = completedChallenges.reduce(
+        (acc, current) =>
+          acc + JSON.parse(JSON.stringify(current)).challenge.points,
+        0,
+      );
+      return { user: user.toObject(), score: totalScore };
+    });
+
+    // Utilisez Promise.all pour résoudre toutes les promesses de score d'utilisateur
+    const usersScores = await Promise.all(usersScoresPromises);
+
+    // Trie les utilisateurs par leur score en ordre décroissant
+    usersScores.sort((a, b) => b.score - a.score);
+
+    return usersScores;
   }
 }

@@ -6,16 +6,18 @@ import { UserController } from './user.controller';
 import { CompletedSchema } from 'src/Completed/completed.schema';
 import { CompletedModule } from 'src/Completed/completed.module';
 import { CompletedService } from 'src/Completed/completed.service';
+import { ChallengeSchema } from 'src/Challenge/challenge.schema';
+import { ChallengeService } from 'src/Challenge/challenge.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: 'Completed', schema: CompletedSchema },
+      { name: 'Challenge', schema: ChallengeSchema },
     ]),
-    CompletedModule,
   ],
-  providers: [UserService],
+  providers: [UserService, ChallengeService, CompletedService],
   controllers: [UserController],
   exports: [UserService],
 })

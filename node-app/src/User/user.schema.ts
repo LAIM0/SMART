@@ -28,9 +28,6 @@ export class User {
 
   @Prop({ default: 0 })
   level: number;
-
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Completed' }] })
-  challengesCompleted: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -109,15 +109,22 @@ export class UserController {
   //   // Vous pouvez utiliser des services comme SendGrid, Nodemailer, etc., pour envoyer des e-mails
   // }
 
+  //Get / Score & infos user
   @Get('/score')
-  async score(@Body() scoreCheckDto: ScoreCheckDto) {
+  async score(
+    @Body() scoreCheckDto: ScoreCheckDto,
+  ): Promise<{ user: User; score: number }> {
     const userId = scoreCheckDto.userId;
-    const score = await this.userService.getScoreUser(userId);
-    if (!score) {
-      // Assumant que vous voulez afficher le nom du premier utilisateur
-      console.log("No score found, error : @Get('/score')");
-    }
-    return score;
+    return this.userService.getScoreUserWithDetails(userId);
+  }
+
+  //Get / ranking -- classement des user ordre décroissant de points
+  @Get('/ranking')
+  async ranking(
+    @Body() scoreCheckDto: ScoreCheckDto,
+  ): Promise<{ user: User; score: number }[]> {
+    const userId = scoreCheckDto.userId;
+    return this.userService.getRanking();
   }
 
   //Post / Login
@@ -144,16 +151,14 @@ export class UserController {
   @Get('me')
   getLoggedInUser(@Request() req) {
     const { id, userName } = req.user; // Supposons que req.user contient l'id et le nom d'utilisateur de l'utilisateur connecté
-    
+
     console.log(req.user);
     return { id, email: userName };
   }
-      
-  
 
-      @Get('check')
-      @UseGuards(AuthenticatedGuard)
-      checkAuthentication(@Request() req) {
+  @Get('check')
+  @UseGuards(AuthenticatedGuard)
+  checkAuthentication(@Request() req) {
     // L'utilisateur est authentifié si cette fonction est appelée
     // Si cette fonction est appelée, cela signifie que le garde a permis l'accès
     // Cela peut être utilisé pour vérifier l'authentification côté serveur

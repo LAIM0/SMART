@@ -5,8 +5,11 @@ import { ChallengeController } from './challenge.controller';
 import { ChallengeSchema } from './challenge.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Challenge', schema: ChallengeSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: 'Challenge', schema: ChallengeSchema }]),
+  ],
   controllers: [ChallengeController],
   providers: [ChallengeService],
+  exports: [ChallengeService],
 })
 export class ChallengeModule {}
