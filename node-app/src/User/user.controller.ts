@@ -130,4 +130,13 @@ export class UserController {
         req.session.destroy();
         return { msg: 'The user session has ended' }
       }
+
+      @Get('check')
+      @UseGuards(AuthenticatedGuard)
+      checkAuthentication(@Request() req) {
+    // L'utilisateur est authentifié si cette fonction est appelée
+    // Si cette fonction est appelée, cela signifie que le garde a permis l'accès
+    // Cela peut être utilisé pour vérifier l'authentification côté serveur
+    return { loggedIn: true };
+  }
 }

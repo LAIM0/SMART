@@ -2,13 +2,36 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Box, Flex, Card, Heading, Text } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 function Challenges() {
   const [challenges, setChallenge] = useState([]);
   const [categories, setCategories] = useState([]);
+  const router = useRouter(); 
 
   useEffect(() => {
-    const fetchData = async () => {
+    const checkAuthentication = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/users/check");
+        if (!response.data.loggedIn) {
+          router.push("/login"); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 302) {
+          // Redirection HTTP détectée, l'utilisateur n'est pas authentifié
+          router.push("/login");
+        } else {
+          console.error("Erreur lors de la vérification de l'authentification:", error);
+        }
+      }
+    };
+  
+    checkAuthentication();
+  }, []);
+  
+  useEffect(() => {
+      //const router = useRouter();
+      const fetchData = async () => {
       const response = await axios.get("http://localhost:3001/categories/all");
       setCategories(response.data);
     };
