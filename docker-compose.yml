@@ -28,6 +28,10 @@ services:
       - MONGO_HOSTNAME=mongo
       - MONGO_PORT=27017
       - MONGO_DB=dbEcoexya
+      - MAIL_HOST=sandbox.smtp.mailtrap.io
+      - MAIL_PORT=2525
+      - MAIL_USER=e42ce635cb514b
+      - MAIL_PASSWORD=37770cc33e54e0
     networks:
       - mynetwork
 
