@@ -76,7 +76,7 @@ const Challenges: React.FC = () => {
     if (user) {
       const fetchChallenges: CompletedChallenge[] =
         await getCompletedChallengesByUserId(user.id);
-      console.log(fetchChallenges);
+      //console.log(fetchChallenges);
       setCompletedChallenges(fetchChallenges);
     }
   }
@@ -324,7 +324,9 @@ const Challenges: React.FC = () => {
                     <Text fontWeight="bold">
                       {dateGap(c.challenge.endDate) == 0
                         ? "Aujourd'hui"
-                        : dateGap(c.challenge.endDate) + ' jours'}
+                        : 'il y a ' +
+                          dateGap(c.completed.completionDate) * -1 +
+                          'jours'}
                     </Text>
                   </Box>
                 </Flex>
