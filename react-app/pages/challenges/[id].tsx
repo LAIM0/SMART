@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import theme from '../../styles/theme';
 import { useRouter } from 'next/router';
+import { completeChallenge, getById } from '../../api/challenges';
 import {
   Box,
   Flex,
@@ -10,8 +13,6 @@ import {
   ChakraProvider,
 } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import getById from '../../api/challenges';
-import theme from '../../styles/theme';
 import Layout from '../../components/Layout/Layout';
 
 interface ChallengeData {
@@ -22,14 +23,19 @@ interface ChallengeData {
   pedagogicalExplanation: string;
 }
 
-function Challenge() {
+interface UserData {
+  id: string;
+  email: string;
+}
+
+const Challenge: React.FC = () => {
   const router = useRouter();
 
   const [currentChallenge, setCurrentChallenge] = useState<ChallengeData>();
+  const [user, setUser] = useState<UserData>();
 
   useEffect(() => {
     async function fetchCurrentChallenge() {
-      console.log(`affichage de l'id dans le router : ${router.query.id}`);
       const fetchChallenge: ChallengeData = await getById(
         router.query.id as string
       );
@@ -37,7 +43,25 @@ function Challenge() {
       setCurrentChallenge(fetchChallenge);
     }
     fetchCurrentChallenge();
-  }, [router.query.id]);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get<UserData>(
+        'http://localhost:3001/users/me',
+        { withCredentials: true }
+      );
+      setUser(response.data);
+      console.log('Response data:', response.data);
+    };
+
+    fetchData();
+  }, []);
+
+  async function createCompleted() {
+    if (user && router.query.id)
+      await completeChallenge(user.id, router.query.id as string);
+  }
 
   return (
     <ChakraProvider theme={theme}>
@@ -109,6 +133,7 @@ function Challenge() {
               width="fit-content"
               color="white"
               boxShadow="md"
+              onClick={createCompleted}
             >
               Valider le défi
             </Button>
@@ -117,5 +142,5 @@ function Challenge() {
       </Layout>
     </ChakraProvider>
   );
-}
+};
 export default Challenge;

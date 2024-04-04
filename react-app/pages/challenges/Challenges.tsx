@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Flex, Card, Heading, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { getCompletedChallengesByUserId } from '../../api/challenges';
 
 interface Category {
   categoryName: string;
@@ -18,12 +19,67 @@ interface ChallengeData {
   pedagogicalExplanation: string;
 }
 
-function Challenges() {
+interface CompletedChallenge {
+  completed: {
+    _id: string;
+    userId: string;
+    challengeId: string;
+    completionDate: Date;
+    __v: number;
+  };
+  challenge: {
+    _id: string;
+    category: string;
+    title: string;
+    points: number;
+    description: string;
+    pedagogicalExplanation: string;
+    endDate: Date;
+    __v: number;
+  };
+}
+
+interface UserData {
+  id: string;
+  email: string;
+}
+
+const Challenges: React.FC = () => {
   const router = useRouter();
   const Tous: Category = { categoryName: 'Tous', _id: '' };
   const [currentCategory, setCurrentCategory] = useState<Category>(Tous);
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [user, setUser] = useState<UserData>();
+  const [completedChallenges, setCompletedChallenges] = useState<
+    CompletedChallenge[]
+  >([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get<UserData>(
+        'http://localhost:3001/users/me',
+        { withCredentials: true }
+      );
+      setUser(response.data);
+      console.log('Response data:', response.data);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    fetchCompletedChallenges();
+  }, [user]);
+
+  async function fetchCompletedChallenges() {
+    if (user) {
+      const fetchChallenges: CompletedChallenge[] =
+        await getCompletedChallengesByUserId(user.id);
+      console.log(fetchChallenges);
+      setCompletedChallenges(fetchChallenges);
+    }
+  }
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -170,7 +226,7 @@ function Challenges() {
               dateGap(challenge.endDate) >= 0 && (
                 <Card
                   key={challenge._id}
-                  onClick={() => handleClickCard(challenge)}
+                  onClick={() => router.push('/challenges/' + challenge._id)}
                   boxShadow="md"
                   borderRadius={12}
                   bg="white"
@@ -208,7 +264,7 @@ function Challenges() {
                       <Text fontWeight="bold">
                         {dateGap(challenge.endDate) === 0
                           ? "Aujourd'hui"
-                          : `${dateGap(challenge.endDate)} jours`}
+                          : dateGap(challenge.endDate) + ' jours'}
                       </Text>
                     </Box>
                   </Flex>
@@ -220,66 +276,65 @@ function Challenges() {
 
       <Heading>Relevés récemment</Heading>
       <Flex wrap="wrap" gap={0}>
-        {challenges.map((challenge) => (
+        {completedChallenges.map((c) => (
           <div>
             {(currentCategory.categoryName === 'Tous' ||
-              currentCategory._id === challenge.category) &&
-              dateGap(challenge.endDate) < 0 && (
-                <Card
-                  key={challenge._id}
-                  onClick={() => handleClickCard(challenge)}
-                  boxShadow="md"
-                  borderRadius={12}
-                  bg="#166879"
-                  p={4}
-                  gap={2}
-                  maxWidth="500px"
-                  minWidth="300px"
-                  marginBottom={8}
-                  marginRight={8}
-                  transition="transform 0.3s ease"
-                  _hover={{
-                    transform: 'translate(20px)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Heading size="md" color="white">
-                    {challenge.title}{' '}
-                  </Heading>
-                  <Text minHeight="40px" color="white">
-                    {challenge.description}
-                  </Text>
-                  <Flex gap={2}>
-                    <Box
-                      width="auto"
-                      bg="white"
-                      color="#166879"
-                      p={2}
-                      borderRadius={8}
-                    >
-                      <Text fontWeight="bold">{challenge.points} pts</Text>
-                    </Box>
-                    <Box
-                      width="auto"
-                      bg="#4FD1C5"
-                      color="white"
-                      p={2}
-                      borderRadius={8}
-                    >
-                      <Text fontWeight="bold">
-                        {dateGap(challenge.endDate) === 0
-                          ? "Aujourd'hui"
-                          : `${dateGap(challenge.endDate)} jours`}
-                      </Text>
-                    </Box>
-                  </Flex>
-                </Card>
-              )}
+              currentCategory._id === c.challenge.category) && (
+              <Card
+                key={c.challenge._id}
+                onClick={() => router.push('/challenges/' + c.challenge._id)}
+                boxShadow="md"
+                borderRadius={12}
+                bg="#166879"
+                p={4}
+                gap={2}
+                maxWidth="500px"
+                minWidth="300px"
+                marginBottom={8}
+                marginRight={8}
+                transition="transform 0.3s ease"
+                _hover={{
+                  transform: 'translate(20px)',
+                  cursor: 'pointer',
+                }}
+              >
+                <Heading size="md" color="white">
+                  {c.challenge.title}{' '}
+                </Heading>
+                <Text minHeight="40px" color="white">
+                  {c.challenge.description}
+                </Text>
+                <Flex gap={2}>
+                  <Box
+                    width="auto"
+                    bg="white"
+                    color="#166879"
+                    p={2}
+                    borderRadius={8}
+                  >
+                    <Text fontWeight="bold">{c.challenge.points} pts</Text>
+                  </Box>
+                  <Box
+                    width="auto"
+                    bg="#4FD1C5"
+                    color="white"
+                    p={2}
+                    borderRadius={8}
+                  >
+                    <Text fontWeight="bold">
+                      {dateGap(c.challenge.endDate) == 0
+                        ? "Aujourd'hui"
+                        : dateGap(c.challenge.endDate) + ' jours'}
+                    </Text>
+                  </Box>
+                </Flex>
+              </Card>
+            )}
           </div>
         ))}
       </Flex>
     </div>
   );
-}
+};
 
 export default Challenges;

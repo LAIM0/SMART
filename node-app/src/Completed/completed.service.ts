@@ -6,6 +6,7 @@ import { CompletedInterface } from './interfaces/completed.interface';
 import { User } from 'src/User/user.schema';
 import { ChallengeService } from 'src/Challenge/challenge.service';
 import { Challenge } from 'src/Challenge/challenge.schema';
+import { UserCheckDto } from './dto/get-complete-user.dto';
 
 @Injectable()
 export class CompletedService {
