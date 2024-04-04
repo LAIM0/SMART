@@ -1,9 +1,9 @@
 /* eslint-disable */
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import theme from "../../styles/theme";
-import { useRouter } from "next/router";
-import { getById } from "../../api/challenges";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import theme from '../../styles/theme';
+import { useRouter } from 'next/router';
+import { completeChallenge, getById } from '../../api/challenges';
 import {
   Box,
   Flex,
@@ -12,10 +12,10 @@ import {
   Text,
   IconButton,
   Button,
-  ChakraProvider
-} from "@chakra-ui/react";
-import { ArrowBackIcon } from "@chakra-ui/icons";
-import Layout from "../../components/Layout/Layout";
+  ChakraProvider,
+} from '@chakra-ui/react';
+import { ArrowBackIcon } from '@chakra-ui/icons';
+import Layout from '../../components/Layout/Layout';
 
 interface ChallengeData {
   title: string;
@@ -25,19 +25,46 @@ interface ChallengeData {
   pedagogicalExplanation: string;
 }
 
+interface UserData {
+  id: string;
+  email: string;
+}
+
 const Challenge: React.FC = () => {
   const router = useRouter();
 
   const [currentChallenge, setCurrentChallenge] = useState<ChallengeData>();
+  const [user, setUser] = useState<UserData>();
 
-  async function fetchCurrentChallenge() {
-    const fetchChallenge: ChallengeData = await getById(
-      router.query.id as string
-    );
-    console.log(fetchChallenge);
-    setCurrentChallenge(fetchChallenge);
+  useEffect(() => {
+    async function fetchCurrentChallenge() {
+      const fetchChallenge: ChallengeData = await getById(
+        router.query.id as string
+      );
+      console.log(fetchChallenge);
+      setCurrentChallenge(fetchChallenge);
+    }
+    fetchCurrentChallenge();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get<UserData>(
+        'http://localhost:3001/users/me',
+        { withCredentials: true }
+      );
+      setUser(response.data);
+      console.log('Response data:', response.data);
+    };
+
+    fetchData();
+  }, []);
+
+  async function createCompleted() {
+    if (user && router.query.id)
+      await completeChallenge(user.id, router.query.id as string);
   }
-  fetchCurrentChallenge();
+
   return (
     <ChakraProvider theme={theme}>
       <Layout>
@@ -67,7 +94,7 @@ const Challenge: React.FC = () => {
               fontSize="20px"
               icon={<ArrowBackIcon />}
               width="fit-content"
-              onClick={() => router.push("/challenges")}
+              onClick={() => router.push('/challenges')}
             />
             <Heading size="lg">{currentChallenge?.title}</Heading>
             <Flex gap={2}>
@@ -108,6 +135,7 @@ const Challenge: React.FC = () => {
               width="fit-content"
               color="white"
               boxShadow="md"
+              onClick={createCompleted}
             >
               Valider le défi
             </Button>

@@ -1,11 +1,9 @@
 /*eslint-disable*/
-import Layout from "../../components/Layout/Layout";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Box, Flex, Card, Heading, Text } from "@chakra-ui/react";
-import { ChakraProvider } from "@chakra-ui/react";
-import theme from "../../styles/theme";
-import { useRouter } from "next/router";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Box, Flex, Card, Heading, Text } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { getCompletedChallengesByUserId } from '../../api/challenges';
 
 interface Category {
   categoryName: string;
@@ -22,8 +20,28 @@ interface ChallengeData {
   pedagogicalExplanation: string;
 }
 
+interface CompletedChallenge {
+  completed: {
+    _id: string;
+    userId: string;
+    challengeId: string;
+    completionDate: Date;
+    __v: number;
+  };
+  challenge: {
+    _id: string;
+    category: string;
+    title: string;
+    points: number;
+    description: string;
+    pedagogicalExplanation: string;
+    endDate: Date;
+    __v: number;
+  };
+}
+
 interface UserData {
-  _id: string;
+  id: string;
   email: string;
 }
 
@@ -32,32 +50,54 @@ const Challenges: React.FC = () => {
 
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [user, setUser] = useState<UserData[]>([]);
+  const [user, setUser] = useState<UserData>();
+  const [completedChallenges, setCompletedChallenges] = useState<
+    CompletedChallenge[]
+  >([]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await axios.get<UserData[]>(
-  //       "http://localhost:3001/users/me"
-  //     );
-  //     setUser(response.data);
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get<UserData>(
+        'http://localhost:3001/users/me',
+        { withCredentials: true }
+      );
+      setUser(response.data);
+      console.log('Response data:', response.data);
+    };
 
-  //   fetchData();
-  // }, []);
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    fetchCompletedChallenges();
+  }, [user]);
+
+  async function fetchCompletedChallenges() {
+    if (user) {
+      const fetchChallenges: CompletedChallenge[] =
+        await getCompletedChallengesByUserId(user.id);
+      //console.log(fetchChallenges);
+      setCompletedChallenges(fetchChallenges);
+    }
+  }
 
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
         // Assurez-vous que cette URL correspond à votre configuration serveur
-        const response = await axios.get("http://localhost:3001/users/check", { withCredentials: true });
+        const response = await axios.get('http://localhost:3001/users/check', {
+          withCredentials: true,
+        });
         // Si l'utilisateur n'est pas connecté, redirigez-le
         if (!response.data.loggedIn) {
           localStorage.setItem('preLoginRoute', window.location.pathname);
-          router.push('/login');    
-          
+          router.push('/login');
         }
       } catch (error) {
-        console.error("Erreur lors de la vérification de l'authentification:", error);
+        console.error(
+          "Erreur lors de la vérification de l'authentification:",
+          error
+        );
         localStorage.setItem('preLoginRoute', window.location.pathname);
         router.push('/login');
       }
@@ -65,11 +105,11 @@ const Challenges: React.FC = () => {
 
     checkAuthentication();
   }, [router]);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get<Category[]>(
-        "http://localhost:3001/categories/all"
+        'http://localhost:3001/categories/all'
       );
       setCategories(response.data);
     };
@@ -81,18 +121,18 @@ const Challenges: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get<ChallengeData[]>(
-          "http://localhost:3001/challenges/all"
+          'http://localhost:3001/challenges/all'
         );
         setChallenges(response.data);
       } catch (error) {
-        console.error("Erreur lors de la récupération des données:", error);
+        console.error('Erreur lors de la récupération des données:', error);
       }
     };
 
     fetchData();
   }, []);
 
-  const Tous: Category = { categoryName: "Tous", _id: "" };
+  const Tous: Category = { categoryName: 'Tous', _id: '' };
   const [currentCategory, setCurrentCategory] = useState<Category>(Tous);
 
   const dateGap = (endDate: Date): number => {
@@ -119,21 +159,21 @@ const Challenges: React.FC = () => {
         overflowX="scroll"
       >
         <Box
-          bg={currentCategory.categoryName === "Tous" ? "#166879" : "white"}
+          bg={currentCategory.categoryName === 'Tous' ? '#166879' : 'white'}
           onClick={() => setCurrentCategory(Tous)}
           _hover={{
             bg:
-              currentCategory.categoryName === "Tous" ? "166879" : "lightgray",
-            cursor: "pointer"
+              currentCategory.categoryName === 'Tous' ? '166879' : 'lightgray',
+            cursor: 'pointer',
           }}
           borderRadius={4}
-          color={currentCategory.categoryName === "Tous" ? "white" : "#166879"}
+          color={currentCategory.categoryName === 'Tous' ? 'white' : '#166879'}
           px={4}
           py={2}
           textAlign="center"
           fontSize={12}
           fontWeight={
-            currentCategory.categoryName === "Tous" ? "bold" : "normal"
+            currentCategory.categoryName === 'Tous' ? 'bold' : 'normal'
           }
         >
           <Heading size="sm">Tous</Heading>
@@ -142,23 +182,23 @@ const Challenges: React.FC = () => {
           <Box
             bg={
               category.categoryName === currentCategory.categoryName
-                ? "#166879"
-                : "white"
+                ? '#166879'
+                : 'white'
             }
             key={category._id}
             onClick={() => setCurrentCategory(category)}
             _hover={{
               bg:
                 category.categoryName === currentCategory.categoryName
-                  ? "166879"
-                  : "lightgray",
-              cursor: "pointer"
+                  ? '166879'
+                  : 'lightgray',
+              cursor: 'pointer',
             }}
             borderRadius={4}
             color={
               category.categoryName === currentCategory.categoryName
-                ? "white"
-                : "#166879"
+                ? 'white'
+                : '#166879'
             }
             px={4}
             py={2}
@@ -166,8 +206,8 @@ const Challenges: React.FC = () => {
             fontSize={12}
             fontWeight={
               category.categoryName === currentCategory.categoryName
-                ? "bold"
-                : "normal"
+                ? 'bold'
+                : 'normal'
             }
           >
             <Heading size="sm">{category.categoryName}</Heading>
@@ -178,12 +218,12 @@ const Challenges: React.FC = () => {
       <Flex className="challengeList" flexDirection="row" flexWrap="wrap">
         {challenges.map((challenge) => (
           <div>
-            {(currentCategory.categoryName === "Tous" ||
+            {(currentCategory.categoryName === 'Tous' ||
               currentCategory._id === challenge.category) &&
               dateGap(challenge.endDate) >= 0 && (
                 <Card
                   key={challenge._id}
-                  onClick={() => router.push("/challenges/" + challenge._id)}
+                  onClick={() => router.push('/challenges/' + challenge._id)}
                   boxShadow="md"
                   borderRadius={12}
                   bg="white"
@@ -195,8 +235,8 @@ const Challenges: React.FC = () => {
                   marginRight={8}
                   transition="transform 0.3s ease"
                   _hover={{
-                    transform: "translate(20px)",
-                    cursor: "pointer"
+                    transform: 'translate(20px)',
+                    cursor: 'pointer',
                   }}
                 >
                   <Heading size="md">{challenge.title}</Heading>
@@ -221,7 +261,7 @@ const Challenges: React.FC = () => {
                       <Text fontWeight="bold">
                         {dateGap(challenge.endDate) === 0
                           ? "Aujourd'hui"
-                          : dateGap(challenge.endDate) + " jours"}
+                          : dateGap(challenge.endDate) + ' jours'}
                       </Text>
                     </Box>
                   </Flex>
@@ -233,61 +273,62 @@ const Challenges: React.FC = () => {
 
       <Heading>Relevés récemment</Heading>
       <Flex wrap="wrap" gap={0}>
-        {challenges.map((challenge) => (
+        {completedChallenges.map((c) => (
           <div>
-            {(currentCategory.categoryName === "Tous" ||
-              currentCategory._id === challenge.category) &&
-              dateGap(challenge.endDate) < 0 && (
-                <Card
-                  key={challenge._id}
-                  onClick={() => router.push("/challenges/" + challenge._id)}
-                  boxShadow="md"
-                  borderRadius={12}
-                  bg="#166879"
-                  p={4}
-                  gap={2}
-                  maxWidth="500px"
-                  minWidth="300px"
-                  marginBottom={8}
-                  marginRight={8}
-                  transition="transform 0.3s ease"
-                  _hover={{
-                    transform: "translate(20px)",
-                    cursor: "pointer"
-                  }}
-                >
-                  <Heading size="md" color="white">
-                    {challenge.title}{" "}
-                  </Heading>
-                  <Text minHeight="40px" color="white">
-                    {challenge.description}
-                  </Text>
-                  <Flex gap={2}>
-                    <Box
-                      width="auto"
-                      bg="white"
-                      color="#166879"
-                      p={2}
-                      borderRadius={8}
-                    >
-                      <Text fontWeight="bold">{challenge.points} pts</Text>
-                    </Box>
-                    <Box
-                      width="auto"
-                      bg="#4FD1C5"
-                      color="white"
-                      p={2}
-                      borderRadius={8}
-                    >
-                      <Text fontWeight="bold">
-                        {dateGap(challenge.endDate) == 0
-                          ? "Aujourd'hui"
-                          : dateGap(challenge.endDate) + " jours"}
-                      </Text>
-                    </Box>
-                  </Flex>
-                </Card>
-              )}
+            {(currentCategory.categoryName === 'Tous' ||
+              currentCategory._id === c.challenge.category) && (
+              <Card
+                key={c.challenge._id}
+                onClick={() => router.push('/challenges/' + c.challenge._id)}
+                boxShadow="md"
+                borderRadius={12}
+                bg="#166879"
+                p={4}
+                gap={2}
+                maxWidth="500px"
+                minWidth="300px"
+                marginBottom={8}
+                marginRight={8}
+                transition="transform 0.3s ease"
+                _hover={{
+                  transform: 'translate(20px)',
+                  cursor: 'pointer',
+                }}
+              >
+                <Heading size="md" color="white">
+                  {c.challenge.title}{' '}
+                </Heading>
+                <Text minHeight="40px" color="white">
+                  {c.challenge.description}
+                </Text>
+                <Flex gap={2}>
+                  <Box
+                    width="auto"
+                    bg="white"
+                    color="#166879"
+                    p={2}
+                    borderRadius={8}
+                  >
+                    <Text fontWeight="bold">{c.challenge.points} pts</Text>
+                  </Box>
+                  <Box
+                    width="auto"
+                    bg="#4FD1C5"
+                    color="white"
+                    p={2}
+                    borderRadius={8}
+                  >
+                    <Text fontWeight="bold">
+                      {dateGap(c.challenge.endDate) == 0
+                        ? "Aujourd'hui"
+                        : 'il y a ' +
+                          dateGap(c.completed.completionDate) * -1 +
+                          'jours'}
+                    </Text>
+                  </Box>
+                </Flex>
+              </Card>
+            )}
           </div>
         ))}
       </Flex>

@@ -3,6 +3,12 @@ import { Document, Types } from 'mongoose';
 
 export type ChallengeDocument = Challenge & Document;
 
+enum Periodicity {
+  DAILY = "Quotidien",
+  WEEKLY = "Hebdomadaire",
+  MONTHLY = "Mensuel"
+}
+
 @Schema()
 export class Challenge {
   @Prop({ type: Types.ObjectId, ref: 'Category' })
@@ -25,6 +31,9 @@ export class Challenge {
 
   @Prop()
   endDate?: Date;
+
+  @Prop({ type: String, enum: Periodicity })
+  periodicity?: Periodicity;
 }
 
 export const ChallengeSchema = SchemaFactory.createForClass(Challenge);
