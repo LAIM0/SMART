@@ -1,21 +1,18 @@
-/* eslint-disable */
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import theme from "../../styles/theme";
-import { useRouter } from "next/router";
-import { getById } from "../../api/challenges";
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   Box,
   Flex,
-  Card,
   Heading,
   Text,
   IconButton,
   Button,
-  ChakraProvider
-} from "@chakra-ui/react";
-import { ArrowBackIcon } from "@chakra-ui/icons";
-import Layout from "../../components/Layout/Layout";
+  ChakraProvider,
+} from '@chakra-ui/react';
+import { ArrowBackIcon } from '@chakra-ui/icons';
+import getById from '../../api/challenges';
+import theme from '../../styles/theme';
+import Layout from '../../components/Layout/Layout';
 
 interface ChallengeData {
   title: string;
@@ -25,19 +22,23 @@ interface ChallengeData {
   pedagogicalExplanation: string;
 }
 
-const Challenge: React.FC = () => {
+function Challenge() {
   const router = useRouter();
 
   const [currentChallenge, setCurrentChallenge] = useState<ChallengeData>();
 
-  async function fetchCurrentChallenge() {
-    const fetchChallenge: ChallengeData = await getById(
-      router.query.id as string
-    );
-    console.log(fetchChallenge);
-    setCurrentChallenge(fetchChallenge);
-  }
-  fetchCurrentChallenge();
+  useEffect(() => {
+    async function fetchCurrentChallenge() {
+      console.log(`affichage de l'id dans le router : ${router.query.id}`);
+      const fetchChallenge: ChallengeData = await getById(
+        router.query.id as string
+      );
+      console.log(fetchChallenge);
+      setCurrentChallenge(fetchChallenge);
+    }
+    fetchCurrentChallenge();
+  }, [router.query.id]);
+
   return (
     <ChakraProvider theme={theme}>
       <Layout>
@@ -61,13 +62,13 @@ const Challenge: React.FC = () => {
             py="16px"
           >
             <IconButton
-              isRound={true}
+              isRound
               variant="solid"
               aria-label="Done"
               fontSize="20px"
               icon={<ArrowBackIcon />}
               width="fit-content"
-              onClick={() => router.push("/challenges")}
+              onClick={() => router.push('/challenges')}
             />
             <Heading size="lg">{currentChallenge?.title}</Heading>
             <Flex gap={2}>
@@ -116,5 +117,5 @@ const Challenge: React.FC = () => {
       </Layout>
     </ChakraProvider>
   );
-};
+}
 export default Challenge;

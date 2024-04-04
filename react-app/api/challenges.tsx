@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from 'axios';
 
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL = 'http://localhost:3001';
 
 interface ApiResponse {
   title: string;
@@ -11,7 +11,7 @@ interface ApiResponse {
 }
 
 // Une fonction pour récupérer la liste des utilisateurs
-export const getById = async (id: string) => {
+const getById = async (id: string) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/challenges/byId/${id}`);
     console.log(response);
@@ -22,3 +22,5 @@ export const getById = async (id: string) => {
     );
   }
 };
+
+export default getById;
