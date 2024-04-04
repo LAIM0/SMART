@@ -34,16 +34,17 @@ const Challenges: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [user, setUser] = useState<UserData[]>([]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await axios.get<UserData[]>(
-  //       "http://localhost:3001/users/me"
-  //     );
-  //     setUser(response.data);
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get<UserData[]>(
+        "http://localhost:3001/users/me", {withCredentials: true}
+      );
+      console.log(response);
+      setUser(response.data);
+    };
 
-  //   fetchData();
-  // }, []);
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const checkAuthentication = async () => {

@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -13,37 +14,30 @@ import {
 import logoApp from '../Sidebar/Ecoexya.png';
 
 const ResetPasswordForm: React.FC = () => {
+  const { token } = useParams(); // Récupère le token de l'URL
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-const handleResetPassword = async () => {
+  const handleResetPassword = async () => {
+    if (newPassword !== confirmNewPassword) {
+      console.error('Les mots de passe ne correspondent pas');
+      return;
+    } 
+
     try {
-      
-
-      if (newPassword !== confirmNewPassword) {
-        throw new Error('Les mots de passe ne correspondent pas');
-      }
-
-      const response = await fetch('http://localhost:3001/users/reset-password', {
+      await fetch(`http://localhost:3001/auth/reset-password/${token}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, newPassword }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newPassword }),
       });
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.msg || 'Une erreur s\'est produite');
-      }
-
-      
-
-      // Rediriger l'utilisateur vers une autre page après la réinitialisation du mot de passe si nécessaire
+      // Gérer la réussite de la réinitialisation
     } catch (error) {
-      //setError(error instanceof Error ? error.message : 'Une erreur s\'est produite');
+      console.error('Erreur lors de la réinitialisation du mot de passe', error);
     }
   };
+
+  
 
   
 

@@ -28,6 +28,12 @@ export class User {
 
   @Prop({ default: 0 })
   level: number;
+
+  @Prop()
+  resetPasswordToken: String;
+
+  @Prop()
+  resetPasswordExpires: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

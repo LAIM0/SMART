@@ -8,14 +8,47 @@ import {
   Input,
   Flex,
   Heading,
+  useToast,
 } from "@chakra-ui/react";
 
 const ForgotPasswordForm: React.FC = () => {
   const [email, setEmail] = useState<string>('');
+  const toast = useToast();
 
   const handleResetPassword = async () => {
-    // Ajoutez ici la logique pour envoyer une demande de réinitialisation de mot de passe
-    console.log('Email for password reset:', email);
+    try {
+      // Remplacez 'http://localhost:3001/auth/forgot-password' par l'URL de votre API
+      const response = await fetch('http://localhost:3001/users/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Une erreur s\'est produite lors de l\'envoi de la demande de réinitialisation de mot de passe');
+      }
+
+      // Afficher un message de succès
+      toast({
+        title: 'Demande envoyée',
+        description: "Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.",
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error(error);
+      // Afficher un message d'erreur
+      toast({
+        title: 'Erreur',
+        description: "Une erreur s'est produite lors de l'envoi de la demande de réinitialisation de mot de passe.",
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (

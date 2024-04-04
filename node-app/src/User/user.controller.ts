@@ -15,10 +15,12 @@ import { UserService } from './user.service';
 import { AuthService } from 'src/Auth/auth.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
+import { MailService } from 'src/mail/mail.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,
+    private readonly mailService: MailService) {}
   //private readonly jwtService: JwtService
 
   @Get()
@@ -163,5 +165,12 @@ export class UserController {
     // Si cette fonction est appelée, cela signifie que le garde a permis l'accès
     // Cela peut être utilisé pour vérifier l'authentification côté serveur
     return { loggedIn: true };
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string) {
+    const token = await this.userService.generateResetPasswordToken(email);
+    await this.mailService.sendResetPasswordEmail(email, token);
+    return { message: 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.' };
   }
 }

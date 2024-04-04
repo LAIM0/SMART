@@ -6,18 +6,22 @@ import { CompletedWithChallenge } from './interfaces/challengeScore.interface';
 import { Completed, CompletedDocument } from 'src/Completed/completed.schema';
 import { CompletedService } from 'src/Completed/completed.service';
 import { Challenge } from 'src/Challenge/challenge.schema';
+import * as crypto from 'crypto';
+
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private completedService: CompletedService,
+    private completedService: CompletedService
   ) {}
 
   // async createUser(user: UserInterface): Promise<User> {
   //   const newUser = new this.userModel(user);
   //   return newUser.save();
   // }
+
+
 
   async createUser(
     email: string,
@@ -96,6 +100,18 @@ export class UserService {
 
     // Ajoute le score total à l'objet utilisateur
     return { user: user.toObject(), score: totalScore };
+  }
+
+  async generateResetPasswordToken(email: string): Promise<string> {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new Error('Utilisateur non trouvé');
+    }
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 heure
+    await user.save();
+    return resetToken;
   }
 
   async getRanking(): Promise<{ user: User; score: number }[]> {
