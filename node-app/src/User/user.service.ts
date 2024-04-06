@@ -2,26 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './user.schema';
-import { CompletedWithChallenge } from './interfaces/challengeScore.interface';
-import { Completed, CompletedDocument } from 'src/Completed/completed.schema';
+import { MailService } from '../mail/mail.service';
 import { CompletedService } from 'src/Completed/completed.service';
-import { Challenge } from 'src/Challenge/challenge.schema';
 import * as crypto from 'crypto';
-
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private completedService: CompletedService
+    private completedService: CompletedService,
+    private readonly mailService: MailService,
   ) {}
 
   // async createUser(user: UserInterface): Promise<User> {
   //   const newUser = new this.userModel(user);
   //   return newUser.save();
   // }
-
-
 
   async createUser(
     email: string,
@@ -112,6 +108,11 @@ export class UserService {
     user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 heure
     await user.save();
     return resetToken;
+  }
+
+  async sendResetPasswordEmail(email: string, token: string) {
+    //const resetPasswordUrl = `http://localhost:3000/reset-password/${token}`; // URL du frontend pour la réinitialisation du mot de passe
+    await this.mailService.sendResetPasswordEmail(email, token); // Utilisez la méthode existante dans le service de courrier pour envoyer l'e-mail
   }
 
   async getRanking(): Promise<{ user: User; score: number }[]> {

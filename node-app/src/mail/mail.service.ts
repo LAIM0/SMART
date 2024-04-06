@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-import { UserService } from 'src/User/user.service'; // Service gérant les utilisateurs
+import { UserService } from '../User/user.service'; // Service gérant les utilisateurs
 import * as crypto from 'crypto';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService, 
-  private readonly usersService: UserService,) 
-  {}
+  constructor(private readonly mailerService: MailerService) {}
 
   async sendWelcomeEmail(email: string) {
     await this.mailerService.sendMail({
@@ -18,19 +16,16 @@ export class MailService {
     });
   }
 
-  
-
   async sendResetPasswordEmail(email: string, token: string) {
-      const resetPasswordUrl = `http://localhost:3000/reset-password/${token}`; // URL du frontend
-      await this.mailerService.sendMail({
-        to: email,
-        subject: 'Réinitialisation de votre mot de passe',
-        template: './reset-password', // Emplacement de votre template (e.g., Pug ou Handlebars)
-        context: { resetPasswordUrl },
-      });
-    }
+    const resetPasswordUrl = `http://localhost:3000/reset-password/${token}`; // URL du frontend
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Réinitialisation de votre mot de passe',
+      template: './reset-password', // Emplacement de votre template (e.g., Pug ou Handlebars)
+      context: { resetPasswordUrl },
+    });
+  }
 }
-
 
 /*
 Pour ajouter dans un controller un mail:

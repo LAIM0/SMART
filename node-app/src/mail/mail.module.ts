@@ -5,21 +5,21 @@ import { MailService } from './mail.service';
 @Module({
   imports: [
     MailerModule.forRoot({
-        transport: {
-          host: process.env.MAIL_HOST,
-          port: process.env.MAIL_PORT,
-          secure: false, // true for 465, false for other ports
-          auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASSWORD,
-          },
+      transport: {
+        host: process.env.MAIL_HOST,
+        port: process.env.MAIL_PORT,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASSWORD,
         },
-        defaults: {
-          from: '"No Reply" <noreply@example.com>',
-        },
-      }),
+      },
+      defaults: {
+        from: '"No Reply" <noreply@example.com>',
+      },
+    }),
   ],
   providers: [MailService],
-  exports: [MailService], // Exportez MailService pour qu'il puisse être utilisé ailleurs
+  exports: [MailService],
 })
 export class MailModule {}

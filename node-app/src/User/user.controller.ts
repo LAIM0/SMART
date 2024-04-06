@@ -19,8 +19,10 @@ import { MailService } from 'src/mail/mail.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService,
-    private readonly mailService: MailService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly mailService: MailService,
+  ) {}
   //private readonly jwtService: JwtService
 
   @Get()
@@ -170,7 +172,10 @@ export class UserController {
   @Post('forgot-password')
   async forgotPassword(@Body('email') email: string) {
     const token = await this.userService.generateResetPasswordToken(email);
-    await this.mailService.sendResetPasswordEmail(email, token);
-    return { message: 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.' };
+    await this.userService.sendResetPasswordEmail(email, token);
+    return {
+      message:
+        'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.',
+    };
   }
 }
