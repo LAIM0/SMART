@@ -1,22 +1,18 @@
-/* eslint-disable */
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Button, HStack } from '@chakra-ui/react';
-
 
 // Constantes pour représenter les modes de sélection
 export const SELECTION_MODES = {
   INDIVIDUAL: true, // ou 0
-  TEAM: false,      // ou 1
+  TEAM: false, // ou 1
 };
 
 interface Props {
-    isSelectedIndividual: boolean;
-    onSelectionChange: (isIndividual: boolean) => void;
+  isSelectedIndividual: boolean;
+  onSelectionChange: (isIndividual: boolean) => void;
 }
 
-function SwitchButton({  isSelectedIndividual, onSelectionChange }: Props) {
-
-
+function SwitchButton({ isSelectedIndividual, onSelectionChange }: Props) {
   return (
     <Box bg="white" p={4} borderRadius="lg" boxShadow="sm">
       <HStack spacing={2}>

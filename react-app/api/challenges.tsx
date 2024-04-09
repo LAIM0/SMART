@@ -12,14 +12,14 @@ interface ApiResponse {
 
 interface CompletedChallenge {
   completed: {
-    _id: string;
+    id: string;
     userId: string;
     challengeId: string;
     completionDate: Date;
     __v: number;
   };
   challenge: {
-    _id: string;
+    id: string;
     category: string;
     title: string;
     points: number;
@@ -29,7 +29,7 @@ interface CompletedChallenge {
     __v: number;
   };
 }
-// Une fonction pour récupérer la liste des utilisateurs
+// Une fonction pour récupérer la liste des challenges réalisés par un utilisateur
 export const getById = async (id: string) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/challenges/byId/${id}`);
@@ -42,13 +42,14 @@ export const getById = async (id: string) => {
   }
 };
 
+// Une fonction pour récupérer la liste des challenges COMPLÉTÉS réalisés par un utilisateur
 export const getCompletedChallengesByUserId = async (userId: string) => {
   try {
-    const response = await axios.get(
+    const response = await axios.get<CompletedChallenge[]>(
       `${API_BASE_URL}/completed/byUserId/${userId}`
     );
     console.log(response);
-    return response.data as CompletedChallenge[]; // Renvoie les données directement
+    return response.data; // Renvoie les données directement
   } catch (error) {
     throw new Error(
       `Erreur lors de la récupération des articles par id: ${userId}`
@@ -62,8 +63,8 @@ export const completeChallenge = async (
 ) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/completed/create`, {
-      userId: userId,
-      challengeId: challengeId,
+      userId,
+      challengeId,
       completionDate: new Date(),
     });
     console.log(response);

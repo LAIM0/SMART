@@ -1,16 +1,7 @@
-/* eslint-disable */
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Flex,
-  Heading,
-} from "@chakra-ui/react";
+import { Box, Button, FormControl, FormLabel, Input } from '@chakra-ui/react';
 
-const ForgotPasswordForm: React.FC = () => {
+function ForgotPasswordForm() {
   const [email, setEmail] = useState<string>('');
 
   const handleResetPassword = async () => {
@@ -19,9 +10,7 @@ const ForgotPasswordForm: React.FC = () => {
   };
 
   return (
-    
     <Box width="400px">
-      
       <FormControl isRequired>
         <FormLabel>Email</FormLabel>
         <Input
@@ -31,12 +20,17 @@ const ForgotPasswordForm: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      <Button mt={4} colorScheme="teal"  bg="#166879" color="white"onClick={handleResetPassword}>
+      <Button
+        mt={4}
+        colorScheme="teal"
+        bg="#166879"
+        color="white"
+        onClick={handleResetPassword}
+      >
         Envoyer la demande de réinitialisation
       </Button>
     </Box>
-    
   );
-};
+}
 
 export default ForgotPasswordForm;

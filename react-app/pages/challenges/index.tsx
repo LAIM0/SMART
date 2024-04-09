@@ -1,8 +1,7 @@
-/*eslint-disable*/
-import Layout from "./../../components/Layout/Layout";
-import { ChakraProvider } from "@chakra-ui/react";
-import theme from "../../styles/theme";
-import Challenges from "./Challenges";
+import { ChakraProvider } from '@chakra-ui/react';
+import Layout from '../../components/Layout/Layout';
+import theme from '../../styles/theme';
+import Challenges from './Challenges';
 
 const index: React.FC = () => {
   return (

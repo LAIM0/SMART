@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import theme from '../../styles/theme';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
-import { completeChallenge, getById } from '../../api/challenges';
 import {
   Box,
   Flex,
@@ -12,7 +11,9 @@ import {
   Button,
   ChakraProvider,
 } from '@chakra-ui/react';
-import { ArrowBackIcon } from '@chakra-ui/icons';
+import theme from '../../styles/theme';
+import { completeChallenge, getById } from '../../api/challenges';
+
 import Layout from '../../components/Layout/Layout';
 
 interface ChallengeData {
@@ -28,7 +29,7 @@ interface UserData {
   email: string;
 }
 
-const Challenge: React.FC = () => {
+function Challenge() {
   const router = useRouter();
 
   const [currentChallenge, setCurrentChallenge] = useState<ChallengeData>();
@@ -133,7 +134,7 @@ const Challenge: React.FC = () => {
               width="fit-content"
               color="white"
               boxShadow="md"
-              onClick={createCompleted}
+              onClick={() => createCompleted()}
             >
               Valider le défi
             </Button>
@@ -142,5 +143,5 @@ const Challenge: React.FC = () => {
       </Layout>
     </ChakraProvider>
   );
-};
+}
 export default Challenge;

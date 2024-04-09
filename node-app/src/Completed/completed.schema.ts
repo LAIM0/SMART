@@ -16,3 +16,17 @@ export class Completed {
 }
 
 export const CompletedSchema = SchemaFactory.createForClass(Completed);
+
+// Ajout de la propriété virtuelle 'id'
+CompletedSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+// Confiuration pour s'assurer que le virtuel 'id' est inclus lors des conversions en JSON
+CompletedSchema.set('toJSON', {
+  virtuals: true, // S'assure que les champs virtuels sont inclus
+  versionKey: false, // Ne pas inclure __v
+  transform: function (doc, ret) {
+    delete ret._id; // Supprimer _id
+  },
+});

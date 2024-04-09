@@ -1,12 +1,9 @@
-// pages/login.tsx
-/* eslint-disable */
-import { useState } from 'react';
 import React from 'react';
 import {
   ThemeProvider,
   theme,
   ColorModeProvider,
-  CSSReset
+  CSSReset,
 } from '@chakra-ui/react';
 import SignupForm from '../components/Auth/SignupForm';
 

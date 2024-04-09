@@ -6,11 +6,11 @@ import { getCompletedChallengesByUserId } from '../../api/challenges';
 
 interface Category {
   categoryName: string;
-  _id: string;
+  id: string;
 }
 
 interface ChallengeData {
-  _id: string;
+  id: string;
   title: string;
   description: string;
   points: number;
@@ -21,14 +21,14 @@ interface ChallengeData {
 
 interface CompletedChallenge {
   completed: {
-    _id: string;
+    id: string;
     userId: string;
     challengeId: string;
     completionDate: Date;
     __v: number;
   };
   challenge: {
-    _id: string;
+    id: string;
     category: string;
     title: string;
     points: number;
@@ -44,9 +44,9 @@ interface UserData {
   email: string;
 }
 
-const Challenges: React.FC = () => {
+function Challenges() {
   const router = useRouter();
-  const Tous: Category = { categoryName: 'Tous', _id: '' };
+  const Tous: Category = { categoryName: 'Tous', id: '' };
   const [currentCategory, setCurrentCategory] = useState<Category>(Tous);
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -68,18 +68,25 @@ const Challenges: React.FC = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    fetchCompletedChallenges();
-  }, [user]);
-
   async function fetchCompletedChallenges() {
     if (user) {
       const fetchChallenges: CompletedChallenge[] =
         await getCompletedChallengesByUserId(user.id);
-      //console.log(fetchChallenges);
       setCompletedChallenges(fetchChallenges);
     }
   }
+
+  useEffect(() => {
+    fetchCompletedChallenges();
+  }, [user]);
+
+  // debuggage (à supprimer)
+  useEffect(() => {
+    console.log('completed challenges:', completedChallenges);
+  }, [completedChallenges]);
+  useEffect(() => {
+    console.log('user:', user);
+  }, [user]);
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -124,7 +131,7 @@ const Challenges: React.FC = () => {
           'http://localhost:3001/challenges/all'
         );
         setChallenges(response.data);
-        console.log('Response data:', response.data);
+        console.log('Response data (challenges):', response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
       }
@@ -146,8 +153,8 @@ const Challenges: React.FC = () => {
   challenges.sort((a, b) => (dateGap(a.endDate) > dateGap(b.endDate) ? 1 : -1));
 
   const handleClickCard = (challenge: ChallengeData): void => {
-    console.log('voici le challenge clické :', challenge._id);
-    router.push(`/challenges/${challenge._id}`);
+    console.log(challenge.id);
+    router.push(`/challenges/${challenge.id}`);
   };
 
   return (
@@ -188,7 +195,7 @@ const Challenges: React.FC = () => {
                 ? '#166879'
                 : 'white'
             }
-            key={category._id}
+            key={category.id}
             onClick={() => setCurrentCategory(category)}
             _hover={{
               bg:
@@ -222,11 +229,11 @@ const Challenges: React.FC = () => {
         {challenges.map((challenge) => (
           <div>
             {(currentCategory.categoryName === 'Tous' ||
-              currentCategory._id === challenge.category) &&
+              currentCategory.id === challenge.category) &&
               dateGap(challenge.endDate) >= 0 && (
                 <Card
-                  key={challenge._id}
-                  onClick={() => router.push('/challenges/' + challenge._id)}
+                  key={challenge.id}
+                  onClick={() => handleClickCard(challenge)}
                   boxShadow="md"
                   borderRadius={12}
                   bg="white"
@@ -264,7 +271,7 @@ const Challenges: React.FC = () => {
                       <Text fontWeight="bold">
                         {dateGap(challenge.endDate) === 0
                           ? "Aujourd'hui"
-                          : dateGap(challenge.endDate) + ' jours'}
+                          : `${dateGap(challenge.endDate)} jours`}
                       </Text>
                     </Box>
                   </Flex>
@@ -279,10 +286,10 @@ const Challenges: React.FC = () => {
         {completedChallenges.map((c) => (
           <div>
             {(currentCategory.categoryName === 'Tous' ||
-              currentCategory._id === c.challenge.category) && (
+              currentCategory.id === c.challenge.category) && (
               <Card
-                key={c.challenge._id}
-                onClick={() => router.push('/challenges/' + c.challenge._id)}
+                key={c.challenge.id}
+                onClick={() => router.push(`/challenges/${c.challenge.id}`)}
                 boxShadow="md"
                 borderRadius={12}
                 bg="#166879"
@@ -322,11 +329,11 @@ const Challenges: React.FC = () => {
                     borderRadius={8}
                   >
                     <Text fontWeight="bold">
-                      {dateGap(c.challenge.endDate) == 0
+                      {dateGap(c.challenge.endDate) === 0
                         ? "Aujourd'hui"
-                        : 'il y a ' +
-                          dateGap(c.completed.completionDate) * -1 +
-                          'jours'}
+                        : `il y a ${
+                            dateGap(c.completed.completionDate) * -1
+                          }jours`}
                     </Text>
                   </Box>
                 </Flex>
@@ -337,6 +344,6 @@ const Challenges: React.FC = () => {
       </Flex>
     </div>
   );
-};
+}
 
 export default Challenges;
