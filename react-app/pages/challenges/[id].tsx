@@ -12,22 +12,10 @@ import {
   ChakraProvider,
 } from '@chakra-ui/react';
 import theme from '../../styles/theme';
-import { completeChallenge, getById } from '../../api/challenges';
-
+import ApiManager from '../../api/challenges';
 import Layout from '../../components/Layout/Layout';
-
-interface ChallengeData {
-  title: string;
-  description: string;
-  points: number;
-  days: number;
-  pedagogicalExplanation: string;
-}
-
-interface UserData {
-  id: string;
-  email: string;
-}
+import ChallengeData from '../../interfaces/challengeInterface';
+import UserData from '../../interfaces/UserInterface';
 
 function Challenge() {
   const router = useRouter();
@@ -37,7 +25,7 @@ function Challenge() {
 
   useEffect(() => {
     async function fetchCurrentChallenge() {
-      const fetchChallenge: ChallengeData = await getById(
+      const fetchChallenge: ChallengeData = await ApiManager.getById(
         router.query.id as string
       );
       console.log(fetchChallenge);
@@ -61,7 +49,7 @@ function Challenge() {
 
   async function createCompleted() {
     if (user && router.query.id)
-      await completeChallenge(user.id, router.query.id as string);
+      await ApiManager.completeChallenge(user.id, router.query.id as string);
   }
 
   return (

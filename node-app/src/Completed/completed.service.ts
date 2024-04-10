@@ -36,7 +36,7 @@ export class CompletedService {
         const chall = await this.challengeService.getById(
           completedChall.challengeId,
         );
-        return { completed: completedChall.toObject(), challenge: chall };
+        return { completed: completedChall.toJSON(), challenge: chall };
       }),
     );
 

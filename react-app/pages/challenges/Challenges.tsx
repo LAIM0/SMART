@@ -2,54 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Flex, Card, Heading, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { getCompletedChallengesByUserId } from '../../api/challenges';
-
-interface Category {
-  categoryName: string;
-  id: string;
-}
-
-interface ChallengeData {
-  id: string;
-  title: string;
-  description: string;
-  points: number;
-  category: string;
-  endDate: Date;
-  pedagogicalExplanation: string;
-}
-
-interface CompletedChallenge {
-  completed: {
-    id: string;
-    userId: string;
-    challengeId: string;
-    completionDate: Date;
-    __v: number;
-  };
-  challenge: {
-    id: string;
-    category: string;
-    title: string;
-    points: number;
-    description: string;
-    pedagogicalExplanation: string;
-    endDate: Date;
-    __v: number;
-  };
-}
-
-interface UserData {
-  id: string;
-  email: string;
-}
+import ApiManager from '../../api/challenges';
+import CompletedChallenge from '../../interfaces/completedInterface';
+import CategoryData from '../../interfaces/categoryInterface';
+import UserData from '../../interfaces/UserInterface';
+import ChallengeData from '../../interfaces/challengeInterface';
 
 function Challenges() {
   const router = useRouter();
-  const Tous: Category = { categoryName: 'Tous', id: '' };
-  const [currentCategory, setCurrentCategory] = useState<Category>(Tous);
+  const Tous: CategoryData = { categoryName: 'Tous', id: '' };
+  const [currentCategory, setCurrentCategory] = useState<CategoryData>(Tous);
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<CategoryData[]>([]);
   const [user, setUser] = useState<UserData>();
   const [completedChallenges, setCompletedChallenges] = useState<
     CompletedChallenge[]
@@ -71,7 +35,7 @@ function Challenges() {
   async function fetchCompletedChallenges() {
     if (user) {
       const fetchChallenges: CompletedChallenge[] =
-        await getCompletedChallengesByUserId(user.id);
+        await ApiManager.getCompletedChallengesByUserId(user.id);
       setCompletedChallenges(fetchChallenges);
     }
   }
@@ -115,7 +79,7 @@ function Challenges() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get<Category[]>(
+      const response = await axios.get<CategoryData[]>(
         'http://localhost:3001/categories/all'
       );
       setCategories(response.data);
