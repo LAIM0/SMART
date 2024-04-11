@@ -3,9 +3,9 @@ import axios from 'axios';
 import { Box, Flex, Card, Heading, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import ApiManager from '../../api/challenges';
-import CompletedChallenge from '../../interfaces/completedInterface';
+import CompletedChallengeData from '../../interfaces/completedInterface';
 import CategoryData from '../../interfaces/categoryInterface';
-import UserData from '../../interfaces/UserInterface';
+import UserData from '../../interfaces/userInterface';
 import ChallengeData from '../../interfaces/challengeInterface';
 
 function Challenges() {
@@ -16,7 +16,7 @@ function Challenges() {
   const [categories, setCategories] = useState<CategoryData[]>([]);
   const [user, setUser] = useState<UserData>();
   const [completedChallenges, setCompletedChallenges] = useState<
-    CompletedChallenge[]
+    CompletedChallengeData[]
   >([]);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function Challenges() {
 
   async function fetchCompletedChallenges() {
     if (user) {
-      const fetchChallenges: CompletedChallenge[] =
+      const fetchChallenges: CompletedChallengeData[] =
         await ApiManager.getCompletedChallengesByUserId(user.id);
       setCompletedChallenges(fetchChallenges);
     }

@@ -1,5 +1,5 @@
 import ChallengeData from '../interfaces/challengeInterface';
-import CompletedChallenge from '../interfaces/completedInterface';
+import CompletedChallengeData from '../interfaces/completedInterface';
 import ENDPOINTS from './Utils/endpoint';
 import ApiMethods from './Utils/apiMethods';
 
@@ -18,7 +18,7 @@ class ApiManager {
 
   static async getCompletedChallengesByUserId(
     userId: string
-  ): Promise<CompletedChallenge[]> {
+  ): Promise<CompletedChallengeData[]> {
     try {
       const response = await ApiMethods.get(
         ENDPOINTS.COMPLETED_BY_USER_ID(userId)

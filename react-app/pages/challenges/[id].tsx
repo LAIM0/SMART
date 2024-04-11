@@ -15,7 +15,7 @@ import theme from '../../styles/theme';
 import ApiManager from '../../api/challenges';
 import Layout from '../../components/Layout/Layout';
 import ChallengeData from '../../interfaces/challengeInterface';
-import UserData from '../../interfaces/UserInterface';
+import UserData from '../../interfaces/userInterface';
 
 function Challenge() {
   const router = useRouter();

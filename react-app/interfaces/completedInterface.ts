@@ -1,4 +1,4 @@
-interface CompletedChallenge {
+interface CompletedChallengeData {
   completed: {
     id: string;
     userId: string;
@@ -16,4 +16,4 @@ interface CompletedChallenge {
   };
 }
 
-export default CompletedChallenge;
+export default CompletedChallengeData;
