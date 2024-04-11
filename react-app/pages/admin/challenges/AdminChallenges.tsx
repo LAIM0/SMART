@@ -19,16 +19,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import FormCreateChallenge from './FormCreateChallenge';
-
-interface ChallengeData {
-  id: string;
-  title: string;
-  description: string;
-  points: number;
-  category: string;
-  endDate: Date;
-  pedagogicalExplanation: string;
-}
+import ChallengeData from '../../../interfaces/challengeInterface';
 
 function AdminChallenges() {
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);

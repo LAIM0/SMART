@@ -1,40 +1,24 @@
-/* eslint-disable */
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   FormControl,
   Input,
   Flex,
   Button,
   Select,
-  Heading,
-  Textarea
-} from "@chakra-ui/react";
-//import { DatePicker } from "react-rainbow-components";
-
-interface Category {
-  _id: string;
-  categoryName: string;
-}
-
-interface ChallengeData {
-  _id: string;
-  title: string;
-  description: string;
-  points: number; // Changement du type de 'points' en number
-  category: string;
-  endDate: Date;
-  pedagogicalExplanation: string;
-}
+  Textarea,
+} from '@chakra-ui/react';
+import CategoryData from '../../../interfaces/categoryInterface';
+// import { DatePicker } from "react-rainbow-components";
 
 function FormCreateChallenge() {
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [points, setPoints] = useState<number>(); // Initialisation à 0
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<string>('');
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [pedagogicalExplanation, setPedagogicalExplanation] =
-    useState<string>("");
+    useState<string>('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,30 +29,30 @@ function FormCreateChallenge() {
       points,
       category,
       pedagogicalExplanation,
-      endDate: challengeDate
+      endDate: challengeDate,
     };
     axios
-      .post("http://localhost:3001/challenges/create", newChallenge)
+      .post('http://localhost:3001/challenges/create', newChallenge)
       .then((res) => {
         console.log(res);
       })
       .catch((err) => {
         console.log(err);
       });
-    setTitle("");
-    setDescription("");
+    setTitle('');
+    setDescription('');
     setPoints(0); // Remise à zéro
-    setCategory("");
+    setCategory('');
     setEndDate(new Date());
-    setPedagogicalExplanation("");
+    setPedagogicalExplanation('');
   };
 
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<CategoryData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get<Category[]>(
-        "http://localhost:3001/categories/all"
+      const response = await axios.get<CategoryData[]>(
+        'http://localhost:3001/categories/all'
       );
       setCategories(response.data);
     };
@@ -76,9 +60,9 @@ function FormCreateChallenge() {
     fetchData();
   }, []);
 
-  const handleEndDateChange = () => {
-    setEndDate(new Date());
-  };
+  // const handleEndDateChange = () => {
+  //   setEndDate(new Date());
+  // };
 
   return (
     <FormControl>
@@ -89,7 +73,7 @@ function FormCreateChallenge() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             focusBorderColor="#166879"
-            isRequired={true}
+            isRequired
             bg="white"
           />
         </FormControl>
@@ -97,27 +81,27 @@ function FormCreateChallenge() {
           placeholder="Description du défi"
           focusBorderColor="#166879"
           onChange={(e) => setDescription(e.target.value)}
-          isRequired={true}
+          isRequired
           bg="white"
         />
         <Input
           type="number" // Utilisation d'un champ de type nombre
           placeholder="Points"
           focusBorderColor="#166879"
-          onChange={(e) => setPoints(parseInt(e.target.value))} // Conversion en nombre entier
-          isRequired={true}
+          onChange={(e) => setPoints(parseInt(e.target.value, 10))} // Conversion en nombre entier
+          isRequired
           bg="white"
         />
         <Select
           placeholder="Catégorie du défi"
           focusBorderColor="#166879"
           onChange={(e) => setCategory(e.target.value)}
-          isRequired={true}
+          isRequired
           bg="white"
         >
-          {categories.map((category) => (
-            <option key={category._id} value={category._id}>
-              {category.categoryName}
+          {categories.map((categoryItem) => (
+            <option key={categoryItem.id} value={categoryItem.id}>
+              {categoryItem.categoryName}
             </option>
           ))}
         </Select>
@@ -134,7 +118,7 @@ function FormCreateChallenge() {
           placeholder="Explication Pédagoqique"
           focusBorderColor="#166879"
           onChange={(e) => setPedagogicalExplanation(e.target.value)}
-          isRequired={true}
+          isRequired
           bg="white"
         />
         <Button bg="#166879" color="white" onClick={handleSubmit}>
