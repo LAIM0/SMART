@@ -1,23 +1,13 @@
-/*eslint-disable*/
-import React, { useState, useEffect } from "react";
-import FormCreateChallenge from "./FormCreateChallenge";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
-  FormControl,
-  Input,
   Flex,
   Button,
-  Select,
-  Heading,
-  Textarea,
   Table,
   Thead,
-  Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Modal,
   ModalOverlay,
@@ -26,16 +16,12 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
-} from "@chakra-ui/react";
-
-interface Category {
-  _id: string;
-  categoryName: string;
-}
+  useDisclosure,
+} from '@chakra-ui/react';
+import FormCreateChallenge from './FormCreateChallenge';
 
 interface ChallengeData {
-  _id: string;
+  id: string;
   title: string;
   description: string;
   points: number;
@@ -54,11 +40,11 @@ function AdminChallenges() {
     const fetchData = async () => {
       try {
         const response = await axios.get<ChallengeData[]>(
-          "http://localhost:3001/challenges/all"
+          'http://localhost:3001/challenges/all'
         );
         setChallenges(response.data);
       } catch (error) {
-        console.error("Erreur lors de la récupération des données:", error);
+        console.error('Erreur lors de la récupération des données:', error);
       }
     };
 
@@ -69,14 +55,14 @@ function AdminChallenges() {
   const {
     isOpen: isOpenFormModal,
     onOpen: onOpenFormModal,
-    onClose: onCloseFormModal
+    onClose: onCloseFormModal,
   } = useDisclosure();
 
   // State for second modal
   const {
     isOpen: isOpenDeleteModal,
     onOpen: onOpenDeleteModal,
-    onClose: onCloseDeleteModal
+    onClose: onCloseDeleteModal,
   } = useDisclosure();
 
   const clearCurrentChallenge = () => {
@@ -85,16 +71,14 @@ function AdminChallenges() {
 
   const deleteChallenge = async () => {
     try {
-      const response = await axios.delete<ChallengeData[]>(
-        `http://localhost:3001/challenges/delete/${currentChallenge?._id}`
+      await axios.delete<ChallengeData[]>(
+        `http://localhost:3001/challenges/delete/${currentChallenge?.id}`
       );
       setChallenges(
-        challenges.filter(
-          (challenge) => challenge._id !== currentChallenge?._id
-        )
+        challenges.filter((challenge) => challenge.id !== currentChallenge?.id)
       );
     } catch (error) {
-      console.error("Erreur lors de la suppression des données:", error);
+      console.error('Erreur lors de la suppression des données:', error);
     }
   };
 
@@ -125,8 +109,8 @@ function AdminChallenges() {
                 onOpenDeleteModal(); // Appeler la fonction onOpen
                 setCurrentChallenge(challenge); // Appeler setCurrentChallenge avec le défi actuel
               }}
-              key={challenge._id}
-              _hover={{ bg: "lightgray", cursor: "pointer" }}
+              key={challenge.id}
+              _hover={{ bg: 'lightgray', cursor: 'pointer' }}
             >
               <Td width="20%">{challenge.title}</Td>
               <Td width="60%">{challenge.description}</Td>

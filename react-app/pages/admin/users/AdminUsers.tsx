@@ -1,8 +1,7 @@
-/*eslint-disable*/
-import React, { useState, useEffect } from "react";
+import React from 'react';
 
-const AdminUsers: React.FC = () => {
+function AdminUsers() {
   return <div>Users</div>;
-};
+}
 
 export default AdminUsers;
