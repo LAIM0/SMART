@@ -146,5 +146,18 @@ export class UserService {
     user.teamId = new Types.ObjectId(teamId); // Convertir l'ID de l'équipe en ObjectId
     await user.save();
   }
+
+  async updateUserAdminStatus(userId: string, isAdmin: boolean): Promise<void> {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      user.isAdmin = isAdmin;
+      await user.save();
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
