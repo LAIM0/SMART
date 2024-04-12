@@ -1,4 +1,4 @@
-/*eslint-disable*/
+/* eslint-disable */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -20,6 +20,11 @@ import {
   ModalCloseButton,
   useDisclosure,
   Select,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  Input,
+  InputGroup,
 } from "@chakra-ui/react";
 
 interface UserData {
@@ -36,6 +41,12 @@ function AdminUsers() {
   const [teams, setTeams] = useState<{ id: string; name: string }[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<string>('');
   const [userTeams, setUserTeams] = useState<{ [userId: string]: string }>({});
+  const [newUser, setNewUser] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    teamId: "",
+  });
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -64,12 +75,45 @@ function AdminUsers() {
     fetchTeams();
   }, []);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewUser({ ...newUser, [name]: value });
+  };
 
-   const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleTeamSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTeam(e.target.value);
+    setNewUser({ ...newUser, teamId: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:3001/users/signup", {
+        ...newUser,
+        passwordHash: "Ecoexya24",
+        isAdmin: false, 
+      });
+      setNewUser({
+        firstName: "",
+        lastName: "",
+        email: "",
+        teamId: "",
+      });
+      setSelectedTeam("");
+      onClose(); // Fermer la modal après l'ajout
+      // Rafraîchir la liste des utilisateurs
+      const response = await axios.get<UserData[]>("http://localhost:3001/users");
+      setUsers(response.data);
+      
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de l'utilisateur:", error);
+    }
+  };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const deleteUser = async (userId: string) => {
     try {
-      
       await axios.delete(`http://localhost:3001/users/delete/${userId}`);
       setUsers(users.filter((user) => user._id !== userId));
     } catch (error) {
@@ -79,7 +123,6 @@ function AdminUsers() {
 
   const handleTeamChange = async (userId: string, teamId: string) => {
     try {
-      console.log("teamID",teamId)
       await axios.put(`http://localhost:3001/users/${userId}/team`, { teamId });
       setUserTeams({ ...userTeams, [userId]: teamId });
       setUsers(users.map((user) => (user._id === userId ? { ...user, team: teamId } : user)));
@@ -111,16 +154,16 @@ function AdminUsers() {
                 <Td>{user.lastName}</Td>
                 <Td>{user.email}</Td>
                 <Td>
-                <Select
-                  value={userTeams[user._id] || ""} // ou user.team.id en fonction de la structure de vos données
-                  onChange={(e) => handleTeamChange(user._id, e.target.value)}
-                >
-                  {teams.map((team) => (
-                    <option key={team.id} value={team.id}> {/* ou team.id */}
-                      {team.name}
-                    </option>
-                  ))}
-                </Select>
+                  <Select
+                    value={userTeams[user._id] || ""}
+                    onChange={(e) => handleTeamChange(user._id, e.target.value)}
+                  >
+                    {teams.map((team) => (
+                      <option key={team.id} value={team.id}>
+                        {team.name}
+                      </option>
+                    ))}
+                  </Select>
                 </Td>
                 <Td>
                   <Button
@@ -136,13 +179,74 @@ function AdminUsers() {
         </Table>
       </TableContainer>
       <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Ajouter un utilisateur</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>{/* Insérez ici votre formulaire pour ajouter un utilisateur */}</ModalBody>
-        </ModalContent>
-      </Modal>
+  <ModalOverlay />
+  <ModalContent bg="#F8F8F8" p="24px">
+    <ModalHeader>Ajouter un utilisateur</ModalHeader>
+    <ModalCloseButton />
+    <ModalBody>
+      <form onSubmit={handleSubmit}>
+        <Flex flexDirection="column" gap={4}>
+          <FormControl isRequired>
+            <Input
+              type="text"
+              name="firstName"
+              value={newUser.firstName}
+              onChange={handleInputChange}
+              placeholder="Prénom"
+              focusBorderColor="#166879"
+              isRequired
+              bg="white"
+            />
+          </FormControl>
+          <FormControl isRequired>
+            <Input
+              type="text"
+              name="lastName"
+              value={newUser.lastName}
+              onChange={handleInputChange}
+              placeholder="Nom"
+              focusBorderColor="#166879"
+              isRequired
+              bg="white"
+            />
+          </FormControl>
+          <FormControl isRequired>
+            <Input
+              type="email"
+              name="email"
+              value={newUser.email}
+              onChange={handleInputChange}
+              placeholder="Email"
+              focusBorderColor="#166879"
+              isRequired
+              bg="white"
+            />
+          </FormControl>
+          <FormControl isRequired>
+            <Select
+              placeholder="Sélectionner une équipe"
+              focusBorderColor="#166879"
+              value={selectedTeam}
+              onChange={handleTeamSelectChange}
+              isRequired
+              bg="white"
+            >
+              {teams.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <Button type="submit" bg="#166879" color="white">
+            Ajouter
+          </Button>
+        </Flex>
+      </form>
+    </ModalBody>
+  </ModalContent>
+</Modal>
+
     </Flex>
   );
 }
