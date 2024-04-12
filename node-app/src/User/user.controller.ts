@@ -190,4 +190,18 @@ export class UserController {
       throw error;
     }
   }
+  
+  @Put(':userId/admin')
+  async updateUserAdminStatus(
+    @Param('userId') userId: string,
+    @Body('isAdmin') isAdmin: boolean
+  ) {
+    try {
+      await this.userService.updateUserAdminStatus(userId, isAdmin);
+      return { message: 'User admin status updated successfully' };
+    } catch (error) {
+      console.error("Error updating user's admin status:", error);
+      throw error;
+    }
+  }
 }

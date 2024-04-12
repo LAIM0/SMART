@@ -1,6 +1,4 @@
-
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
   Flex,
   Button,
@@ -15,128 +13,113 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   useDisclosure,
   Select,
   FormControl,
-  FormLabel,
-  FormErrorMessage,
   Input,
-  InputGroup,
+  Text,
+  Checkbox,
+  Alert,
+  AlertIcon,Switch
 } from '@chakra-ui/react';
+import {
+  fetchUsers,
+  addUser,
+  deleteUser,
+  updateUserTeam,
+  updateUserAdminStatus,
+} from '../../../api/UserApiManager';
 
-interface UserData {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  teamId: string;
-}
+import fetchTeams from '../../../api/TeamApiManager';
 
 function AdminUsers() {
-  const [users, setUsers] = useState<UserData[]>([]);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [teams, setTeams] = useState<{ id: string; name: string }[]>([]);
-  const [selectedTeam, setSelectedTeam] = useState<string>("");
-  const [userTeams, setUserTeams] = useState<{ [userId: string]: string }>({});
+  const [users, setUsers] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [newUser, setNewUser] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    teamId: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    teamId: '',
+    isAdmin: false,
   });
+  const [selectedTeam, setSelectedTeam] = useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpenError, setIsOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get<UserData[]>(
-          'http://localhost:3001/users'
-        );
-        setUsers(response.data);
-        const initialUserTeams: { [userId: string]: string } = {};
-        response.data.forEach((user) => {
-          initialUserTeams[user._id] = user.teamId;
-        });
-        setUserTeams(initialUserTeams);
+        const userData = await fetchUsers();
+        setUsers(userData);
+        const response = await fetchTeams();
+        setTeams(response);
       } catch (error) {
-        console.error(
-          'Erreur lors de la récupération des utilisateurs:',
-          error
-        );
+        console.error('Erreur lors de la récupération des données:', error);
       }
     };
 
-    const fetchTeams = async () => {
-      const response = await axios.get("http://localhost:3001/teams");
-      setTeams(response.data);
-    };
-
-    fetchUsers();
-    fetchTeams();
+    fetchData();
   }, []);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewUser({ ...newUser, [name]: value });
   };
 
-  const handleTeamSelectChange = (
-    e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleTeamSelectChange = (e) => {
     setSelectedTeam(e.target.value);
     setNewUser({ ...newUser, teamId: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/users/signup", {
-        ...newUser,
-        passwordHash: "Ecoexya24",
-        isAdmin: false,
-      });
-      setNewUser({
-        firstName: "",
-        lastName: "",
-        email: "",
-        teamId: "",
-      });
-      setSelectedTeam("");
-      onClose(); // Fermer la modal après l'ajout
-
-      // Rafraîchir la liste des utilisateurs
-      const response = await axios.get<UserData[]>(
-        "http://localhost:3001/users"
-      );
-      setUsers(response.data);
+      const userExists = users.some((user) => user.email === newUser.email);
+      if (userExists) {
+        throw new Error("Un utilisateur avec cette adresse e-mail existe déjà.");
+      } else {
+        await addUser({
+          ...newUser,
+          isAdmin: newUser.isAdmin || false,
+        });
+        setNewUser({
+          firstName: '',
+          lastName: '',
+          email: '',
+          teamId: '',
+          isAdmin: false,
+        });
+        setSelectedTeam('');
+        onClose();
+        const updatedUsers = await fetchUsers();
+        setUsers(updatedUsers);
+        setIsOpenError(false);
+      }
     } catch (error) {
       console.error("Erreur lors de l'ajout de l'utilisateur:", error);
+      setErrorMessage(error.message);
+      setIsOpenError(true);
     }
   };
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const deleteUser = async (userId: string) => {
+  const handleDeleteUser = async (userId) => {
     try {
-      await axios.delete(`http://localhost:3001/users/delete/${userId}`);
-      setUsers(users.filter((user) => user._id !== userId));
+      await deleteUser(userId);
+      const updatedUsers = await fetchUsers();
+      setUsers(updatedUsers);
     } catch (error) {
       console.error("Erreur lors de la suppression de l'utilisateur:", error);
     }
   };
 
-  const handleTeamChange = async (userId: string, teamId: string) => {
+  const handleTeamChange = async (userId, teamId) => {
     try {
-      await axios.put(`http://localhost:3001/users/${userId}/team`, { teamId });
-      setUserTeams({ ...userTeams, [userId]: teamId });
-      setUsers(
-        users.map((user) =>
-          user._id === userId ? { ...user, team: teamId } : user
-        )
-      );
+      await updateUserTeam(userId, teamId);
+      const updatedUsers = await fetchUsers();
+      setUsers(updatedUsers);
     } catch (error) {
       console.error(
         "Erreur lors de la mise à jour de l'équipe de l'utilisateur:",
@@ -144,26 +127,37 @@ function AdminUsers() {
       );
     }
   };
+  const handleToggleAdmin = async (userId, isAdmin) => {
+    try {
+      // Appeler l'API pour mettre à jour le statut d'administrateur de l'utilisateur
+      await updateUserAdminStatus(userId, isAdmin);
+      // Mettre à jour la liste des utilisateurs après la modification
+      const updatedUsers = await fetchUsers();
+      setUsers(updatedUsers);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du statut d'administrateur:", error);
+    }
+  };
 
   return (
-    <Flex flexDirection="column" gap="16px">
+    <Flex flexDirection='column' gap='16px'>
       <Button
-        bg="primary.300"
-        color="white"
-        width="fit-content"
+        bg='primary.300'
+        color='white'
+        width='fit-content'
         onClick={onOpen}
       >
         Ajouter un utilisateur
       </Button>
-      <TableContainer bg="white" borderRadius={16}>
-        <Table variant="simple">
+      <TableContainer bg='white' borderRadius={16}>
+        <Table variant='simple'>
           <Thead>
             <Tr>
               <Th>Prénom</Th>
               <Th>Nom</Th>
               <Th>Email</Th>
               <Th>Équipe</Th>
-              <Th>Action</Th>
+              <Th>Admin</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -174,10 +168,8 @@ function AdminUsers() {
                 <Td>{user.email}</Td>
                 <Td>
                   <Select
-                    value={userTeams[user._id] || ""}
-                    onChange={(e) =>
-                      handleTeamChange(user._id, e.target.value)
-                    }
+                    value={user.teamId}
+                    onChange={(e) => handleTeamChange(user._id, e.target.value)}
                   >
                     {teams.map((team) => (
                       <option key={team.id} value={team.id}>
@@ -187,9 +179,18 @@ function AdminUsers() {
                   </Select>
                 </Td>
                 <Td>
+              <Flex align="center">
+                <Switch
+                  isChecked={user.isAdmin}
+                  onChange={(e) => handleToggleAdmin(user._id, e.target.checked)}
+                />
+                <Text ml={2}>{user.isAdmin ? 'Oui' : 'Non'}</Text>
+              </Flex>
+            </Td>
+                <Td>
                   <Button
-                    colorScheme="red"
-                    onClick={() => deleteUser(user._id)}
+                    colorScheme='red'
+                    onClick={() => handleDeleteUser(user._id)}
                   >
                     Supprimer
                   </Button>
@@ -201,56 +202,56 @@ function AdminUsers() {
       </TableContainer>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent bg="#F8F8F8" p="24px">
+        <ModalContent bg='#F8F8F8' p='24px'>
           <ModalHeader>Ajouter un utilisateur</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <form onSubmit={handleSubmit}>
-              <Flex flexDirection="column" gap={4}>
+              <Flex flexDirection='column' gap={4}>
                 <FormControl isRequired>
                   <Input
-                    type="text"
-                    name="firstName"
+                    type='text'
+                    name='firstName'
                     value={newUser.firstName}
                     onChange={handleInputChange}
-                    placeholder="Prénom"
-                    focusBorderColor="#166879"
+                    placeholder='Prénom'
+                    focusBorderColor='#166879'
                     isRequired
-                    bg="white"
+                    bg='white'
                   />
                 </FormControl>
                 <FormControl isRequired>
                   <Input
-                    type="text"
-                    name="lastName"
+                    type='text'
+                    name='lastName'
                     value={newUser.lastName}
                     onChange={handleInputChange}
-                    placeholder="Nom"
-                    focusBorderColor="#166879"
+                    placeholder='Nom'
+                    focusBorderColor='#166879'
                     isRequired
-                    bg="white"
+                    bg='white'
                   />
                 </FormControl>
                 <FormControl isRequired>
                   <Input
-                    type="email"
-                    name="email"
+                    type='email'
+                    name='email'
                     value={newUser.email}
                     onChange={handleInputChange}
-                    placeholder="Email"
-                    focusBorderColor="#166879"
+                    placeholder='Email'
+                    focusBorderColor='#166879'
                     isRequired
-                    bg="white"
+                    bg='white'
                   />
                 </FormControl>
                 <FormControl isRequired>
                   <Select
-                    placeholder="Sélectionner une équipe"
-                    focusBorderColor="#166879"
+                    placeholder='Sélectionner une équipe'
+                    focusBorderColor='#166879'
                     value={selectedTeam}
                     onChange={handleTeamSelectChange}
                     isRequired
-                    bg="white"
+                    bg='white'
                   >
                     {teams.map((team) => (
                       <option key={team.id} value={team.id}>
@@ -259,9 +260,25 @@ function AdminUsers() {
                     ))}
                   </Select>
                 </FormControl>
-                <Button type="submit" bg="#166879" color="white">
+                <FormControl>
+                  <Flex alignItems="center">
+                    <Checkbox
+                      name="isAdmin"
+                      isChecked={newUser.isAdmin}
+                      onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
+                    />
+                    <Text ml={2}>Administrateur</Text>
+                  </Flex>
+                </FormControl>
+                <Button type='submit' bg='#166879' color='white'>
                   Ajouter
                 </Button>
+                {isOpenError && (
+                  <Alert status="error">
+                    <AlertIcon />
+                    {errorMessage}
+                  </Alert>
+                )}
               </Flex>
             </form>
           </ModalBody>
