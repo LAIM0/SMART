@@ -6,7 +6,7 @@ import {
   Get,
   Post,
   UseGuards,
-  Request,
+  Request,Put,Delete,Param
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
@@ -163,5 +163,31 @@ export class UserController {
     // Si cette fonction est appelée, cela signifie que le garde a permis l'accès
     // Cela peut être utilisé pour vérifier l'authentification côté serveur
     return { loggedIn: true };
+  }
+
+  @Delete('delete/:userId')
+  async deleteUser(@Param('userId') userId: string): Promise<{ message: string }> {
+    try {
+      // Supprimer l'utilisateur avec l'ID fourni
+      await this.userService.deleteUser(userId);
+      return { message: 'L\'utilisateur a été supprimé avec succès' };
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'utilisateur:", error);
+      throw new Error('Une erreur s\'est produite lors de la suppression de l\'utilisateur');
+    }
+  }
+  @Put(':userId/team')
+  async updateUserTeam(
+    @Param('userId') userId: string,
+    @Body('teamId') teamId: string
+  ) {
+    console.log("entrée put team");
+    try {
+      await this.userService.updateUserTeam(userId, teamId);
+      return { message: 'Team updated successfully' };
+    } catch (error) {
+      console.error("Error updating user's team:", error);
+      throw error;
+    }
   }
 }
