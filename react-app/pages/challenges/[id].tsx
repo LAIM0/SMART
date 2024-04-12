@@ -12,10 +12,12 @@ import {
   ChakraProvider,
 } from '@chakra-ui/react';
 import theme from '../../styles/theme';
-import ApiManager from '../../api/challenges';
 import Layout from '../../components/Layout/Layout';
 import ChallengeData from '../../interfaces/challengeInterface';
 import UserData from '../../interfaces/userInterface';
+import ChallengeApiManager from '../../api/ChallengeApiManager';
+import CompletedApiManager from '../../api/CompletedApiManager';
+import dateGap from '../../utils/mathFunctions';
 
 function Challenge() {
   const router = useRouter();
@@ -25,7 +27,7 @@ function Challenge() {
 
   useEffect(() => {
     async function fetchCurrentChallenge() {
-      const fetchChallenge: ChallengeData = await ApiManager.getById(
+      const fetchChallenge: ChallengeData = await ChallengeApiManager.getById(
         router.query.id as string
       );
       console.log(fetchChallenge);
@@ -49,7 +51,10 @@ function Challenge() {
 
   async function createCompleted() {
     if (user && router.query.id)
-      await ApiManager.completeChallenge(user.id, router.query.id as string);
+      await CompletedApiManager.completeChallenge(
+        user.id,
+        router.query.id as string
+      );
   }
 
   return (
@@ -101,7 +106,7 @@ function Challenge() {
                 p={2}
                 borderRadius={8}
               >
-                <Text fontWeight="bold">{currentChallenge?.days} jours</Text>
+                <Text fontWeight="bold">3 jours</Text>
               </Box>
             </Flex>
           </Flex>

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Flex, Card, Heading, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import ApiManager from '../../api/challenges';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import CategoryData from '../../interfaces/categoryInterface';
 import UserData from '../../interfaces/userInterface';
 import ChallengeData from '../../interfaces/challengeInterface';
+import CompletedApiManager from '../../api/CompletedApiManager';
+import dateGap from '../../utils/mathFunctions';
+import CategoryApiManager from '../../api/CategoryApiManager';
 
 function Challenges() {
   const router = useRouter();
@@ -35,7 +37,7 @@ function Challenges() {
   async function fetchCompletedChallenges() {
     if (user) {
       const fetchChallenges: CompletedChallengeData[] =
-        await ApiManager.getCompletedChallengesByUserId(user.id);
+        await CompletedApiManager.getCompletedChallengesByUserId(user.id);
       setCompletedChallenges(fetchChallenges);
     }
   }
@@ -79,10 +81,8 @@ function Challenges() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get<CategoryData[]>(
-        'http://localhost:3001/categories/all'
-      );
-      setCategories(response.data);
+      const response = await CategoryApiManager.getAll();
+      setCategories(response);
     };
 
     fetchData();
@@ -103,15 +103,6 @@ function Challenges() {
 
     fetchData();
   }, []);
-
-  const dateGap = (endDate: Date): number => {
-    return (
-      Math.floor(
-        (new Date(endDate).getTime() - new Date().getTime()) /
-          (1000 * 60 * 60 * 24)
-      ) + 1
-    );
-  };
 
   challenges.sort((a, b) => (a.points > b.points ? 1 : -1));
   challenges.sort((a, b) => (dateGap(a.endDate) > dateGap(b.endDate) ? 1 : -1));

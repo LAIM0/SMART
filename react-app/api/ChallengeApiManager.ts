@@ -1,12 +1,13 @@
 import ChallengeData from '../interfaces/challengeInterface';
-import CompletedChallengeData from '../interfaces/completedInterface';
-import ENDPOINTS from './Utils/endpoint';
-import ApiMethods from './Utils/apiMethods';
+import ENDPOINTS from './apiUtils/endpoints';
+import ApiMethods from './apiUtils/apiMethods';
 
-class ApiManager {
+class ChallengeApiManager {
   static async getById(id: string): Promise<ChallengeData> {
     try {
-      const response = await ApiMethods.get(ENDPOINTS.CHALLENGES_BY_ID(id));
+      const response = await ApiMethods.get(
+        ENDPOINTS.CHALLENGE.CHALLENGES_BY_ID(id)
+      );
       console.log(response);
       return response.data as ChallengeData;
     } catch (error) {
@@ -15,43 +16,9 @@ class ApiManager {
       );
     }
   }
-
-  static async getCompletedChallengesByUserId(
-    userId: string
-  ): Promise<CompletedChallengeData[]> {
-    try {
-      const response = await ApiMethods.get(
-        ENDPOINTS.COMPLETED_BY_USER_ID(userId)
-      );
-      console.log(response);
-      return response.data;
-    } catch (error) {
-      throw new Error(
-        `Erreur lors de la récupération des articles par id: ${userId}`
-      );
-    }
-  }
-
-  static async completeChallenge(
-    userId: string,
-    challengeId: string
-  ): Promise<void> {
-    try {
-      const response = await ApiMethods.post(ENDPOINTS.COMPLETED_CREATE(), {
-        userId,
-        challengeId,
-        completionDate: new Date(),
-      });
-      console.log(response);
-    } catch (error) {
-      throw new Error(
-        `Erreur lors de la création d'un completed: ${userId}, ${challengeId}`
-      );
-    }
-  }
 }
 
-export default ApiManager;
+export default ChallengeApiManager;
 
 // // Une fonction pour récupérer la liste des challenges réalisés par un utilisateur
 // export const getById = async (id: string) => {
