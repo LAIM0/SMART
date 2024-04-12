@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './user.schema';
@@ -124,4 +124,27 @@ export class UserService {
 
     return usersScores;
   }
+
+  async deleteUser(userId: string): Promise<void> {
+    try {
+      // Vérifiez si l'utilisateur existe
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new Error('L\'utilisateur n\'existe pas');
+      }
+      // Supprimez l'utilisateur de la base de données
+      await this.userModel.findByIdAndDelete(userId);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+  async updateUserTeam(userId: string, teamId: string): Promise<void> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    user.teamId = new Types.ObjectId(teamId); // Convertir l'ID de l'équipe en ObjectId
+    await user.save();
+  }
 }
+
