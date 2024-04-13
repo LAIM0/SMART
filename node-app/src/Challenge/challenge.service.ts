@@ -31,6 +31,7 @@ export class ChallengeService {
       throw error;
     }
   }
+  
   async getById(challengeId: Types.ObjectId): Promise<Challenge> {
     return this.challengeModel.findById(challengeId).exec();
   }

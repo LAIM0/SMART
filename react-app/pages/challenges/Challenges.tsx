@@ -20,6 +20,9 @@ function Challenges() {
   const [completedChallenges, setCompletedChallenges] = useState<
     CompletedChallengeData[]
   >([]);
+  const [completedChallengesIds, setCompletedChallengesIds] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,6 +48,11 @@ function Challenges() {
   useEffect(() => {
     fetchCompletedChallenges();
   }, [user]);
+
+  useEffect(() => {
+    const ids = completedChallenges.map((completed) => completed.challenge.id);
+    setCompletedChallengesIds(ids);
+  }, [completedChallenges]);
 
   // debuggage (à supprimer)
   useEffect(() => {
@@ -184,8 +192,9 @@ function Challenges() {
         {challenges.map((challenge) => (
           <div>
             {(currentCategory.categoryName === 'Tous' ||
-              currentCategory.id === challenge.category) &&
-              dateGap(challenge.endDate) >= 0 && (
+              currentCategory.categoryName === challenge.category) &&
+              dateGap(challenge.endDate) >= 0 &&
+              !completedChallengesIds.includes(challenge.id) && (
                 <Card
                   key={challenge.id}
                   onClick={() => handleClickCard(challenge)}
@@ -241,7 +250,7 @@ function Challenges() {
         {completedChallenges.map((c) => (
           <div>
             {(currentCategory.categoryName === 'Tous' ||
-              currentCategory.id === c.challenge.category) && (
+              currentCategory.categoryName === c.challenge.category) && (
               <Card
                 key={c.challenge.id}
                 onClick={() => router.push(`/challenges/${c.challenge.id}`)}

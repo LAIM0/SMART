@@ -18,23 +18,27 @@ import UserData from '../../interfaces/userInterface';
 import ChallengeApiManager from '../../api/ChallengeApiManager';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import dateGap from '../../utils/mathFunctions';
+import CompletedChallengeData from '../../interfaces/completedInterface';
 
 function Challenge() {
   const router = useRouter();
 
   const [currentChallenge, setCurrentChallenge] = useState<ChallengeData>();
   const [user, setUser] = useState<UserData>();
+  const [isCompleted, setIsCompleted] = useState<Boolean>(false);
 
   useEffect(() => {
     async function fetchCurrentChallenge() {
-      const fetchChallenge: ChallengeData = await ChallengeApiManager.getById(
-        router.query.id as string
-      );
-      console.log(fetchChallenge);
-      setCurrentChallenge(fetchChallenge);
+      if (router.query.id) {
+        const fetchChallenge: ChallengeData = await ChallengeApiManager.getById(
+          router.query.id as string
+        );
+        console.log(fetchChallenge);
+        setCurrentChallenge(fetchChallenge);
+      }
     }
     fetchCurrentChallenge();
-  }, []);
+  }, [router.query.id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,6 +60,37 @@ function Challenge() {
         router.query.id as string
       );
   }
+
+  async function deleteCompleted() {
+    if (user && router.query.id)
+      await CompletedApiManager.deleteCompleted(
+        user.id,
+        router.query.id as string
+      );
+  }
+
+  async function checkCompletedChallenge() {
+    if (user && router.query.id) {
+      console.log(router.query.id as string);
+      const fetchCompletedChallenge: CompletedChallengeData[] =
+        await CompletedApiManager.getCompletedByUserIdByChallengeId(
+          user.id,
+          router.query.id as string
+        );
+      console.log(fetchCompletedChallenge.length);
+      if (fetchCompletedChallenge.length == 0) {
+        setIsCompleted(false);
+      } else {
+        console.log('on est bons');
+        setIsCompleted(true);
+        console.log(isCompleted);
+      }
+    }
+  }
+
+  useEffect(() => {
+    checkCompletedChallenge();
+  }, [user, router.query.id]);
 
   return (
     <ChakraProvider theme={theme}>
@@ -123,13 +158,23 @@ function Challenge() {
             <Text>{currentChallenge?.pedagogicalExplanation}</Text>
 
             <Button
-              bg="#54C8C3"
+              bg={isCompleted ? '#FFFFFF' : '#54C8C3'}
               width="fit-content"
-              color="white"
-              boxShadow="md"
-              onClick={() => createCompleted()}
+              border="2px solid"
+              borderColor="#54C8C3"
+              color={isCompleted ? '#54C8C3' : '#FFFFFF'}
+              boxShadow={isCompleted ? 'null' : 'md'}
+              onClick={() => {
+                if (isCompleted) {
+                  deleteCompleted();
+                } else {
+                  createCompleted();
+                }
+                setIsCompleted(!isCompleted);
+              }}
+              disabled={true}
             >
-              Valider le défi
+              {isCompleted ? 'Défi validé' : 'Valider le défi'}
             </Button>
           </Flex>
         </Flex>
