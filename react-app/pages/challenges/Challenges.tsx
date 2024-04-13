@@ -1,100 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Flex, Card, Heading, Text } from '@chakra-ui/react';
+import { Flex, Text, Box } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import CategoryData from '../../interfaces/categoryInterface';
-import UserData from '../../interfaces/userInterface';
 import ChallengeData from '../../interfaces/challengeInterface';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import dateGap from '../../utils/mathFunctions';
 import CategoryApiManager from '../../api/CategoryApiManager';
+import ChallengeCard from './ChallengeCard';
+import UserData from '../../interfaces/userInterface';
 
 function Challenges() {
   const router = useRouter();
   const Tous: CategoryData = { categoryName: 'Tous', id: '' };
   const [currentCategory, setCurrentCategory] = useState<CategoryData>(Tous);
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
-  const [categories, setCategories] = useState<CategoryData[]>([]);
-  const [user, setUser] = useState<UserData>();
   const [completedChallenges, setCompletedChallenges] = useState<
     CompletedChallengeData[]
   >([]);
+  const [categories, setCategories] = useState<CategoryData[]>([]);
   const [completedChallengesIds, setCompletedChallengesIds] = useState<
     string[]
   >([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get<UserData>(
-        'http://localhost:3001/users/me',
-        { withCredentials: true }
-      );
-      setUser(response.data);
-      console.log('Response data:', response.data);
-    };
-
-    fetchData();
-  }, []);
-
-  async function fetchCompletedChallenges() {
-    if (user) {
-      const fetchChallenges: CompletedChallengeData[] =
-        await CompletedApiManager.getCompletedChallengesByUserId(user.id);
-      setCompletedChallenges(fetchChallenges);
-    }
-  }
-
-  useEffect(() => {
-    fetchCompletedChallenges();
-  }, [user]);
-
-  useEffect(() => {
-    const ids = completedChallenges.map((completed) => completed.challenge.id);
-    setCompletedChallengesIds(ids);
-  }, [completedChallenges]);
-
-  // debuggage (à supprimer)
-  useEffect(() => {
-    console.log('completed challenges:', completedChallenges);
-  }, [completedChallenges]);
-  useEffect(() => {
-    console.log('user:', user);
-  }, [user]);
-
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      try {
-        // Assurez-vous que cette URL correspond à votre configuration serveur
-        const response = await axios.get('http://localhost:3001/users/check', {
-          withCredentials: true,
-        });
-        // Si l'utilisateur n'est pas connecté, redirigez-le
-        if (!response.data.loggedIn) {
-          localStorage.setItem('preLoginRoute', window.location.pathname);
-          router.push('/login');
-        }
-      } catch (error) {
-        console.error(
-          "Erreur lors de la vérification de l'authentification:",
-          error
-        );
-        localStorage.setItem('preLoginRoute', window.location.pathname);
-        router.push('/login');
-      }
-    };
-
-    checkAuthentication();
-  }, [router]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await CategoryApiManager.getAll();
-      setCategories(response);
-    };
-
-    fetchData();
-  }, []);
+  const today = new Date();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,7 +32,6 @@ function Challenges() {
           'http://localhost:3001/challenges/all'
         );
         setChallenges(response.data);
-        console.log('Response data (challenges):', response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
       }
@@ -112,35 +40,90 @@ function Challenges() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchCompletedChallenges = async () => {
+      try {
+        const userData = await axios.get<UserData>(
+          'http://localhost:3001/users/me',
+          { withCredentials: true }
+        );
+        const completedChallenges =
+          await CompletedApiManager.getCompletedChallengesByUserId(
+            userData.data.id
+          );
+        setCompletedChallenges(completedChallenges);
+      } catch (error) {
+        console.error(
+          'Erreur lors de la récupération des challenges complétés:',
+          error
+        );
+      }
+    };
+
+    fetchCompletedChallenges();
+  }, []);
+
+  useEffect(() => {
+    const ids = completedChallenges.map((completed) => completed.challenge.id);
+    setCompletedChallengesIds(ids);
+  }, [completedChallenges]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await CategoryApiManager.getAll();
+      setCategories(response);
+    };
+
+    fetchCategories();
+  }, []);
+
   challenges.sort((a, b) => (a.points > b.points ? 1 : -1));
   challenges.sort((a, b) => (dateGap(a.endDate) > dateGap(b.endDate) ? 1 : -1));
 
   const handleClickCard = (challenge: ChallengeData): void => {
-    console.log(challenge.id);
     router.push(`/challenges/${challenge.id}`);
   };
 
+  const challengesToShow = challenges.filter(
+    (challenge) =>
+      (currentCategory.categoryName === 'Tous' ||
+        currentCategory.categoryName === challenge.category) &&
+      dateGap(challenge.endDate) >= 0 &&
+      !completedChallengesIds.includes(challenge.id)
+  );
+
+  const completedChallengesToShow = completedChallenges.filter(
+    (completedChallenge) =>
+      (currentCategory.categoryName === 'Tous' ||
+        currentCategory.categoryName ===
+          completedChallenge.challenge.category) &&
+      dateGap(completedChallenge.completed.completionDate) >= 0
+  );
+
   return (
     <div>
-      <Heading>Défis</Heading>
+      <Text as="h1">Défis</Text>
       <Flex
         p={3}
         gap={3}
         bg="white"
-        borderRadius={8}
+        borderRadius="16px"
         boxShadow="sm"
         overflowX="scroll"
+        w="fit-content"
+        mb="24px"
       >
         <Box
-          bg={currentCategory.categoryName === 'Tous' ? '#166879' : 'white'}
+          bg={currentCategory.categoryName === 'Tous' ? 'primary.300' : 'white'}
           onClick={() => setCurrentCategory(Tous)}
           _hover={{
             bg:
-              currentCategory.categoryName === 'Tous' ? '166879' : 'lightgray',
+              currentCategory.categoryName === 'Tous'
+                ? 'primary.300'
+                : '#F1F1F1',
             cursor: 'pointer',
           }}
-          borderRadius={4}
-          color={currentCategory.categoryName === 'Tous' ? 'white' : '#166879'}
+          borderRadius="8px"
           px={4}
           py={2}
           textAlign="center"
@@ -148,14 +131,22 @@ function Challenges() {
           fontWeight={
             currentCategory.categoryName === 'Tous' ? 'bold' : 'normal'
           }
+          transition="background-color 0.3s ease"
         >
-          <Heading size="sm">Tous</Heading>
+          <Text
+            as="h4"
+            color={
+              currentCategory.categoryName === 'Tous' ? 'white' : 'primary.300'
+            }
+          >
+            Tous
+          </Text>
         </Box>
         {categories.map((category) => (
           <Box
             bg={
               category.categoryName === currentCategory.categoryName
-                ? '#166879'
+                ? 'primary.300'
                 : 'white'
             }
             key={category.id}
@@ -164,147 +155,81 @@ function Challenges() {
               bg:
                 category.categoryName === currentCategory.categoryName
                   ? '166879'
-                  : 'lightgray',
+                  : '#F1F1F1',
               cursor: 'pointer',
             }}
-            borderRadius={4}
-            color={
-              category.categoryName === currentCategory.categoryName
-                ? 'white'
-                : '#166879'
-            }
+            borderRadius="8px"
             px={4}
             py={2}
             textAlign="center"
-            fontSize={12}
             fontWeight={
               category.categoryName === currentCategory.categoryName
                 ? 'bold'
                 : 'normal'
             }
+            transition="background-color 0.3s ease"
           >
-            <Heading size="sm">{category.categoryName}</Heading>
+            <Text
+              color={
+                category.categoryName === currentCategory.categoryName
+                  ? 'white'
+                  : 'primary.300'
+              }
+              as="h4"
+            >
+              {category.categoryName}
+            </Text>
           </Box>
         ))}
       </Flex>
-      <Heading marginTop="24px">À relever</Heading>
-      <Flex className="challengeList" flexDirection="row" flexWrap="wrap">
-        {challenges.map((challenge) => (
-          <div>
-            {(currentCategory.categoryName === 'Tous' ||
-              currentCategory.categoryName === challenge.category) &&
-              dateGap(challenge.endDate) >= 0 &&
-              !completedChallengesIds.includes(challenge.id) && (
-                <Card
-                  key={challenge.id}
-                  onClick={() => handleClickCard(challenge)}
-                  boxShadow="md"
-                  borderRadius={12}
-                  bg="white"
-                  p={4}
-                  gap={2}
-                  maxWidth="500px"
-                  minWidth="300px"
-                  marginBottom={8}
-                  marginRight={8}
-                  transition="transform 0.3s ease"
-                  _hover={{
-                    transform: 'translate(20px)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Heading size="md">{challenge.title}</Heading>
-                  <Text minHeight="40px">{challenge.description}</Text>
-                  <Flex gap={2}>
-                    <Box
-                      width="auto"
-                      bg="#166879"
-                      color="white"
-                      p={2}
-                      borderRadius={8}
-                    >
-                      <Text fontWeight="bold">{challenge.points} pts</Text>
-                    </Box>
-                    <Box
-                      width="auto"
-                      bg="#4FD1C5"
-                      color="white"
-                      p={2}
-                      borderRadius={8}
-                    >
-                      <Text fontWeight="bold">
-                        {dateGap(challenge.endDate) === 0
-                          ? "Aujourd'hui"
-                          : `${dateGap(challenge.endDate)} jours`}
-                      </Text>
-                    </Box>
-                  </Flex>
-                </Card>
-              )}
-          </div>
-        ))}
-      </Flex>
+      <Text as="h1">À relever</Text>
 
-      <Heading>Relevés récemment</Heading>
-      <Flex wrap="wrap" gap={0}>
-        {completedChallenges.map((c) => (
-          <div>
-            {(currentCategory.categoryName === 'Tous' ||
-              currentCategory.categoryName === c.challenge.category) && (
-              <Card
-                key={c.challenge.id}
-                onClick={() => router.push(`/challenges/${c.challenge.id}`)}
-                boxShadow="md"
-                borderRadius={12}
-                bg="#166879"
-                p={4}
-                gap={2}
-                maxWidth="500px"
-                minWidth="300px"
-                marginBottom={8}
-                marginRight={8}
-                transition="transform 0.3s ease"
-                _hover={{
-                  transform: 'translate(20px)',
-                  cursor: 'pointer',
-                }}
-              >
-                <Heading size="md" color="white">
-                  {c.challenge.title}{' '}
-                </Heading>
-                <Text minHeight="40px" color="white">
-                  {c.challenge.description}
-                </Text>
-                <Flex gap={2}>
-                  <Box
-                    width="auto"
-                    bg="white"
-                    color="#166879"
-                    p={2}
-                    borderRadius={8}
-                  >
-                    <Text fontWeight="bold">{c.challenge.points} pts</Text>
-                  </Box>
-                  <Box
-                    width="auto"
-                    bg="#4FD1C5"
-                    color="white"
-                    p={2}
-                    borderRadius={8}
-                  >
-                    <Text fontWeight="bold">
-                      {dateGap(c.challenge.endDate) === 0
-                        ? "Aujourd'hui"
-                        : `il y a ${
-                            dateGap(c.completed.completionDate) * -1
-                          }jours`}
-                    </Text>
-                  </Box>
-                </Flex>
-              </Card>
-            )}
-          </div>
-        ))}
+      <Flex
+        className="challengeList"
+        flexDirection="row"
+        flexWrap="wrap"
+        mb="24px"
+      >
+        {challengesToShow.length > 0 ? (
+          <Flex
+            className="challengeList"
+            flexDirection="row"
+            flexWrap="wrap"
+            gap="16px"
+          >
+            {challengesToShow.map((challenge) => (
+              <ChallengeCard
+                completionDate={today}
+                type="toComplete"
+                key={challenge.id}
+                challenge={challenge}
+                onClick={() => handleClickCard(challenge)}
+              />
+            ))}
+          </Flex>
+        ) : (
+          <Text as="p">Aucun challenge à relever pour le moment</Text>
+        )}
+      </Flex>
+      <Text as="h1">Relevés récemment</Text>
+      <Flex flexDirection="row" flexWrap="wrap" mb="24px">
+        {completedChallengesToShow.length > 0 ? (
+          <Flex flexDirection="row" flexWrap="wrap" gap="16px">
+            {completedChallengesToShow.map((completedChallenge) => (
+              <ChallengeCard
+                key={completedChallenge.completed.id}
+                challenge={completedChallenge.challenge}
+                onClick={() =>
+                  router.push(`/challenges/${completedChallenge.challenge.id}`)
+                }
+                type="recentlyCompleted"
+                completionDate={completedChallenge.completed.completionDate}
+              />
+            ))}
+          </Flex>
+        ) : (
+          <Text as="p">Aucun challenge relevé récemment</Text>
+        )}
       </Flex>
     </div>
   );

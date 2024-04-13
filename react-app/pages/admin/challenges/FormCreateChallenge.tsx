@@ -72,14 +72,14 @@ function FormCreateChallenge() {
             placeholder="Titre du défi"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            focusBorderColor="#166879"
+            focusBorderColor="primary.300"
             isRequired
             bg="white"
           />
         </FormControl>
         <Textarea
           placeholder="Description du défi"
-          focusBorderColor="#166879"
+          focusBorderColor="primary.300"
           onChange={(e) => setDescription(e.target.value)}
           isRequired
           bg="white"
@@ -87,14 +87,14 @@ function FormCreateChallenge() {
         <Input
           type="number" // Utilisation d'un champ de type nombre
           placeholder="Points"
-          focusBorderColor="#166879"
+          focusBorderColor="primary.300"
           onChange={(e) => setPoints(parseInt(e.target.value, 10))} // Conversion en nombre entier
           isRequired
           bg="white"
         />
         <Select
           placeholder="Catégorie du défi"
-          focusBorderColor="#166879"
+          focusBorderColor="primary.300"
           onChange={(e) => setCategory(e.target.value)}
           isRequired
           bg="white"
@@ -106,22 +106,21 @@ function FormCreateChallenge() {
           ))}
         </Select>
         <DatePicker
-          id="datePicker-1"
           onChange={(e) => {
             setEndDate(e);
           }}
           placeholder="Échéance du défi"
           formatStyle="large"
           borderRadius="semi-rounded"
-        />{' '}
+        />
         <Textarea
           placeholder="Explication Pédagoqique"
-          focusBorderColor="#166879"
+          focusBorderColor="primary.300"
           onChange={(e) => setPedagogicalExplanation(e.target.value)}
           isRequired
           bg="white"
         />
-        <Button bg="#166879" color="white" onClick={handleSubmit}>
+        <Button bg="primary.300" color="white" onClick={handleSubmit}>
           Créer un challenge
         </Button>
       </Flex>
