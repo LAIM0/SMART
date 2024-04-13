@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Query, Delete } from '@nestjs/common';
 import { CompletedService } from './completed.service';
 import { Completed } from './completed.schema';
 import { CreateCompletedDto } from './dto/create-completed.dto';
-import { UserCheckDto } from './dto/get-complete-user.dto';
-import { Types } from 'mongoose';
+import {  Types } from 'mongoose';
 
 @Controller('completed')
 export class CompletedController {
@@ -22,4 +21,22 @@ export class CompletedController {
   async getCompletedByUserId(@Param('userId') userId:Types.ObjectId ) {
     return this.completedService.getUserCompleteds(userId);
   }
+
+  @Get('/byUserIdByChallengeId')
+  async getCompletedByUserIdByChallengeId(
+    @Query('userId') userId: Types.ObjectId,
+    @Query('challengeId') challengeId: Types.ObjectId
+  ): Promise<Completed[]> {
+    return this.completedService.getCompletedByUserIdByChallengeId(userId, challengeId);
+  }
+
+  @Delete('/delete')
+  async deleteChallenge(
+    @Query('userId') userId: Types.ObjectId,
+    @Query('challengeId') challengeId: Types.ObjectId
+  ) {
+    console.log('params pour la suppression - controller', userId, challengeId);
+    return this.completedService.delete(userId, challengeId);
+  }
+
 }

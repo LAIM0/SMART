@@ -9,7 +9,7 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import CategoryData from '../../../interfaces/categoryInterface';
-// import { DatePicker } from "react-rainbow-components";
+import { DatePicker } from 'react-rainbow-components';
 
 function FormCreateChallenge() {
   const [title, setTitle] = useState<string>('');
@@ -105,7 +105,7 @@ function FormCreateChallenge() {
             </option>
           ))}
         </Select>
-        {/* <DatePicker
+        <DatePicker
           id="datePicker-1"
           onChange={(e) => {
             setEndDate(e);
@@ -113,7 +113,7 @@ function FormCreateChallenge() {
           placeholder="Échéance du défi"
           formatStyle="large"
           borderRadius="semi-rounded"
-        />{" "} */}
+        />{' '}
         <Textarea
           placeholder="Explication Pédagoqique"
           focusBorderColor="#166879"

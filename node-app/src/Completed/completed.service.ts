@@ -42,4 +42,19 @@ export class CompletedService {
 
     return completedsWithChallenges;
   }
+
+  async getCompletedByUserIdByChallengeId(
+    userId: Types.ObjectId,
+    challengeId: Types.ObjectId
+  ): Promise<CompletedInterface[]> {
+    console.log('params', userId, challengeId);
+    return this.completedModel.find({ userId: userId, challengeId: challengeId }).exec();
+  }
+
+ async delete(userId: Types.ObjectId, challengeId: Types.ObjectId): Promise<void> {
+    console.log('params pour la suppression', userId, challengeId);
+    await this.completedModel.deleteOne({ userId: userId, challengeId: challengeId });
 }
+
+}
+
