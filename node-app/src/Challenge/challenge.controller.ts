@@ -14,8 +14,8 @@ export class ChallengeController {
   }
 
   @Post('/create') // Décorateur @Post() pour l'endpoint /challenges/create
-  async createChallenge(@Body() createUserDto: CreateChallengeDto) {
-    return this.challengeService.create(createUserDto);
+  async createChallenge(@Body() createChallengeDto: CreateChallengeDto) {
+    return this.challengeService.create(createChallengeDto);
   }
 
   @Delete('/delete/:id')

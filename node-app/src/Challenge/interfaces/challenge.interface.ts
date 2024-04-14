@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { Periodicity } from 'utils/constants';
 
 export interface ChallengeInterface {
   category?: Types.ObjectId;
@@ -8,4 +9,5 @@ export interface ChallengeInterface {
   pedagogicalExplanation?: string;
   photo?: string;
   endDate?: Date;
+  periodicity?: Periodicity; // Ajout de la propriété periodicity avec le type Periodicity
 }

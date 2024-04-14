@@ -75,14 +75,7 @@ function AdminChallenges() {
 
   return (
     <Flex flexDirection="column" gap="16px">
-      <Button
-        bg="primary.300"
-        color="white"
-        width="fit-content"
-        onClick={onOpenFormModal}
-      >
-        Ajouter un défi
-      </Button>
+      <FormCreateChallenge />
       <TableContainer bg="white" borderRadius={16}>
         <Table variant="simple">
           <Thead>
@@ -139,16 +132,6 @@ function AdminChallenges() {
               Supprimer
             </Button>
           </ModalFooter>
-        </ModalContent>
-      </Modal>
-      <Modal isOpen={isOpenFormModal} onClose={onCloseFormModal}>
-        <ModalOverlay />
-        <ModalContent bg="#F8F8F8" p="24px">
-          <ModalHeader>Ajouter un défi</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormCreateChallenge />
-          </ModalBody>
         </ModalContent>
       </Modal>
     </Flex>

@@ -1,3 +1,5 @@
+import { Periodicity } from '../utils/constants';
+
 interface CompletedChallengeData {
   completed: {
     id: string;
@@ -13,6 +15,7 @@ interface CompletedChallengeData {
     description: string;
     pedagogicalExplanation: string;
     endDate: Date;
+    periodicity: Periodicity;
   };
 }
 

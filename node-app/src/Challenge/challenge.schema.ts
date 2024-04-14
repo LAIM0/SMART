@@ -1,13 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Periodicity } from 'utils/constants';
+
 
 export type ChallengeDocument = Challenge & Document;
-
-enum Periodicity {
-  DAILY = 'Quotidien',
-  WEEKLY = 'Hebdomadaire',
-  MONTHLY = 'Mensuel',
-}
 
 @Schema()
 export class Challenge {
