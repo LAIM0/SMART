@@ -12,6 +12,9 @@ const ENDPOINTS = {
   CHALLENGE: {
     CHALLENGES_BY_ID: (challengeId: string) =>
       `/${ENTITIES.CHALLENGE}/byId/${challengeId}`,
+    CHALLENGES_UPDATE: () => `/${ENTITIES.CHALLENGE}/update`,
+    CHALLENGES_DELETE_BY_ID: (challengeId: string) =>
+      `/${ENTITIES.CHALLENGE}/delete/${challengeId}`,
   },
 
   COMPLETED: {

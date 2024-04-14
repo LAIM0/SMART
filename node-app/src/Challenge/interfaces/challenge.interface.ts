@@ -11,3 +11,16 @@ export interface ChallengeInterface {
   endDate?: Date;
   periodicity?: Periodicity; // Ajout de la propriété periodicity avec le type Periodicity
 }
+
+export interface ChallengeData {
+  id?: Types.ObjectId;
+  category?: Types.ObjectId;
+  title: string;
+  points?: number;
+  description?: string;
+  pedagogicalExplanation?: string;
+  photo?: string;
+  endDate?: Date;
+  periodicity?: Periodicity; // Ajout de la propriété periodicity avec le type Periodicity
+}
+

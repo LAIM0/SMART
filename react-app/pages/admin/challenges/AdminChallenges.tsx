@@ -20,12 +20,11 @@ import {
 } from '@chakra-ui/react';
 import FormCreateChallenge from './FormCreateChallenge';
 import ChallengeData from '../../../interfaces/challengeInterface';
+import dateGap from '../../../utils/mathFunctions';
+import FormUpdateChallenge from './FormUpdateChallenge';
 
 function AdminChallenges() {
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
-
-  const [currentChallenge, setCurrentChallenge] =
-    useState<ChallengeData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,37 +41,6 @@ function AdminChallenges() {
     fetchData();
   }, [challenges]);
 
-  // State for first modal
-  const {
-    isOpen: isOpenFormModal,
-    onOpen: onOpenFormModal,
-    onClose: onCloseFormModal,
-  } = useDisclosure();
-
-  // State for second modal
-  const {
-    isOpen: isOpenDeleteModal,
-    onOpen: onOpenDeleteModal,
-    onClose: onCloseDeleteModal,
-  } = useDisclosure();
-
-  const clearCurrentChallenge = () => {
-    setCurrentChallenge(null);
-  };
-
-  const deleteChallenge = async () => {
-    try {
-      await axios.delete<ChallengeData[]>(
-        `http://localhost:3001/challenges/delete/${currentChallenge?.id}`
-      );
-      setChallenges(
-        challenges.filter((challenge) => challenge.id !== currentChallenge?.id)
-      );
-    } catch (error) {
-      console.error('Erreur lors de la suppression des données:', error);
-    }
-  };
-
   return (
     <Flex flexDirection="column" gap="16px">
       <FormCreateChallenge />
@@ -80,60 +48,26 @@ function AdminChallenges() {
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th width="20%">Nom du défi</Th>
-              <Th width="60%">Description</Th>
-              <Th width="20%" isNumeric>
-                Points
-              </Th>
+              <Th width="30%">Nom du défi</Th>
+              <Th width="20%">Catégorie</Th>
+              <Th width="20%">Points</Th>
+              <Th width="20%">Date de fin</Th>
+              <Th width="10%">Modifier</Th>
             </Tr>
           </Thead>
           {challenges.map((challenge) => (
-            <Tr
-              onClick={() => {
-                onOpenDeleteModal(); // Appeler la fonction onOpen
-                setCurrentChallenge(challenge); // Appeler setCurrentChallenge avec le défi actuel
-              }}
-              key={challenge.id}
-              _hover={{ bg: 'lightgray', cursor: 'pointer' }}
-            >
-              <Td width="20%">{challenge.title}</Td>
-              <Td width="60%">{challenge.description}</Td>
+            <Tr key={challenge.id}>
+              <Td width="30%">{challenge.title}</Td>
+              <Td width="30%">{challenge.category}</Td>
               <Td width="20%">{challenge.points}</Td>
+              <Td width="20%">{dateGap(challenge.endDate)} jours</Td>
+              <Td width="10%">
+                <FormUpdateChallenge currentChallenge={challenge} />
+              </Td>
             </Tr>
           ))}
         </Table>
       </TableContainer>
-      <Modal isOpen={isOpenDeleteModal} onClose={onCloseDeleteModal}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{currentChallenge?.title}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>{currentChallenge?.description}</ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme="blue"
-              mr={3}
-              onClick={() => {
-                onCloseDeleteModal();
-                clearCurrentChallenge();
-              }}
-            >
-              Close
-            </Button>
-            <Button
-              color="white"
-              bg="#E00261"
-              onClick={() => {
-                deleteChallenge();
-                onCloseDeleteModal();
-              }}
-            >
-              Supprimer
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </Flex>
   );
 }

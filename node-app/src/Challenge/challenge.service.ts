@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Challenge, ChallengeDocument } from './challenge.schema';
 import { Model, Types } from 'mongoose';
-import { ChallengeInterface } from './interfaces/challenge.interface';
+import { ChallengeData, ChallengeInterface } from './interfaces/challenge.interface';
 import { Periodicity } from 'utils/constants';
 import * as moment from 'moment';
 
@@ -23,7 +23,22 @@ export class ChallengeService {
     return createdChallenge.save();
   }
 
-  async delete(id: number): Promise<void> {
+  async update(updatedChallenge: ChallengeData): Promise<Challenge | null> {
+  try {
+    const existingChallenge = await this.challengeModel.findById(updatedChallenge.id);
+    if (!existingChallenge) {
+      return null;
+    }
+    existingChallenge.set(updatedChallenge);
+    const updatedChallengeDoc = await existingChallenge.save();
+    return updatedChallengeDoc;
+  } catch (error) {
+    console.error("Error updating challenge:", error);
+    throw error; 
+  }
+}
+
+  async delete(id: string): Promise<void> {
     try {
       this.challengeModel.deleteOne({ _id: id });
       await this.challengeModel.deleteOne({ _id: id });
