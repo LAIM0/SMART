@@ -1,4 +1,4 @@
-import { Periodicity } from '../utils/constants';
+import { Periodicity } from './../utils/constants';
 
 interface CompletedChallengeData {
   completed: {

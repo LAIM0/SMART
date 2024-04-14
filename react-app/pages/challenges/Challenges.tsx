@@ -101,7 +101,7 @@ function Challenges() {
   );
 
   return (
-    <div>
+    <Flex p="32px" flexDirection="column">
       <Text as="h1">Défis</Text>
       <Flex
         p={3}
@@ -231,7 +231,7 @@ function Challenges() {
           <Text as="p">Aucun challenge relevé récemment</Text>
         )}
       </Flex>
-    </div>
+    </Flex>
   );
 }
 

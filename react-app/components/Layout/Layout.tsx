@@ -27,7 +27,6 @@ function Layout({ children }: LayoutProps): JSX.Element {
       <Sidebar />
       <Flex
         marginLeft={windowWidth < 500 ? '0px' : '250px'}
-        p="32px"
         flexDirection="column"
         justifyContent="left"
         w="100%"
