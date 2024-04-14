@@ -39,6 +39,10 @@ function Challenge() {
     fetchCurrentChallenge();
   }, [router.query.id]);
 
+  // useEffect(() => {
+  //   const date = (currentChallenge && currentChallenge.endDate) || new Date();
+  // }, [currentChallenge]);
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get<UserData>(
@@ -104,15 +108,11 @@ function Challenge() {
     checkCompletedChallenge();
   }, [user, router.query.id]);
 
-  const date = (currentChallenge && currentChallenge.endDate) || new Date();
-
   return (
     <ChakraProvider theme={theme}>
       <Layout>
         <Flex
           zIndex={5}
-          ml="-64px"
-          mt="-64px"
           position="relative"
           height="100vh"
           bg="tertiary"
@@ -122,11 +122,11 @@ function Challenge() {
             flexDirection="column"
             h="25vh"
             bg="darkgray"
-            pr="54px"
-            pl="72px"
+            pr="32px"
+            pl="32px"
             justifyContent="flex-end"
             gap="8px"
-            py="16px"
+            py="32px"
           >
             <IconButton
               isRound
@@ -153,7 +153,7 @@ function Challenge() {
                   {currentChallenge?.points} pts
                 </Text>
               </Box>
-              {/* <Box
+              <Box
                 width="auto"
                 bg="#4FD1C5"
                 color="white"
@@ -165,16 +165,18 @@ function Challenge() {
                   {' '}
                   {isCompleted
                     ? 'Déjà réalisé'
-                    : ` Il vous reste ${dateGap(date)} jours`}
+                    : currentChallenge?.endDate
+                      ? ` Il vous reste ${dateGap(currentChallenge?.endDate)} jours`
+                      : 'chargement'}
                 </Text>
-              </Box> */}
+              </Box>
             </Flex>
           </Flex>
           <Flex
             gap={4}
             flexDirection="column"
-            pr="54px"
-            pl="72px"
+            pr="32px"
+            pl="32px"
             py="16px"
             boxShadow="0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
             position="relative"
