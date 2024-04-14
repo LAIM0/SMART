@@ -35,6 +35,7 @@ export class UserService {
       firstName: firstName,
       isAdmin: isAdmin,
       teamId: teamId,
+      firstLogin:true,
     });
     return newUser.save();
   }

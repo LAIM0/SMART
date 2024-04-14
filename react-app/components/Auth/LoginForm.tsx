@@ -55,15 +55,18 @@ export default function LoginForm() {
       });
 
       setIsLoading(false);
+      const data = await response.json();
+      if (data.message === 'Email not verified') {
+      
+        throw new Error('Adresse email non vérifiée');
+      }else if (!response.ok) {throw new Error('Login failed');
 
-      if (!response.ok) throw new Error('Login failed');
-
-      setLoginResponse({ message: 'Login successful!', status: 'success' });
-      const preLoginRoute =
-        localStorage.getItem('preLoginRoute') || '/challenges';
-      localStorage.removeItem('preLoginRoute'); // Nettoyez après la lecture
-      router.push(preLoginRoute);
-      // Redirect the user or update the state based on the successful login
+      } else {
+        setLoginResponse({ message: 'Login successful!', status: 'success' });
+        const preLoginRoute = localStorage.getItem('preLoginRoute') || '/challenges';
+        localStorage.removeItem('preLoginRoute');
+        router.push(preLoginRoute);
+      }
     } catch (error) {
       setLoginResponse({
         message: error instanceof Error ? error.message : 'An error occurred',
