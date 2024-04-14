@@ -48,6 +48,7 @@ function AdminUsers() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isOpenError, setIsOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [deleteUserId, setDeleteUserId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +64,10 @@ function AdminUsers() {
 
     fetchData();
   }, []);
+
+  const handleDeleteConfirmation = (userId) => {
+    setDeleteUserId(userId);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -93,10 +98,10 @@ function AdminUsers() {
           isAdmin: false,
         });
         setSelectedTeam('');
-        onClose();
         const updatedUsers = await fetchUsers();
         setUsers(updatedUsers);
         setIsOpenError(false);
+        onClose();
       }
     } catch (error) {
       console.error("Erreur lors de l'ajout de l'utilisateur:", error);
@@ -105,9 +110,10 @@ function AdminUsers() {
     }
   };
 
-  const handleDeleteUser = async (userId) => {
+  const handleDeleteUser = async () => {
     try {
-      await deleteUser(userId);
+      await deleteUser(deleteUserId);
+      setDeleteUserId(null);
       const updatedUsers = await fetchUsers();
       setUsers(updatedUsers);
     } catch (error) {
@@ -127,11 +133,10 @@ function AdminUsers() {
       );
     }
   };
+
   const handleToggleAdmin = async (userId, isAdmin) => {
     try {
-      // Appeler l'API pour mettre à jour le statut d'administrateur de l'utilisateur
       await updateUserAdminStatus(userId, isAdmin);
-      // Mettre à jour la liste des utilisateurs après la modification
       const updatedUsers = await fetchUsers();
       setUsers(updatedUsers);
     } catch (error) {
@@ -179,18 +184,18 @@ function AdminUsers() {
                   </Select>
                 </Td>
                 <Td>
-              <Flex align="center">
-                <Switch
-                  isChecked={user.isAdmin}
-                  onChange={(e) => handleToggleAdmin(user._id, e.target.checked)}
-                />
-                <Text ml={2}>{user.isAdmin ? 'Oui' : 'Non'}</Text>
-              </Flex>
-            </Td>
+                  <Flex align="center">
+                    <Switch
+                      isChecked={user.isAdmin}
+                      onChange={(e) => handleToggleAdmin(user._id, e.target.checked)}
+                    />
+                    <Text ml={2}>{user.isAdmin ? 'Oui' : 'Non'}</Text>
+                  </Flex>
+                </Td>
                 <Td>
                   <Button
                     colorScheme='red'
-                    onClick={() => handleDeleteUser(user._id)}
+                    onClick={() => handleDeleteConfirmation(user._id)}
                   >
                     Supprimer
                   </Button>
@@ -281,6 +286,20 @@ function AdminUsers() {
                 )}
               </Flex>
             </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={deleteUserId !== null} onClose={() => setDeleteUserId(null)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Confirmation de la suppression</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Êtes-vous sûr de vouloir supprimer cet utilisateur ?
+            <Flex justifyContent="flex-end" mt={4}>
+              <Button variant="outline" onClick={() => setDeleteUserId(null)}>Annuler</Button>
+              <Button colorScheme="red" ml={2} onClick={handleDeleteUser}>Confirmer</Button>
+            </Flex>
           </ModalBody>
         </ModalContent>
       </Modal>

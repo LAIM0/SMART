@@ -28,6 +28,10 @@ export class User {
 
   @Prop({ default: 0 })
   level: number;
+
+  @Prop({ default: true })
+  firstLogin: boolean;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
