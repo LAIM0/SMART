@@ -1,10 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common/pipes';
-import * as session from "express-session"
-import * as passport from "passport"
+import * as session from "express-session";
+import * as passport from "passport";
+import 'moment/locale/fr'; 
+import * as moment from 'moment'; 
 
 async function bootstrap() {
+  // Initialise Moment.js avec la locale et les options nécessaires
+  moment.locale('fr'); 
+
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: 'http://localhost:3000',

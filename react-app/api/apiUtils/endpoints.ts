@@ -18,6 +18,16 @@ const ENDPOINTS = {
     COMPLETED_BY_USER_ID: (userId: string) =>
       `/${ENTITIES.COMPLETED}/byUserId/${userId}`,
     COMPLETED_CREATE: () => `/${ENTITIES.COMPLETED}/create`,
+    COMPLETED_BY_USER_ID_BY_CHALLENGE_ID: (
+      userId: string,
+      challengeId: string
+    ) =>
+      `/${ENTITIES.COMPLETED}/byUserIdByChallengeId?userId=${userId}&challengeId=${challengeId}`,
+    COMPLETED_DELETE_BY_USER_ID_BY_CHALLENGE_ID: (
+      userId: string,
+      challengeId: string
+    ) =>
+      `/${ENTITIES.COMPLETED}/delete?userId=${userId}&challengeId=${challengeId}`,
   },
   USER: {},
   TEAM: {},
