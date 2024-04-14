@@ -19,6 +19,10 @@ class ApiMethods {
     return this.apiRequest('POST', url, data);
   }
 
+  static patch(url: string, data: any) {
+    return this.apiRequest('PATCH', url, data);
+  }
+
   static put(url: string, data: any) {
     return this.apiRequest('PUT', url, data);
   }
