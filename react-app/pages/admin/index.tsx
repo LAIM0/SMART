@@ -1,15 +1,14 @@
-/* eslint-disable */
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/admin/challenges");
+    router.push('/admin/challenges');
   }, [router]);
 
-  return null; // Ou un indicateur de chargement pendant que la redirection est en cours
+  return null;
 };
 
 export default Home;

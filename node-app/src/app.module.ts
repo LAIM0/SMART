@@ -10,6 +10,7 @@ import { CategoryModule } from './Category/category.module';
 import { CompletedModule } from './Completed/completed.module';
 import { AuthModule } from './Auth/auth.module';
 import { MailService } from './mail/mail.service';
+import { ScheduleModule } from './Scheduler/schedule.module';
 
 const mongoUsername = process.env.MONGO_USERNAME;
 const mongoPassword = process.env.MONGO_PASSWORD;
@@ -28,6 +29,7 @@ const mongoDb = process.env.MONGO_DB;
     CategoryModule,
     CompletedModule,
     AuthModule,
+    ScheduleModule,
     MailerModule.forRoot({
       transport: {
         host: process.env.MAIL_HOST,

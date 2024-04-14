@@ -37,6 +37,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
       }}
     >
       <Text as="h2">{challenge.title}</Text>
+
       <Text
         minHeight="40px"
         mb="4px"
@@ -57,24 +58,20 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             </Text>
           </Box>
 
-          {isRecentlyCompleted ? (
-            <Box bg="white" py="8px" px="16px" borderRadius={8}>
-              <Text as="h4" color="primary.300">
-                Relevé
-                {dateGap(completionDate) === 0
-                  ? " aujourd'hui"
-                  : ` il y a ${dateGap(completionDate) * -1} jours`}
-              </Text>
-            </Box>
-          ) : (
-            <Box bg="#4FD1C5" py="8px" px="16px" borderRadius={8}>
-              <Text as="h4" color="white">
-                {dateGap(challenge.endDate) === 0
+          <Box
+            bg={isRecentlyCompleted ? 'white' : '#4FD1C5'}
+            py="8px"
+            px="16px"
+            borderRadius={8}
+          >
+            <Text as="h4" color={isRecentlyCompleted ? 'primary.300' : 'white'}>
+              {isRecentlyCompleted
+                ? `Relevé ${dateGap(completionDate) === 0 ? "aujourd'hui" : `il y a ${dateGap(completionDate) * -1} jours`}`
+                : dateGap(challenge.endDate) === 0
                   ? "Aujourd'hui"
                   : `${dateGap(challenge.endDate)} jours`}
-              </Text>
-            </Box>
-          )}
+            </Text>
+          </Box>
         </Flex>
       </Box>
     </Card>

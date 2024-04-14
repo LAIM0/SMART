@@ -8,7 +8,7 @@ import ChallengeData from '../../interfaces/challengeInterface';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import dateGap from '../../utils/mathFunctions';
 import CategoryApiManager from '../../api/CategoryApiManager';
-import ChallengeCard from './ChallengeCard';
+import ChallengeCard from '../../components/Challenges/ChallengeCard';
 import UserData from '../../interfaces/userInterface';
 
 function Challenges() {

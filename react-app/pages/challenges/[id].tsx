@@ -77,7 +77,7 @@ function Challenge() {
           router.query.id as string
         );
       console.log(fetchCompletedChallenge.length);
-      if (fetchCompletedChallenge.length == 0) {
+      if (fetchCompletedChallenge.length === 0) {
         setIsCompleted(false);
       } else {
         setIsCompleted(true);
@@ -113,7 +113,7 @@ function Challenge() {
           zIndex={5}
           ml="-64px"
           mt="-64px"
-          position="absolute"
+          position="relative"
           height="100vh"
           bg="tertiary"
           flexDirection="column"
@@ -153,7 +153,7 @@ function Challenge() {
                   {currentChallenge?.points} pts
                 </Text>
               </Box>
-              <Box
+              {/* <Box
                 width="auto"
                 bg="#4FD1C5"
                 color="white"
@@ -167,7 +167,7 @@ function Challenge() {
                     ? 'Déjà réalisé'
                     : ` Il vous reste ${dateGap(date)} jours`}
                 </Text>
-              </Box>
+              </Box> */}
             </Flex>
           </Flex>
           <Flex

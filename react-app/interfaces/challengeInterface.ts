@@ -1,3 +1,5 @@
+import { Periodicity } from '../utils/constants';
+
 interface ChallengeData {
   id: string;
   title: string;
@@ -6,6 +8,7 @@ interface ChallengeData {
   points: number;
   endDate: Date;
   pedagogicalExplanation: string;
+  periodicity: Periodicity; // Ajout de la propriété periodicity avec le type Periodicity
 }
 
 export default ChallengeData;
