@@ -16,13 +16,18 @@ import {
   ModalCloseButton,
   ModalBody,
 } from '@chakra-ui/react';
-import CategoryData from '../../../interfaces/categoryInterface';
+import CategoryData from '../../interfaces/categoryInterface';
 import { SingleDatepicker } from 'chakra-dayzed-datepicker';
 // https://github.com/aboveyunhai/chakra-dayzed-datepicker/tree/main
-import { Periodicity } from '../../../utils/constants';
+import { Periodicity } from '../../utils/constants';
 import moment from 'moment';
+import ChallengeApiManager from '../../api/ChallengeApiManager';
 
-function FormCreateChallenge() {
+interface Props {
+  refresh: () => void;
+}
+
+function FormCreateChallenge({ refresh }: Props) {
   const [isOpenFormModal, setIsOpenFormModal] = useState(false);
 
   const [title, setTitle] = useState('');
@@ -49,7 +54,7 @@ function FormCreateChallenge() {
     setIsOpenFormModal(false);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Vérifier les champs requis avant de soumettre le formulaire
@@ -85,23 +90,29 @@ function FormCreateChallenge() {
       periodicity,
     };
 
-    axios
-      .post('http://localhost:3001/challenges/create', newChallenge)
-      .then((res) => {
-        console.log(res);
-        // Réinitialiser le formulaire après la soumission réussie
-        setTitle('');
-        setDescription('');
-        setPoints(0);
-        setCategory('');
-        setEndDate(new Date());
-        setPedagogicalExplanation('');
-        setPeriodicity(Periodicity.PUNCTUAL);
-        closeModal(); // Fermer le modal après la soumission réussie
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      // créer le challenge via l'API
+      await ChallengeApiManager.create(
+        title,
+        description,
+        points,
+        category,
+        periodicity,
+        challengeDate,
+        pedagogicalExplanation
+      );
+      refresh();
+      setTitle('');
+      setDescription('');
+      setPoints(0);
+      setCategory('');
+      setPeriodicity(Periodicity.PUNCTUAL);
+      setEndDate(new Date());
+      setPedagogicalExplanation('');
+      closeModal();
+    } catch (error) {
+      console.error('Erreur lors de la création du challenge :', error);
+    }
   };
 
   const [categories, setCategories] = useState<CategoryData[]>([]);
@@ -120,21 +131,13 @@ function FormCreateChallenge() {
   useEffect(() => {
     switch (periodicity) {
       case Periodicity.DAILY:
-        setEndDate(moment(endDate).add(1, 'days').startOf('day').toDate());
+        setEndDate(moment(new Date()).endOf('day').toDate());
         break;
       case Periodicity.WEEKLY:
-        setEndDate(
-          moment(endDate)
-            .add(1, 'weeks')
-            .startOf('isoWeek')
-            .startOf('day')
-            .toDate()
-        );
+        setEndDate(moment(new Date()).endOf('isoWeek').endOf('day').toDate());
         break;
       case Periodicity.MONTHLY:
-        setEndDate(
-          moment(endDate).endOf('month').add(1, 'days').startOf('day').toDate()
-        );
+        setEndDate(moment(new Date()).endOf('month').endOf('day').toDate());
         break;
       default:
     }
@@ -256,7 +259,10 @@ function FormCreateChallenge() {
                     bg="white"
                   >
                     {categories.map((categoryItem) => (
-                      <option key={categoryItem.id} value={categoryItem.id}>
+                      <option
+                        key={categoryItem.id + categoryItem.categoryName}
+                        value={categoryItem.id}
+                      >
                         {categoryItem.categoryName}
                       </option>
                     ))}
@@ -304,8 +310,71 @@ function FormCreateChallenge() {
                     <SingleDatepicker
                       date={endDate}
                       onDateChange={(e) => {
-                        setEndDate(e);
+                        setEndDate(moment(e).endOf('day').toDate());
                         setEndDateError(false);
+                      }}
+                      propsConfigs={{
+                        dateNavBtnProps: {
+                          colorScheme: 'primary.300',
+                          background: '#F8F8F8',
+                        },
+                        dayOfMonthBtnProps: {
+                          defaultBtnProps: {
+                            _hover: {
+                              background: 'primary.100',
+                            },
+                          },
+                          selectedBtnProps: {
+                            background: 'primary.300',
+                            color: 'red',
+                          },
+                          todayBtnProps: {
+                            variant: 'outline',
+                            borderColor: 'primary.300',
+                            color: 'primary.300',
+                          },
+                        },
+                        popoverCompProps: {
+                          popoverContentProps: {
+                            background: 'white',
+                            color: 'primary.300',
+                          },
+                        },
+                        calendarPanelProps: {
+                          wrapperProps: {
+                            borderColor: 'green',
+                          },
+                          contentProps: {
+                            borderWidth: 0,
+                          },
+                          headerProps: {
+                            padding: '5px',
+                          },
+                          dividerProps: {
+                            display: 'none',
+                          },
+                        },
+                        weekdayLabelProps: {
+                          fontWeight: 'normal',
+                        },
+                        dateHeadingProps: {
+                          fontWeight: 'semibold',
+                        },
+                        inputProps: {
+                          size: 'md',
+                          bg: 'white',
+                          variant: 'filled',
+                          isDisabled: true,
+                        },
+                      }}
+                      configs={{
+                        dateFormat: 'dd/MM/yyyy',
+                        dayNames: 'Dim/Lun/Mar/Mer/Jeu/Ven/Sam'.split('/'), // length of 7
+                        monthNames:
+                          'Jan/Fev/Mars/Avr/Mai/Juin/Juil/Août/Sep/Oct/Nov/Dec'.split(
+                            '/'
+                          ), // length of 12
+                        firstDayOfWeek: 1, // default is 0, the dayNames[0], which is Sunday if you don't specify your own dayNames,
                       }}
                     />
                   </FormControl>

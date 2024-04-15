@@ -166,7 +166,9 @@ function Challenge() {
                   {isCompleted
                     ? 'Déjà réalisé'
                     : currentChallenge?.endDate
-                      ? ` Il vous reste ${dateGap(currentChallenge?.endDate)} jours`
+                      ? dateGap(currentChallenge?.endDate) === 0
+                        ? 'Dernier jour pout le faire !'
+                        : `Il vous reste ${dateGap(currentChallenge?.endDate)} jours`
                       : 'chargement'}
                 </Text>
               </Box>
