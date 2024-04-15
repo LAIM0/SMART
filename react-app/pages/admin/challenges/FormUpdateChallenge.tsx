@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import axios from 'axios';
 import {
   FormControl,
@@ -26,11 +26,12 @@ import { EditIcon, SearchIcon } from '@chakra-ui/icons';
 import ChallengeData from '../../../interfaces/challengeInterface';
 import ChallengeApiManager from '../../../api/ChallengeApiManager';
 
-function FormUpdateChallenge({
-  currentChallenge,
-}: {
+interface Props {
   currentChallenge: ChallengeData;
-}) {
+  refresh: () => void;
+}
+
+function FormUpdateChallenge({ currentChallenge, refresh }: Props) {
   const [isOpenFormModal, setIsOpenFormModal] = useState(false);
 
   const [title, setTitle] = useState(currentChallenge.title);
@@ -42,7 +43,7 @@ function FormUpdateChallenge({
   const [category, setCategory] = useState(currentChallenge.category);
   const [categoryError, setCategoryError] = useState(false);
   const [endDate, setEndDate] = useState(currentChallenge.endDate);
-  const [endDateError, setEndDateError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [periodicityError, setPeriodicityError] = useState(false);
   const [periodicity, setPeriodicity] = useState<Periodicity>(
     currentChallenge.periodicity
@@ -60,10 +61,15 @@ function FormUpdateChallenge({
   };
 
   async function deleteChallenge() {
-    ChallengeApiManager.delete(currentChallenge.id);
+    try {
+      await ChallengeApiManager.delete(currentChallenge.id);
+      refresh();
+    } catch (error) {
+      console.error('Erreur lors de la suppression des données :', error);
+    }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Vérifier les champs requis avant de soumettre le formulaire
@@ -84,23 +90,26 @@ function FormUpdateChallenge({
       return;
     }
     if (!endDate) {
-      setEndDateError(true);
       return;
     }
 
     const challengeDate = new Date(endDate);
-
-    //TODO update le challenge
-    ChallengeApiManager.update(
-      currentChallenge.id,
-      title,
-      description,
-      points,
-      category,
-      periodicity,
-      challengeDate,
-      pedagogicalExplanation
-    );
+    try {
+      // Mettre à jour le challenge via l'API
+      await ChallengeApiManager.update(
+        currentChallenge.id,
+        title,
+        description,
+        points,
+        category,
+        periodicity,
+        challengeDate,
+        pedagogicalExplanation
+      );
+      refresh();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du challenge :', error);
+    }
   };
 
   const [categories, setCategories] = useState<CategoryData[]>([]);
@@ -119,11 +128,11 @@ function FormUpdateChallenge({
   useEffect(() => {
     switch (periodicity) {
       case Periodicity.DAILY:
-        setEndDate(moment(endDate).add(1, 'days').startOf('day').toDate());
+        setEndDate(moment(new Date()).add(1, 'days').startOf('day').toDate());
         break;
       case Periodicity.WEEKLY:
         setEndDate(
-          moment(endDate)
+          moment(new Date())
             .add(1, 'weeks')
             .startOf('isoWeek')
             .startOf('day')
@@ -132,8 +141,15 @@ function FormUpdateChallenge({
         break;
       case Periodicity.MONTHLY:
         setEndDate(
-          moment(endDate).endOf('month').add(1, 'days').startOf('day').toDate()
+          moment(new Date())
+            .endOf('month')
+            .add(1, 'days')
+            .startOf('day')
+            .toDate()
         );
+        break;
+      case Periodicity.PUNCTUAL:
+        setEndDate(moment(endDate).add(1, 'days').startOf('day').toDate());
         break;
       default:
     }
@@ -254,7 +270,10 @@ function FormUpdateChallenge({
                     bg="white"
                   >
                     {categories.map((categoryItem) => (
-                      <option key={categoryItem.id} value={categoryItem.id}>
+                      <option
+                        key={categoryItem.id + categoryItem.categoryName}
+                        value={categoryItem.id}
+                      >
                         {categoryItem.categoryName}
                       </option>
                     ))}
@@ -300,10 +319,69 @@ function FormUpdateChallenge({
                     <FormLabel>Date de fin</FormLabel>
 
                     <SingleDatepicker
-                      date={endDate}
+                      date={new Date(endDate)}
                       onDateChange={(e) => {
                         setEndDate(e);
-                        setEndDateError(false);
+                      }}
+                      propsConfigs={{
+                        dateNavBtnProps: {
+                          colorScheme: 'primary.300',
+                          background: '#F8F8F8',
+                        },
+                        dayOfMonthBtnProps: {
+                          defaultBtnProps: {
+                            _hover: {
+                              background: 'primary.100',
+                            },
+                          },
+                          selectedBtnProps: {
+                            background: 'primary.300',
+                            color: 'white',
+                          },
+                          todayBtnProps: {
+                            variant: 'outline',
+                            borderColor: 'primary.300',
+                            color: 'primary.300',
+                          },
+                        },
+                        popoverCompProps: {
+                          popoverContentProps: {
+                            background: 'white',
+                            color: 'primary.300',
+                          },
+                        },
+                        calendarPanelProps: {
+                          wrapperProps: {
+                            borderColor: 'green',
+                          },
+                          contentProps: {
+                            borderWidth: 0,
+                          },
+                          headerProps: {
+                            padding: '5px',
+                          },
+                          dividerProps: {
+                            display: 'none',
+                          },
+                        },
+                        weekdayLabelProps: {
+                          fontWeight: 'normal',
+                        },
+                        dateHeadingProps: {
+                          fontWeight: 'semibold',
+                        },
+                        inputProps: {
+                          size: 'md',
+                        },
+                      }}
+                      configs={{
+                        dateFormat: 'dd/MM/yyyy',
+                        dayNames: 'Lun/Mar/Mer/Jeu/Ven/Sam/Dim'.split('/'), // length of 7
+                        monthNames:
+                          'Jan/Fev/Mars/Avr/Mai/Juin/Juil/Août/Sep/Oct/Nov/Dec'.split(
+                            '/'
+                          ), // length of 12
+                        firstDayOfWeek: 0, // default is 0, the dayNames[0], which is Sunday if you don't specify your own dayNames,
                       }}
                     />
                   </FormControl>
@@ -333,7 +411,7 @@ function FormUpdateChallenge({
                     Enregistrer
                   </Button>
                   <Button
-                    bg="#E00061"
+                    bg="redCoexya"
                     color="white"
                     flex="1"
                     onClick={() => {

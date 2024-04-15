@@ -15,7 +15,7 @@ export class ChallengeService {
   ) {}
 
   async findAll(): Promise<Challenge[]> {
-    return this.challengeModel.find().exec();
+    return this.challengeModel.find().sort({ createdAt: -1 }).exec();
   }
 
   async create(challenge: ChallengeInterface): Promise<Challenge> {
