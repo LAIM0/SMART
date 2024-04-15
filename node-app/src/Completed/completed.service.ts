@@ -56,5 +56,11 @@ export class CompletedService {
     await this.completedModel.deleteOne({ userId: userId, challengeId: challengeId });
 }
 
+async deleteChallengeOccurrences(challengeId: Types.ObjectId): Promise<void> {
+    const completedToDelete = await this.completedModel.find({ challengeId: challengeId }).exec()
+    completedToDelete.map(async (completed) => await this.completedModel.deleteOne({_id: completed.id}));
+}
+
+
 }
 

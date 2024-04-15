@@ -22,10 +22,10 @@ import {
   Icon,
   IconButton,
 } from '@chakra-ui/react';
-import FormCreateChallenge from './FormCreateChallenge';
+import FormCreateChallenge from '../../../components/Challenges/FormCreateChallenge';
 import ChallengeData from '../../../interfaces/challengeInterface';
 import dateGap from '../../../utils/mathFunctions';
-import FormUpdateChallenge from './FormUpdateChallenge';
+import FormUpdateChallenge from '../../../components/Challenges/FormUpdateChallenge';
 import { TriangleDownIcon } from '@chakra-ui/icons';
 import { Filter } from '../../../utils/constants';
 
