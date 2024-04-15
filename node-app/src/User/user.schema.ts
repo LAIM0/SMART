@@ -29,7 +29,7 @@ export class User {
   @Prop({ default: 0 })
   level: number;
 
-  @Prop({ default: true })
+  @Prop({ default: false })
   firstLogin: boolean;
 
 }
