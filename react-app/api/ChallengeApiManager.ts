@@ -29,6 +29,35 @@ class ChallengeApiManager {
     }
   }
 
+  static async create(
+    title: string,
+    description: string,
+    points: number,
+    category: string,
+    periodicity: Periodicity,
+    endDate: Date,
+    pedagogicalExplanation: string
+  ): Promise<ChallengeData> {
+    try {
+      const response = await ApiMethods.post(
+        ENDPOINTS.CHALLENGE.CHALLENGES_CREATE(),
+        {
+          title,
+          description,
+          points,
+          category,
+          periodicity,
+          endDate,
+          pedagogicalExplanation,
+        }
+      );
+      console.log(response);
+      return response.data as ChallengeData;
+    } catch (error) {
+      throw new Error(`Erreur lors de la création du challenge`);
+    }
+  }
+
   static async update(
     id: string,
     title: string,
