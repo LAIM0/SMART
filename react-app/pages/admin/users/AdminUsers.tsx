@@ -33,10 +33,21 @@ import {
 } from '../../../api/UserApiManager';
 
 import fetchTeams from '../../../api/TeamApiManager';
+import TeamData from '../../../interfaces/teamInterface';
 
+interface User {
+  _id: string,
+  firstName: string ,
+  lastName: string ,
+  email: string ,
+  teamId: string ,
+  isAdmin: boolean;
+}
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
 function AdminUsers() {
-  const [users, setUsers] = useState([]);
-  const [teams, setTeams] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [teams, setTeams] = useState<TeamData[]>([]);
   const [newUser, setNewUser] = useState({
     firstName: '',
     lastName: '',
@@ -48,7 +59,11 @@ function AdminUsers() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isOpenError, setIsOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [deleteUserId, setDeleteUserId] = useState(null);
+  const [deleteUserId, setDeleteUserId] = useState<string>('');
+  const [isOpenErrorDeleteUser, setIsOpenErrorDeleteUser] = useState(false);
+  const [errorMessageDeleteUser, setErrorMessageDeleteUser] = useState('');
+
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,24 +80,34 @@ function AdminUsers() {
     fetchData();
   }, []);
 
-  const handleDeleteConfirmation = (userId) => {
-    setDeleteUserId(userId);
+  const handleDeleteConfirmation = (userId :string ) => {
+    console.log(users.length, userId);
+    if (users.length == 1) {
+      // S'il n'y a qu'un seul utilisateur, affichez une erreur
+      setErrorMessageDeleteUser("Vous ne pouvez pas supprimer le dernier utilisateur.");
+    setIsOpenErrorDeleteUser(true);
+    } else {
+      // S'il y a plus d'un utilisateur, permettez la suppression en définissant l'ID de l'utilisateur à supprimer
+      setDeleteUserId(userId);
+      onClose();
+    }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e:any) => {
     const { name, value } = e.target;
     setNewUser({ ...newUser, [name]: value });
   };
 
-  const handleTeamSelectChange = (e) => {
+  const handleTeamSelectChange = (e:any) => {
     setSelectedTeam(e.target.value);
     setNewUser({ ...newUser, teamId: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
     try {
       const userExists = users.some((user) => user.email === newUser.email);
+      
       if (userExists) {
         throw new Error("Un utilisateur avec cette adresse e-mail existe déjà.");
       } else {
@@ -104,8 +129,13 @@ function AdminUsers() {
         onClose();
       }
     } catch (error) {
-      console.error("Erreur lors de l'ajout de l'utilisateur:", error);
-      setErrorMessage(error.message);
+      if (error instanceof Error) {
+        console.error("Erreur lors de l'ajout de l'utilisateur:", error.message);
+        setErrorMessage(error.message);
+      } else {
+        console.error("Erreur lors de l'ajout de l'utilisateur:", error);
+        setErrorMessage('Une erreur inconnue s\'est produite.');
+      }
       setIsOpenError(true);
     }
   };
@@ -113,15 +143,18 @@ function AdminUsers() {
   const handleDeleteUser = async () => {
     try {
       await deleteUser(deleteUserId);
-      setDeleteUserId(null);
+      setDeleteUserId('');
       const updatedUsers = await fetchUsers();
       setUsers(updatedUsers);
     } catch (error) {
-      console.error("Erreur lors de la suppression de l'utilisateur:", error);
+      if (error instanceof Error) {
+      setIsOpenErrorDeleteUser(true);
+      setErrorMessageDeleteUser(error.message);
+      }
     }
   };
 
-  const handleTeamChange = async (userId, teamId) => {
+  const handleTeamChange = async (userId:string, teamId:string) => {
     try {
       await updateUserTeam(userId, teamId);
       const updatedUsers = await fetchUsers();
@@ -134,7 +167,7 @@ function AdminUsers() {
     }
   };
 
-  const handleToggleAdmin = async (userId, isAdmin) => {
+  const handleToggleAdmin = async (userId: string,isAdmin:boolean) => {
     try {
       await updateUserAdminStatus(userId, isAdmin);
       const updatedUsers = await fetchUsers();
@@ -289,7 +322,7 @@ function AdminUsers() {
           </ModalBody>
         </ModalContent>
       </Modal>
-      <Modal isOpen={deleteUserId !== null} onClose={() => setDeleteUserId(null)}>
+      <Modal isOpen={deleteUserId !== ''} onClose={() => setDeleteUserId('')}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Confirmation de la suppression</ModalHeader>
@@ -297,9 +330,21 @@ function AdminUsers() {
           <ModalBody>
             Êtes-vous sûr de vouloir supprimer cet utilisateur ?
             <Flex justifyContent="flex-end" mt={4}>
-              <Button variant="outline" onClick={() => setDeleteUserId(null)}>Annuler</Button>
-              <Button colorScheme="red" ml={2} onClick={handleDeleteUser}>Confirmer</Button>
+              <Button variant="outline" onClick={() => {setDeleteUserId(''); onClose()}}>Annuler</Button>
+              <Button colorScheme="red" ml={2} onClick={() => {handleDeleteUser(); onClose()}}>Confirmer</Button>
+      
             </Flex>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isOpenErrorDeleteUser} onClose={() => setIsOpenErrorDeleteUser(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Erreur de suppression</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {errorMessageDeleteUser}
           </ModalBody>
         </ModalContent>
       </Modal>

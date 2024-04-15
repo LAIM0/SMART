@@ -12,7 +12,15 @@ export const fetchUsers = async () => {
   }
 };
 
-export const addUser = async (newUser) => {
+interface User {
+  firstName: string;
+  lastName: string;
+  email: string;
+  teamId: string;
+  isAdmin: boolean;
+}
+
+export const addUser = async (newUser: User) => {
   try {
     const response = await axios.post(`${baseURL}/users/signup`, {
       ...newUser,
@@ -26,7 +34,7 @@ export const addUser = async (newUser) => {
   }
 };
 
-export const deleteUser = async (userId) => {
+export const deleteUser = async (userId:string) => {
   try {
     await axios.delete(`${baseURL}/users/delete/${userId}`);
   } catch (error) {
@@ -35,7 +43,7 @@ export const deleteUser = async (userId) => {
   }
 };
 
-export const updateUserTeam = async (userId, teamId) => {
+export const updateUserTeam = async (userId:string, teamId:string) => {
   try {
     await axios.put(`${baseURL}/users/${userId}/team`, { teamId });
   } catch (error) {
@@ -47,7 +55,7 @@ export const updateUserTeam = async (userId, teamId) => {
   }
 };
 
-export const updateUserAdminStatus = async (userId, isAdmin) => {
+export const updateUserAdminStatus = async (userId:string, isAdmin:boolean) => {
   try {
     const response = await axios.put(`${baseURL}/users/${userId}/admin`, {
       isAdmin: isAdmin
