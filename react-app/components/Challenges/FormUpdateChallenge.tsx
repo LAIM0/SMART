@@ -17,14 +17,14 @@ import {
   ModalBody,
   IconButton,
 } from '@chakra-ui/react';
-import CategoryData from '../../../interfaces/categoryInterface';
+import CategoryData from '../../interfaces/categoryInterface';
 import { SingleDatepicker } from 'chakra-dayzed-datepicker';
 // https://github.com/aboveyunhai/chakra-dayzed-datepicker/tree/main
-import { Periodicity } from '../../../utils/constants';
+import { Periodicity } from '../../utils/constants';
 import moment from 'moment';
 import { EditIcon, SearchIcon } from '@chakra-ui/icons';
-import ChallengeData from '../../../interfaces/challengeInterface';
-import ChallengeApiManager from '../../../api/ChallengeApiManager';
+import ChallengeData from '../../interfaces/challengeInterface';
+import ChallengeApiManager from '../../api/ChallengeApiManager';
 
 interface Props {
   currentChallenge: ChallengeData;
@@ -415,7 +415,7 @@ function FormUpdateChallenge({ currentChallenge, refresh }: Props) {
                     color="white"
                     flex="1"
                     onClick={() => {
-                      closeModal;
+                      closeModal();
                       deleteChallenge();
                     }}
                   >

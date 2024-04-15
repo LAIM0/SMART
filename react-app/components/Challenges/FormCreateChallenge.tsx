@@ -16,12 +16,12 @@ import {
   ModalCloseButton,
   ModalBody,
 } from '@chakra-ui/react';
-import CategoryData from '../../../interfaces/categoryInterface';
+import CategoryData from '../../interfaces/categoryInterface';
 import { SingleDatepicker } from 'chakra-dayzed-datepicker';
 // https://github.com/aboveyunhai/chakra-dayzed-datepicker/tree/main
-import { Periodicity } from '../../../utils/constants';
+import { Periodicity } from '../../utils/constants';
 import moment from 'moment';
-import ChallengeApiManager from '../../../api/ChallengeApiManager';
+import ChallengeApiManager from '../../api/ChallengeApiManager';
 
 interface Props {
   refresh: () => void;
@@ -378,6 +378,8 @@ function FormCreateChallenge({ refresh }: Props) {
                         inputProps: {
                           size: 'md',
                           bg: 'white',
+                          variant: 'filled',
+                          isDisabled: true,
                         },
                       }}
                       configs={{

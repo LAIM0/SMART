@@ -38,17 +38,18 @@ export class ChallengeService {
   }
 }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: Types.ObjectId): Promise<void> {
     try {
       this.challengeModel.deleteOne({ _id: id });
       await this.challengeModel.deleteOne({ _id: id });
-
       console.log('Données supprimées avec succès');
     } catch (error) {
       console.error('Erreur lors de la suppression des données :', error);
       throw error;
     }
   }
+
+  
   
   async getById(challengeId: Types.ObjectId): Promise<Challenge> {
     return this.challengeModel.findById(challengeId).exec();

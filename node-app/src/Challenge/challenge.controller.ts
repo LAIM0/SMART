@@ -4,10 +4,14 @@ import { Challenge } from './challenge.schema';
 import { CreateChallengeDto } from './dto/create-challenge.dto';
 import { Types } from 'mongoose';
 import { UpdateChallengeDto } from './dto/update-challenge.dto';
+import { CompletedService } from 'src/Completed/completed.service';
 
 @Controller('challenges')
 export class ChallengeController {
-  constructor(private readonly challengeService: ChallengeService) {}
+  constructor(
+    private readonly challengeService: ChallengeService,
+    private readonly completedService: CompletedService, // Injection du service CompletedService
+  ) {}
 
   @Get('/all')
   async findAll(): Promise<Challenge[]> {
@@ -25,8 +29,9 @@ export class ChallengeController {
   }
 
   @Delete('/delete/:id')
-  async deleteChallenge(@Param('id') id: string) {
+  async deleteChallenge(@Param('id') id: Types.ObjectId) {
     this.challengeService.delete(id);
+    this.completedService.deleteChallengeOccurrences(id);
   }
   @Get('/byId/:id')
   async getById(@Param('id') challengeId: Types.ObjectId) {
