@@ -131,28 +131,13 @@ function FormCreateChallenge({ refresh }: Props) {
   useEffect(() => {
     switch (periodicity) {
       case Periodicity.DAILY:
-        setEndDate(moment(new Date()).add(1, 'days').startOf('day').toDate());
+        setEndDate(moment(new Date()).endOf('day').toDate());
         break;
       case Periodicity.WEEKLY:
-        setEndDate(
-          moment(new Date())
-            .add(1, 'weeks')
-            .startOf('isoWeek')
-            .startOf('day')
-            .toDate()
-        );
+        setEndDate(moment(new Date()).endOf('isoWeek').endOf('day').toDate());
         break;
       case Periodicity.MONTHLY:
-        setEndDate(
-          moment(new Date())
-            .endOf('month')
-            .add(1, 'days')
-            .startOf('day')
-            .toDate()
-        );
-        break;
-      case Periodicity.PUNCTUAL:
-        setEndDate(moment(endDate).add(1, 'days').startOf('day').toDate());
+        setEndDate(moment(new Date()).endOf('month').endOf('day').toDate());
         break;
       default:
     }
@@ -325,7 +310,7 @@ function FormCreateChallenge({ refresh }: Props) {
                     <SingleDatepicker
                       date={endDate}
                       onDateChange={(e) => {
-                        setEndDate(e);
+                        setEndDate(moment(e).endOf('day').toDate());
                         setEndDateError(false);
                       }}
                       propsConfigs={{
@@ -341,7 +326,7 @@ function FormCreateChallenge({ refresh }: Props) {
                           },
                           selectedBtnProps: {
                             background: 'primary.300',
-                            color: 'white',
+                            color: 'red',
                           },
                           todayBtnProps: {
                             variant: 'outline',
@@ -384,12 +369,12 @@ function FormCreateChallenge({ refresh }: Props) {
                       }}
                       configs={{
                         dateFormat: 'dd/MM/yyyy',
-                        dayNames: 'Lun/Mar/Mer/Jeu/Ven/Sam/Dim'.split('/'), // length of 7
+                        dayNames: 'Dim/Lun/Mar/Mer/Jeu/Ven/Sam'.split('/'), // length of 7
                         monthNames:
                           'Jan/Fev/Mars/Avr/Mai/Juin/Juil/Août/Sep/Oct/Nov/Dec'.split(
                             '/'
                           ), // length of 12
-                        firstDayOfWeek: 0, // default is 0, the dayNames[0], which is Sunday if you don't specify your own dayNames,
+                        firstDayOfWeek: 1, // default is 0, the dayNames[0], which is Sunday if you don't specify your own dayNames,
                       }}
                     />
                   </FormControl>

@@ -109,10 +109,12 @@ function Sidebar() {
           color={router.pathname.includes(page.url) ? 'white' : 'grey.800'}
           fontWeight={router.pathname.includes(page.url) ? 'bold' : 'light'}
           _hover={{
-            bg: router.pathname.includes(page.url) ? 'primary.100' : '#F1F1F1',
+            bg: router.pathname.includes(page.url)
+              ? 'secondary.100'
+              : '#F1F1F1',
             cursor: 'pointer',
           }}
-          bg={router.pathname.includes(page.url) ? 'primary.100' : 'auto'}
+          bg={router.pathname.includes(page.url) ? 'secondary.100' : 'auto'}
           onClick={() => router.push(page.url)}
           transition="background 0.3s ease, fontWeight 0.8s ease"
         >
