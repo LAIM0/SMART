@@ -337,7 +337,7 @@ function AdminChallenges() {
                 <Td width="30%">{challenge.title}</Td>
                 <Td width="30%">{challenge.category}</Td>
                 <Td width="20%">{challenge.points}</Td>
-                <Td width="20%">{-dateGap(challenge.endDate)} jours</Td>
+                <Td width="20%">{-dateGap(challenge.endDate) + 1} jours</Td>
                 <Td width="10%">
                   <FormUpdateChallenge
                     currentChallenge={challenge}
