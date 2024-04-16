@@ -28,7 +28,8 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
     
         return {
           id: user.id,
-          userName: user.email
+          userName: user.email,
+          isAdmin: user.isAdmin,
         };
       }catch (error) {
           // Catch any unexpected errors and rethrow them

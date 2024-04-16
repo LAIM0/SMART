@@ -15,6 +15,9 @@ import { UserService } from './user.service';
 import { AuthService } from 'src/Auth/auth.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
+import {AdminAuthGuard } from 'src/Auth/admin.guard';
+import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
 @Controller('users')
 export class UserController {
@@ -163,6 +166,18 @@ export class UserController {
     // Si cette fonction est appelée, cela signifie que le garde a permis l'accès
     // Cela peut être utilisé pour vérifier l'authentification côté serveur
     return { loggedIn: true };
+  }
+
+  @Get('check/admin')
+  @UseGuards(AdminAuthGuard,AuthenticatedGuard ) 
+  checkAdminAuthentication(@Request() req) {
+    // if(req.user.isAdmin){
+    //   return { isAdminLoggedIn: true }; 
+    // }
+    // else{
+    //   throw new HttpException('Unauthorized Admin access', HttpStatus.FORBIDDEN);
+    // }
+    return { isAdminLoggedIn: true }; 
   }
 
   @Delete('delete/:userId')
