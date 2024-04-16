@@ -223,6 +223,11 @@ async deleteUser(@Param('userId') userId: string): Promise<{ message: string }> 
     @Body('isAdmin') isAdmin: boolean
   ) {
     try {
+      const defaultAdmin = await this.userService.findDefaultAdmin();
+      const user = await this.userService.findById(userId);
+      if (user.email === defaultAdmin.email) {
+        throw new Error('Vous ne pouvez pas changer les droits de cet utilisateur.');
+      }
       await this.userService.updateUserAdminStatus(userId, isAdmin);
       return { message: 'User admin status updated successfully' };
     } catch (error) {
