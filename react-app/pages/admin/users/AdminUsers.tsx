@@ -36,6 +36,8 @@ import fetchTeams from '../../../api/TeamApiManager';
 import TeamData from '../../../interfaces/teamInterface';
 import { useRouter } from 'next/router';
 import { handleAdminRouting } from '../../../api/AuthApiManager';
+import { AxiosError } from 'axios';
+
 
 interface User {
   _id: string,
@@ -119,7 +121,7 @@ function AdminUsers() {
       const userExists = users.some((user) => user.email === newUser.email);
       
       if (userExists) {
-        throw new Error("Un utilisateur avec cette adresse e-mail existe déjà.");
+        throw new Error('Un utilisateur avec cette adresse e-mail existe déjà.');
       } else {
         await addUser({
           ...newUser,
@@ -150,23 +152,30 @@ function AdminUsers() {
     }
   };
 
-  const handleDeleteUser = async () => {
-    try {
-      // Supprimer l'utilisateur avec l'ID fourni
-      await deleteUser(deleteUserId);
-      setDeleteUserId('');
-      const updatedUsers = await fetchUsers();
-      setUsers(updatedUsers);
-    } catch (error) {
-      if (error.response && error.response.status === 500) {
-        setIsOpenErrorDeleteUser(true);
-        setErrorMessageDeleteUser("Impossible de supprimer l'administrateur.");
-      } else {
-        setIsOpenErrorDeleteUser(true);
-        setErrorMessageDeleteUser(error.message);
-      }
+
+
+const handleDeleteUser = async () => {
+  try {
+    // Supprimer l'utilisateur avec l'ID fourni
+    const response = await deleteUser(deleteUserId);
+    setDeleteUserId('');
+    const updatedUsers = await fetchUsers();
+    setUsers(updatedUsers);
+  } catch (error) {
+    if (isAxiosError(error) && error.response && error.response.status === 500) {
+      setIsOpenErrorDeleteUser(true);
+      setErrorMessageDeleteUser("Impossible de supprimer l'administrateur.");
+    } else if (isAxiosError(error)) {
+      setIsOpenErrorDeleteUser(true);
+      setErrorMessageDeleteUser(error.message);
     }
-  };
+  }
+};
+
+function isAxiosError(error: any): error is AxiosError {
+  return error.isAxiosError !== undefined;
+}
+
 
   const handleTeamChange = async (userId:string, teamId:string) => {
     try {
