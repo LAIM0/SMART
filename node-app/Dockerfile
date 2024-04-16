@@ -7,8 +7,9 @@ WORKDIR /app
 # Copier les fichiers package.json et package-lock.json dans le conteneur
 COPY package*.json ./
 
-# Installer les dépendances du projet, y compris Express
+# Installer les dépendances du projet
 RUN npm install
+
 # Copier le reste des fichiers du projet dans le répertoire de travail du conteneur
 COPY . .
 

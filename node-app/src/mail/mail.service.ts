@@ -17,11 +17,11 @@ export class MailService {
   }
 
   async sendResetPasswordEmail(email: string, token: string) {
-    const resetPasswordUrl = `http://localhost:3000/reset-password/${token}`; // URL du frontend
+    const resetPasswordUrl = `http://localhost:3000/forgotpwd?token=${token}`;
     await this.mailerService.sendMail({
       to: email,
       subject: 'Réinitialisation de votre mot de passe',
-      template: './reset-password', // Emplacement de votre template (e.g., Pug ou Handlebars)
+      template: 'reset-password',
       context: { resetPasswordUrl },
     });
   }
