@@ -1,7 +1,7 @@
+import axios from 'axios';
 import CompletedChallengeData from '../interfaces/completedInterface';
 import ENDPOINTS from './apiUtils/endpoints';
 import ApiMethods from './apiUtils/apiMethods';
-import axios from 'axios';
 import CompletedData from '../interfaces/challengeInterface';
 
 class CompletedApiManager {
@@ -60,6 +60,7 @@ class CompletedApiManager {
       );
     }
   }
+
   static async deleteCompleted(userId: string, challengeId: string) {
     // try {
     //   console.log('params pour tenter la suppression', userId, challengeId);
