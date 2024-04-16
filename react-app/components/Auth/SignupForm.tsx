@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import {
   Flex,
   Box,
-  Heading,
   FormControl,
   FormLabel,
   Input,
@@ -103,7 +102,6 @@ export default function SignupForm() {
       setIsLoading(false);
       if (!response.ok) throw new Error('Sign up failed');
 
-      const data = await response.json();
       localStorage.setItem(
         'resetSuccessMessage',
         'Votre compte a bien été crée'

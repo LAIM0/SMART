@@ -6,7 +6,6 @@ import {
   ColorModeProvider,
   CSSReset,
 } from '@chakra-ui/react';
-import { useLocation } from 'react-router-dom';
 import ResetPasswordForm from '../components/Auth/ResetPasswordForm';
 import { GetServerSidePropsContext } from 'next'; // Assurez-vous du chemin correct
 

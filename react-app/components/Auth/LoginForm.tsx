@@ -4,7 +4,6 @@ import { useState } from 'react';
 import {
   Flex,
   Box,
-  Heading,
   FormControl,
   FormLabel,
   Input,
@@ -14,11 +13,9 @@ import {
   Icon,
   InputGroup,
   Image,
-  Center,
 } from '@chakra-ui/react';
 import logoApp from '../Sidebar/Ecoexya.png';
 import ForgotPasswordForm from './ForgotPasswordForm';
-import SignupForm from './SignupForm';
 import { useRouter } from 'next/router';
 
 interface LoginResponse {
@@ -33,12 +30,11 @@ export default function LoginForm() {
   const [loginResponse, setLoginResponse] = useState<LoginResponse | null>(
     null
   );
-  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
   const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
-  const [showSignUp, setShowSignUp] = useState<boolean>(true);
+  const [showSignUp] = useState<boolean>(true);
 
   const handleSignupClick = () => {
     router.push('/signup');

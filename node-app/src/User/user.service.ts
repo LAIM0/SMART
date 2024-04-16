@@ -15,11 +15,6 @@ export class UserService {
     private mailService: MailService,
   ) {}
 
-  // async createUser(user: UserInterface): Promise<User> {
-  //   const newUser = new this.userModel(user);
-  //   return newUser.save();
-  // }
-
   async createUser(
     email: string,
     password: string,
@@ -40,14 +35,8 @@ export class UserService {
     return newUser.save();
   }
 
-  async resetPassword(email: string, hashedPassword: string): Promise<void> {
-    await this.userModel.updateOne({ email }, { passwordHash: hashedPassword });
-  }
-
   async getUser(email: string) {
-    const username = email.toLowerCase();
-    const user = await this.userModel.findOne({ email });
-    return user;
+    return this.userModel.findOne({ email });
   }
   async create(
     userName: string,

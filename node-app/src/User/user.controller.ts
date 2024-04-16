@@ -15,18 +15,12 @@ import * as bcrypt from 'bcryptjs';
 import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
 import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
 import { UserService } from './user.service';
-import { AuthService } from 'src/Auth/auth.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
-import { MailService } from 'src/mail/mail.service';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly mailService: MailService,
-  ) {}
-  //private readonly jwtService: JwtService
+  constructor(private readonly userService: UserService) {}
 
   @Get()
   async findAll(): Promise<User[]> {
@@ -115,7 +109,6 @@ export class UserController {
   async ranking(
     @Body() scoreCheckDto: ScoreCheckDto,
   ): Promise<{ user: User; score: number }[]> {
-    const userId = scoreCheckDto.userId;
     return this.userService.getRanking();
   }
 

@@ -1,6 +1,5 @@
 /* eslint-disable */
 import React, { useState } from 'react';
-import logoApp from '../Sidebar/Ecoexya.png';
 import {
   Box,
   Button,
