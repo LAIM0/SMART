@@ -55,6 +55,12 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
         duration: 5000,
         isClosable: true,
       });
+
+      localStorage.setItem(
+        'resetSuccessMessage',
+        'Votre mot de passe a bien été réinitialisé.'
+      );
+      window.location.href = '/login';
     } catch (error) {
       toast({
         title: 'Erreur de réinitialisation',

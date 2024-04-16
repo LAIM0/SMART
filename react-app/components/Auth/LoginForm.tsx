@@ -64,6 +64,7 @@ export default function LoginForm() {
       if (!response.ok) throw new Error('Login failed');
 
       setLoginResponse({ message: 'Login successful!', status: 'success' });
+
       const preLoginRoute =
         localStorage.getItem('preLoginRoute') || '/challenges';
       localStorage.removeItem('preLoginRoute'); // Nettoyez après la lecture
