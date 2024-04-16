@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-const Home = () => {
+function Home() {
   const router = useRouter();
 
   useEffect(() => {
@@ -9,6 +9,6 @@ const Home = () => {
   }, [router]);
 
   return null;
-};
+}
 
 export default Home;

@@ -163,13 +163,16 @@ function Challenge() {
               >
                 <Text as="h4" color="white">
                   {' '}
-                  {isCompleted
-                    ? 'Déjà réalisé'
-                    : currentChallenge?.endDate
-                      ? dateGap(currentChallenge?.endDate) === 0
-                        ? 'Dernier jour pout le faire !'
-                        : `Il vous reste ${dateGap(currentChallenge?.endDate)} jours`
-                      : 'chargement'}
+                  {isCompleted && 'Déjà réalisé'}
+                  {!isCompleted &&
+                    currentChallenge &&
+                    currentChallenge.endDate &&
+                    (dateGap(currentChallenge.endDate) === 0
+                      ? 'Dernier jour pour le faire !'
+                      : `Il vous reste ${dateGap(currentChallenge.endDate)} jours`)}
+                  {!isCompleted &&
+                    (!currentChallenge || !currentChallenge.endDate) &&
+                    'Chargement'}
                 </Text>
               </Box>
             </Flex>
@@ -219,7 +222,7 @@ function Challenge() {
                 }
                 setIsCompleted(!isCompleted);
               }}
-              disabled={true}
+              disabled
             >
               {isCompleted ? 'Défi validé' : 'Valider le défi'}
             </Button>

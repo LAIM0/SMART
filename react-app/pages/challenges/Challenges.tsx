@@ -47,11 +47,11 @@ function Challenges() {
           'http://localhost:3001/users/me',
           { withCredentials: true }
         );
-        const completedChallenges =
+        const tempCompletedChallenges =
           await CompletedApiManager.getCompletedChallengesByUserId(
             userData.data.id
           );
-        setCompletedChallenges(completedChallenges);
+        setCompletedChallenges(tempCompletedChallenges);
       } catch (error) {
         console.error(
           'Erreur lors de la récupération des challenges complétés:',
