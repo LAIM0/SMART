@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   FormControl,
@@ -17,12 +17,12 @@ import {
   ModalBody,
   IconButton,
 } from '@chakra-ui/react';
-import CategoryData from '../../interfaces/categoryInterface';
 import { SingleDatepicker } from 'chakra-dayzed-datepicker';
 // https://github.com/aboveyunhai/chakra-dayzed-datepicker/tree/main
-import { Periodicity } from '../../utils/constants';
 import moment from 'moment';
-import { EditIcon, SearchIcon } from '@chakra-ui/icons';
+import { EditIcon } from '@chakra-ui/icons';
+import { Periodicity } from '../../utils/constants';
+import CategoryData from '../../interfaces/categoryInterface';
 import ChallengeData from '../../interfaces/challengeInterface';
 import ChallengeApiManager from '../../api/ChallengeApiManager';
 
@@ -43,7 +43,6 @@ function FormUpdateChallenge({ currentChallenge, refresh }: Props) {
   const [category, setCategory] = useState(currentChallenge.category);
   const [categoryError, setCategoryError] = useState(false);
   const [endDate, setEndDate] = useState(currentChallenge.endDate);
-  const [loading, setLoading] = useState(false);
   const [periodicityError, setPeriodicityError] = useState(false);
   const [periodicity, setPeriodicity] = useState<Periodicity>(
     currentChallenge.periodicity
@@ -159,7 +158,6 @@ function FormUpdateChallenge({ currentChallenge, refresh }: Props) {
                 <FormControl isRequired isInvalid={title === '' && titleError}>
                   <FormLabel>Titre</FormLabel>
                   <Input
-                    //placeholder="Titre du défi"
                     value={title}
                     onChange={(e) => {
                       setTitle(e.target.value);
@@ -185,7 +183,6 @@ function FormUpdateChallenge({ currentChallenge, refresh }: Props) {
                   <FormLabel>Description</FormLabel>
 
                   <Textarea
-                    //placeholder="Description du défi"
                     value={description}
                     onChange={(e) => {
                       setDescription(e.target.value);
@@ -211,7 +208,6 @@ function FormUpdateChallenge({ currentChallenge, refresh }: Props) {
 
                   <Input
                     type="number"
-                    //placeholder="Entre 5 et 50"
                     value={points ? points.toString() : ''}
                     onChange={(e) => {
                       setPoints(parseInt(e.target.value, 10));
@@ -285,8 +281,8 @@ function FormUpdateChallenge({ currentChallenge, refresh }: Props) {
                     focusBorderColor="primary.300"
                     bg="white"
                   >
-                    {Object.values(Periodicity).map((period, index) => (
-                      <option key={index} value={period}>
+                    {Object.values(Periodicity).map((period) => (
+                      <option key={period} value={period}>
                         {period}
                       </option>
                     ))}
@@ -375,7 +371,6 @@ function FormUpdateChallenge({ currentChallenge, refresh }: Props) {
                   <FormLabel>Explications pédagogiques</FormLabel>
 
                   <Textarea
-                    //placeholder="Ressources permettant de sensibiliser à la thématique"
                     value={pedagogicalExplanation}
                     onChange={(e) => {
                       setPedagogicalExplanation(e.target.value);

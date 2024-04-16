@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Flex,
-  Button,
   Table,
   Thead,
   Tr,
@@ -10,23 +9,14 @@ import {
   Td,
   Text,
   TableContainer,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
   Tbody,
-  Icon,
   IconButton,
 } from '@chakra-ui/react';
+import { TriangleDownIcon } from '@chakra-ui/icons';
 import FormCreateChallenge from '../../../components/Challenges/FormCreateChallenge';
 import ChallengeData from '../../../interfaces/challengeInterface';
 import dateGap from '../../../utils/mathFunctions';
 import FormUpdateChallenge from '../../../components/Challenges/FormUpdateChallenge';
-import { TriangleDownIcon } from '@chakra-ui/icons';
 import { Filter } from '../../../utils/constants';
 
 function AdminChallenges() {
@@ -70,8 +60,8 @@ function AdminChallenges() {
   useEffect(() => {
     const curChallenges = challenges.filter(filterCurrent);
     setCurrentChallenges(curChallenges);
-    const formerChallenges = challenges.filter(filterFormer);
-    setFormerChallenges(formerChallenges);
+    const formChallenges = challenges.filter(filterFormer);
+    setFormerChallenges(formChallenges);
   }, [challenges]);
 
   const refresh = () => {
@@ -85,9 +75,16 @@ function AdminChallenges() {
     ascending: boolean = true
   ): T[] {
     return [...array].sort((a, b) => {
-      const comparison =
-        a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
-      return ascending ? comparison : -comparison;
+      let comparison = 0;
+      if (a[property] < b[property]) {
+        comparison = -1;
+      } else if (a[property] > b[property]) {
+        comparison = 1;
+      }
+      if (!ascending) {
+        comparison = -comparison;
+      }
+      return comparison;
     });
   }
 
@@ -189,18 +186,24 @@ function AdminChallenges() {
                   }
                   _hover={{ bg: 'transparent' }}
                   color={
-                    filterByName == Filter.INACTIVE
+                    filterByName === Filter.INACTIVE
                       ? 'primary.300'
-                      : filterByName == Filter.ASC
-                        ? 'secondary.300'
-                        : 'redCoexya'
+                      : (() => {
+                          if (filterByName === Filter.ASC) {
+                            return 'secondary.300';
+                          }
+                          return 'redCoexya';
+                        })()
                   }
                   transform={
-                    filterByName == Filter.INACTIVE
+                    filterByName === Filter.INACTIVE
                       ? 'rotate(270deg)'
-                      : filterByName == Filter.ASC
-                        ? 'rotate(180deg)'
-                        : 'auto'
+                      : (() => {
+                          if (filterByName === Filter.ASC) {
+                            return 'rotate(180deg)';
+                          }
+                          return 'auto';
+                        })()
                   }
                   transition="transform 0.3s ease-in-out"
                 />
@@ -218,18 +221,24 @@ function AdminChallenges() {
                   }
                   _hover={{ bg: 'transparent' }}
                   color={
-                    filterByCategory == Filter.INACTIVE
+                    filterByName === Filter.INACTIVE
                       ? 'primary.300'
-                      : filterByCategory == Filter.ASC
-                        ? 'secondary.300'
-                        : 'redCoexya'
+                      : (() => {
+                          if (filterByName === Filter.ASC) {
+                            return 'secondary.300';
+                          }
+                          return 'redCoexya';
+                        })()
                   }
                   transform={
-                    filterByCategory == Filter.INACTIVE
+                    filterByName === Filter.INACTIVE
                       ? 'rotate(270deg)'
-                      : filterByCategory == Filter.ASC
-                        ? 'rotate(180deg)'
-                        : 'auto'
+                      : (() => {
+                          if (filterByName === Filter.ASC) {
+                            return 'rotate(180deg)';
+                          }
+                          return 'auto';
+                        })()
                   }
                   transition="transform 0.3s ease-in-out"
                 />
@@ -247,18 +256,24 @@ function AdminChallenges() {
                   }
                   _hover={{ bg: 'transparent' }}
                   color={
-                    filterByPoints == Filter.INACTIVE
+                    filterByName === Filter.INACTIVE
                       ? 'primary.300'
-                      : filterByPoints == Filter.ASC
-                        ? 'secondary.300'
-                        : 'redCoexya'
+                      : (() => {
+                          if (filterByName === Filter.ASC) {
+                            return 'secondary.300';
+                          }
+                          return 'redCoexya';
+                        })()
                   }
                   transform={
-                    filterByPoints == Filter.INACTIVE
+                    filterByName === Filter.INACTIVE
                       ? 'rotate(270deg)'
-                      : filterByPoints == Filter.ASC
-                        ? 'rotate(180deg)'
-                        : 'auto'
+                      : (() => {
+                          if (filterByName === Filter.ASC) {
+                            return 'rotate(180deg)';
+                          }
+                          return 'auto';
+                        })()
                   }
                   transition="transform 0.3s ease-in-out"
                 />
@@ -276,18 +291,24 @@ function AdminChallenges() {
                   }
                   _hover={{ bg: 'transparent' }}
                   color={
-                    filterByDate == Filter.INACTIVE
+                    filterByName === Filter.INACTIVE
                       ? 'primary.300'
-                      : filterByDate == Filter.ASC
-                        ? 'secondary.300'
-                        : 'redCoexya'
+                      : (() => {
+                          if (filterByName === Filter.ASC) {
+                            return 'secondary.300';
+                          }
+                          return 'redCoexya';
+                        })()
                   }
                   transform={
-                    filterByDate == Filter.INACTIVE
+                    filterByName === Filter.INACTIVE
                       ? 'rotate(270deg)'
-                      : filterByDate == Filter.ASC
-                        ? 'rotate(180deg)'
-                        : 'auto'
+                      : (() => {
+                          if (filterByName === Filter.ASC) {
+                            return 'rotate(180deg)';
+                          }
+                          return 'auto';
+                        })()
                   }
                   transition="transform 0.3s ease-in-out"
                 />

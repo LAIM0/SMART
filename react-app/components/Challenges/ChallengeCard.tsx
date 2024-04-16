@@ -10,12 +10,12 @@ interface ChallengeCardProps {
   type: 'toComplete' | 'recentlyCompleted';
 }
 
-const ChallengeCard: React.FC<ChallengeCardProps> = ({
+function ChallengeCard({
   challenge,
   completionDate,
   onClick,
   type,
-}) => {
+}: ChallengeCardProps) {
   const isRecentlyCompleted = type === 'recentlyCompleted';
 
   return (
@@ -67,15 +67,18 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             <Text as="h4" color={isRecentlyCompleted ? 'primary.300' : 'white'}>
               {isRecentlyCompleted
                 ? `Relevé ${dateGap(completionDate) === 0 ? "aujourd'hui" : `il y a ${dateGap(completionDate) * -1} jours`}`
-                : dateGap(challenge.endDate) === 0
-                  ? "Aujourd'hui"
-                  : `${dateGap(challenge.endDate)} jours`}
+                : (() => {
+                    if (dateGap(challenge.endDate) === 0) {
+                      return "Aujourd'hui";
+                    }
+                    return `${dateGap(challenge.endDate)} jours`;
+                  })()}
             </Text>
           </Box>
         </Flex>
       </Box>
     </Card>
   );
-};
+}
 
 export default ChallengeCard;

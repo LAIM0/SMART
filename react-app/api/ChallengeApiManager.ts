@@ -1,8 +1,8 @@
+import axios from 'axios';
 import ChallengeData from '../interfaces/challengeInterface';
 import ENDPOINTS from './apiUtils/endpoints';
 import ApiMethods from './apiUtils/apiMethods';
 import { Periodicity } from '../utils/constants';
-import axios from 'axios';
 
 class ChallengeApiManager {
   static async getById(id: string): Promise<ChallengeData> {
