@@ -89,12 +89,14 @@ function AdminUsers() {
   }, []);
 
   const handleDeleteConfirmation = (userId :string ) => {
-    console.log(users.length, userId);
+    
+    
     if (users.length == 1) {
       // S'il n'y a qu'un seul utilisateur, affichez une erreur
       setErrorMessageDeleteUser("Vous ne pouvez pas supprimer le dernier utilisateur.");
     setIsOpenErrorDeleteUser(true);
-    } else {
+    }
+    else {
       // S'il y a plus d'un utilisateur, permettez la suppression en définissant l'ID de l'utilisateur à supprimer
       setDeleteUserId(userId);
       onClose();
@@ -150,14 +152,18 @@ function AdminUsers() {
 
   const handleDeleteUser = async () => {
     try {
+      // Supprimer l'utilisateur avec l'ID fourni
       await deleteUser(deleteUserId);
       setDeleteUserId('');
       const updatedUsers = await fetchUsers();
       setUsers(updatedUsers);
     } catch (error) {
-      if (error instanceof Error) {
-      setIsOpenErrorDeleteUser(true);
-      setErrorMessageDeleteUser(error.message);
+      if (error.response && error.response.status === 500) {
+        setIsOpenErrorDeleteUser(true);
+        setErrorMessageDeleteUser("Impossible de supprimer l'administrateur.");
+      } else {
+        setIsOpenErrorDeleteUser(true);
+        setErrorMessageDeleteUser(error.message);
       }
     }
   };
@@ -187,7 +193,9 @@ function AdminUsers() {
 
   return (
     <Flex flexDirection='column' gap='16px'>
-      <Button
+       <Flex gap="16px">
+        <Text as="h1">Gestion des utilisateurs </Text>
+        <Button
         bg='primary.300'
         color='white'
         width='fit-content'
@@ -195,20 +203,24 @@ function AdminUsers() {
       >
         Ajouter un utilisateur
       </Button>
+      </Flex>
+      <Text as="h2">Liste des utilisateurs</Text>
+      
       <TableContainer bg='white' borderRadius={16}>
         <Table variant='simple'>
-          <Thead>
-            <Tr>
+          <Thead bg="secondary.100">
+            <Tr >
               <Th>Prénom</Th>
               <Th>Nom</Th>
               <Th>Email</Th>
               <Th>Équipe</Th>
               <Th>Admin</Th>
+              <Th></Th>
             </Tr>
           </Thead>
           <Tbody>
             {users.map((user) => (
-              <Tr key={user._id}>
+              <Tr key={user._id} >
                 <Td>{user.firstName}</Td>
                 <Td>{user.lastName}</Td>
                 <Td>{user.email}</Td>

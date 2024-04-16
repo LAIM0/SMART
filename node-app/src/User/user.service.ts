@@ -6,6 +6,7 @@ import { CompletedWithChallenge } from './interfaces/challengeScore.interface';
 import { Completed, CompletedDocument } from 'src/Completed/completed.schema';
 import { CompletedService } from 'src/Completed/completed.service';
 import { Challenge } from 'src/Challenge/challenge.schema';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -170,6 +171,27 @@ export class UserService {
       await user.save();
     } catch (error) {
       throw error;
+    }
+  }
+
+  async findDefaultAdmin(): Promise<User> {
+    return await this.userModel.findOne({ email: 'admin@example.com' }).exec();
+  }
+
+  async createDefaultAdminIfNotExists(): Promise<void> {
+    const defaultAdmin = await this.findDefaultAdmin();
+    if (!defaultAdmin) {
+      const saltOrRounds = 10;
+      const hashedPassword = await bcrypt.hash('root', saltOrRounds);
+      const newUser = new this.userModel({
+        email: 'admin@coexya.com',
+        passwordHash: hashedPassword,
+        lastName: 'Admin',
+        firstName: 'Admin',
+        isAdmin: true,
+        teamId: '', // Remplissez avec l'ID de l'équipe appropriée si nécessaire
+      });
+      await newUser.save();
     }
   }
 }
