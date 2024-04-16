@@ -77,6 +77,18 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
+  async findById(userId: string): Promise<User | null> {
+    try {
+      const user = await this.userModel.findById(userId).exec();
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
+  }
+
   async getScoreUserWithDetails(
     UserId: Types.ObjectId,
   ): Promise<{ user: User; score: number }> {

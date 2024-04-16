@@ -34,6 +34,8 @@ import {
 
 import fetchTeams from '../../../api/TeamApiManager';
 import TeamData from '../../../interfaces/teamInterface';
+import { useRouter } from 'next/router';
+import { handleAdminRouting } from '../../../api/AuthApiManager';
 
 interface User {
   _id: string,
@@ -46,6 +48,12 @@ interface User {
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
 function AdminUsers() {
+
+  // const router = useRouter();
+  // useEffect(() => {
+  //   handleAdminRouting(router);
+  // }, []);
+
   const [users, setUsers] = useState<User[]>([]);
   const [teams, setTeams] = useState<TeamData[]>([]);
   const [newUser, setNewUser] = useState({
