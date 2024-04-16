@@ -20,7 +20,7 @@ export class User {
   @Prop({ type: Types.ObjectId, ref: 'Team' })
   teamId?: Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop({ required: true,default: false })
   isAdmin: boolean;
 
   @Prop()

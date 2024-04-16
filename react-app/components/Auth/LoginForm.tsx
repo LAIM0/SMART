@@ -59,7 +59,10 @@ export default function LoginForm() {
       if (data.message === 'Email not verified') {
       
         throw new Error('Adresse email non vérifiée');
-      }else if (!response.ok) {throw new Error('Login failed');
+      }else if(data.message === 'Unauthorized Admin access'){
+      throw new Error("Pas d'accès administrateur");
+      }
+      else if (!response.ok) {throw new Error('Login failed');
 
       } else {
         setLoginResponse({ message: 'Login successful!', status: 'success' });
