@@ -39,16 +39,10 @@ import { handleAdminRouting } from '../../../api/AuthApiManager';
 import { AxiosError } from 'axios';
 import { Filter } from '../../../utils/constants';
 import { TriangleDownIcon } from '@chakra-ui/icons';
+import User from '../../../interfaces/userAdminInterface';
+import UserSearch from '../../../components/User/searchbar';
 
 
-interface User {
-  _id: string,
-  firstName: string ,
-  lastName: string ,
-  email: string ,
-  teamId: string ,
-  isAdmin: boolean;
-}
 function isAxiosError(error: any): error is AxiosError {
   return error.isAxiosError !== undefined;
 }
@@ -209,6 +203,20 @@ function AdminUsers() {
     }
   }
 };
+const handleSearch = async (searchTerm: string): Promise<void> => {
+  try {
+    const response = await fetchUsers();
+    const filteredUsers = response.filter(
+      (user: User) =>
+        user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setUsers(filteredUsers);
+  } catch (error) {
+    console.error('Erreur lors de la recherche des utilisateurs:', error);
+  }
+};
 
 function sortByProperty<T>(
   array: T[],
@@ -287,8 +295,10 @@ useEffect(() => {
         Ajouter un utilisateur
       </Button>
       </Flex>
-      <Text as="h2">Liste des utilisateurs</Text>
-      
+      <Flex justifyContent="space-between">
+        <Text as="h2">Liste des utilisateurs</Text>
+        <UserSearch onSearch={handleSearch} /> {/* Composant de recherche à droite */}
+      </Flex>
       <TableContainer bg='white' borderRadius={16}>
         <Table variant='simple'>
           <Thead bg="secondary.100">
