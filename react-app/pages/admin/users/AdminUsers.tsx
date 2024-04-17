@@ -41,6 +41,8 @@ import { Filter } from '../../../utils/constants';
 import { TriangleDownIcon } from '@chakra-ui/icons';
 import User from '../../../interfaces/userAdminInterface';
 import UserSearch from '../../../components/User/searchbar';
+import UserRow from '../../../components/User/userRow';
+import AddUserModal from '../../../components/User/addUserModal';
 
 
 function isAxiosError(error: any): error is AxiosError {
@@ -388,128 +390,30 @@ useEffect(() => {
           </Thead>
           <Tbody>
             {users.map((user) => (
-              <Tr key={user._id} >
-                <Td>{user.firstName}</Td>
-                <Td>{user.lastName}</Td>
-                <Td>{user.email}</Td>
-                <Td>
-                  <Select
-                    value={user.teamId}
-                    onChange={(e) => handleTeamChange(user._id, e.target.value)}
-                  >
-                    {teams.map((team) => (
-                      <option key={team.id} value={team.id}>
-                        {team.name}
-                      </option>
-                    ))}
-                  </Select>
-                </Td>
-                <Td>
-                  <Flex align="center">
-                    <Switch
-                      isChecked={user.isAdmin}
-                      onChange={(e) => handleToggleAdmin(user._id, e.target.checked)}
-                    />
-                    <Text ml={2}>{user.isAdmin ? 'Oui' : 'Non'}</Text>
-                  </Flex>
-                </Td>
-                <Td>
-                  <Button
-                    colorScheme='red'
-                    onClick={() => handleDeleteConfirmation(user._id)}
-                  >
-                    Supprimer
-                  </Button>
-                </Td>
-              </Tr>
+              <UserRow
+                key={user._id}
+                user={user}
+                teams={teams}
+                onDelete={() => { setDeleteUserId(user._id); setDeleteUserId(user._id); }}
+                onTeamChange={handleTeamChange}
+                onToggleAdmin={handleToggleAdmin}
+              />
             ))}
           </Tbody>
         </Table>
       </TableContainer>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent bg='#F8F8F8' p='24px'>
-          <ModalHeader>Ajouter un utilisateur</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <form onSubmit={handleSubmit}>
-              <Flex flexDirection='column' gap={4}>
-                <FormControl isRequired>
-                  <Input
-                    type='text'
-                    name='firstName'
-                    value={newUser.firstName}
-                    onChange={handleInputChange}
-                    placeholder='Prénom'
-                    focusBorderColor='#166879'
-                    isRequired
-                    bg='white'
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <Input
-                    type='text'
-                    name='lastName'
-                    value={newUser.lastName}
-                    onChange={handleInputChange}
-                    placeholder='Nom'
-                    focusBorderColor='#166879'
-                    isRequired
-                    bg='white'
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <Input
-                    type='email'
-                    name='email'
-                    value={newUser.email}
-                    onChange={handleInputChange}
-                    placeholder='Email'
-                    focusBorderColor='#166879'
-                    isRequired
-                    bg='white'
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <Select
-                    placeholder='Sélectionner une équipe'
-                    focusBorderColor='#166879'
-                    value={selectedTeam}
-                    onChange={handleTeamSelectChange}
-                    isRequired
-                    bg='white'
-                  >
-                    {teams.map((team) => (
-                      <option key={team.id} value={team.id}>
-                        {team.name}
-                      </option>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl>
-                  <Flex alignItems="center">
-                    <Checkbox
-                      name="isAdmin"
-                      isChecked={newUser.isAdmin}
-                      onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
-                    />
-                    <Text ml={2}>Administrateur</Text>
-                  </Flex>
-                </FormControl>
-                <Button type='submit' bg='#166879' color='white'>
-                  Ajouter
-                </Button>
-                {isOpenError && (
-                  <Alert status="error">
-                    <AlertIcon />
-                    {errorMessage}
-                  </Alert>
-                )}
-              </Flex>
-            </form>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      <AddUserModal
+        isOpen={isOpen}
+        onClose={onClose}
+        newUser={newUser}
+        selectedTeam={selectedTeam}
+        teams={teams}
+        handleInputChange={handleInputChange}
+        handleTeamSelectChange={handleTeamSelectChange}
+        handleSubmit={handleSubmit}
+        isOpenError={isOpenError}
+        errorMessage={errorMessage}
+      />
       <Modal isOpen={deleteUserId !== ''} onClose={() => setDeleteUserId('')}>
         <ModalOverlay />
         <ModalContent>
