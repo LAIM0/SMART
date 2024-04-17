@@ -193,7 +193,13 @@ function AdminUsers() {
       const updatedUsers = await fetchUsers();
       setUsers(updatedUsers);
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du statut d'administrateur:", error);
+      if (isAxiosError(error) && error.response && error.response.status === 500) {
+        setIsOpenErrorDeleteUser(true);
+        setErrorMessageDeleteUser("Impossible de changer les droits de l'administrateur.");
+      } else if (isAxiosError(error)) {
+        setIsOpenErrorDeleteUser(true);
+        setErrorMessageDeleteUser(error.message);
+      }
     }
   };
 
