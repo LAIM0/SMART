@@ -21,8 +21,10 @@ import { HttpStatus } from '@nestjs/common';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
-  //private readonly jwtService: JwtService
+  constructor(private readonly userService: UserService) {
+    this.userService.createDefaultAdminIfNotExists();
+  }
+  
 
   @Get()
   async findAll(): Promise<User[]> {
@@ -181,16 +183,25 @@ export class UserController {
   }
 
   @Delete('delete/:userId')
-  async deleteUser(@Param('userId') userId: string): Promise<{ message: string }> {
-    try {
-      // Supprimer l'utilisateur avec l'ID fourni
-      await this.userService.deleteUser(userId);
-      return { message: 'L\'utilisateur a été supprimé avec succès' };
-    } catch (error) {
-      console.error("Erreur lors de la suppression de l'utilisateur:", error);
-      throw new Error('Une erreur s\'est produite lors de la suppression de l\'utilisateur');
+async deleteUser(@Param('userId') userId: string): Promise<{ message: string }> {
+  try {
+    // Récupérer l'administrateur par défaut
+    const defaultAdmin = await this.userService.findDefaultAdmin();
+    const user = await this.userService.findById(userId);
+    // Vérifier si l'utilisateur à supprimer est l'administrateur par défaut
+    if (user.email === defaultAdmin.email) {
+      throw new Error('Vous ne pouvez pas supprimer l\'administrateur par défaut.');
     }
+
+    // Supprimer l'utilisateur avec l'ID fourni
+    await this.userService.deleteUser(userId);
+    return { message: 'L\'utilisateur a été supprimé avec succès' };
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'utilisateur:", error);
+    throw new Error('Une erreur s\'est produite lors de la suppression de l\'utilisateur');
   }
+}
+
   @Put(':userId/team')
   async updateUserTeam(
     @Param('userId') userId: string,
@@ -212,6 +223,11 @@ export class UserController {
     @Body('isAdmin') isAdmin: boolean
   ) {
     try {
+      const defaultAdmin = await this.userService.findDefaultAdmin();
+      const user = await this.userService.findById(userId);
+      if (user.email === defaultAdmin.email) {
+        throw new Error('Vous ne pouvez pas changer les droits de cet utilisateur.');
+      }
       await this.userService.updateUserAdminStatus(userId, isAdmin);
       return { message: 'User admin status updated successfully' };
     } catch (error) {

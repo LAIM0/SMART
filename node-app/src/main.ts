@@ -5,12 +5,15 @@ import * as session from "express-session";
 import * as passport from "passport";
 import 'moment/locale/fr'; 
 import * as moment from 'moment'; 
+import { UserService } from './User/user.service';
 
 async function bootstrap() {
   // Initialise Moment.js avec la locale et les options nécessaires
   moment.locale('fr'); 
 
   const app = await NestFactory.create(AppModule);
+  // const userService = app.get<UserService>(UserService);
+  // await userService.createDefaultAdminIfNotExists();
   app.enableCors({
     origin: 'http://localhost:3000',
     credentials: true,

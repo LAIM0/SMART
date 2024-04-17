@@ -22,7 +22,7 @@ import {
   Text,
   Checkbox,
   Alert,
-  AlertIcon,Switch
+  AlertIcon,Switch, IconButton
 } from '@chakra-ui/react';
 import {
   fetchUsers,
@@ -36,14 +36,17 @@ import fetchTeams from '../../../api/TeamApiManager';
 import TeamData from '../../../interfaces/teamInterface';
 import { useRouter } from 'next/router';
 import { handleAdminRouting } from '../../../api/AuthApiManager';
+import { AxiosError } from 'axios';
+import { Filter } from '../../../utils/constants';
+import { TriangleDownIcon } from '@chakra-ui/icons';
+import User from '../../../interfaces/userAdminInterface';
+import UserSearch from '../../../components/User/searchbar';
+import UserRow from '../../../components/User/userRow';
+import AddUserModal from '../../../components/User/addUserModal';
 
-interface User {
-  _id: string,
-  firstName: string ,
-  lastName: string ,
-  email: string ,
-  teamId: string ,
-  isAdmin: boolean;
+
+function isAxiosError(error: any): error is AxiosError {
+  return error.isAxiosError !== undefined;
 }
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,6 +73,9 @@ function AdminUsers() {
   const [deleteUserId, setDeleteUserId] = useState<string>('');
   const [isOpenErrorDeleteUser, setIsOpenErrorDeleteUser] = useState(false);
   const [errorMessageDeleteUser, setErrorMessageDeleteUser] = useState('');
+  const [filterByFirstName, setFilterByFirstName] = useState<Filter>(Filter.INACTIVE);
+  const [filterByLastName, setFilterByLastName] = useState<Filter>(Filter.INACTIVE);
+  const [filterByEmail, setFilterByEmail] = useState<Filter>(Filter.INACTIVE);
 
   
 
@@ -155,12 +161,18 @@ function AdminUsers() {
       const updatedUsers = await fetchUsers();
       setUsers(updatedUsers);
     } catch (error) {
-      if (error instanceof Error) {
-      setIsOpenErrorDeleteUser(true);
-      setErrorMessageDeleteUser(error.message);
+      if (isAxiosError(error) && error.response && error.response.status === 500) {
+        setIsOpenErrorDeleteUser(true);
+        setErrorMessageDeleteUser("Impossible de supprimer l'administrateur.");
+      } else if (isAxiosError(error)) {
+        setIsOpenErrorDeleteUser(true);
+        setErrorMessageDeleteUser(error.message);
       }
     }
-  };
+    } ;
+
+
+
 
   const handleTeamChange = async (userId:string, teamId:string) => {
     try {
@@ -185,9 +197,90 @@ function AdminUsers() {
     }
   };
 
+const handleSearch = async (searchTerm: string): Promise<void> => {
+  try {
+    const response = await fetchUsers();
+    const filteredUsers = response.filter(
+      (user: User) =>
+        user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setUsers(filteredUsers);
+  } catch (error) {
+    console.error('Erreur lors de la recherche des utilisateurs:', error);
+  }
+};
+
+function sortByProperty<T>(
+  array: T[],
+  property: keyof T,
+  ascending: boolean = true
+): T[] {
+  return [...array].sort((a, b) => {
+    let comparison = 0;
+    if (a[property] < b[property]) {
+      comparison = -1;
+    } else if (a[property] > b[property]) {
+      comparison = 1;
+    }
+    if (!ascending) {
+      comparison = -comparison;
+    }
+    return comparison;
+  });
+}
+
+useEffect(() => {
+  switch (filterByFirstName) {
+    case Filter.INACTIVE:
+      setUsers(users => sortByProperty(users, 'firstName', true));
+      break;
+    case Filter.ASC:
+      setUsers(users => sortByProperty(users, 'firstName', true));
+      break;
+    case Filter.DESC:
+      setUsers(users => sortByProperty(users, 'firstName', false));
+      break;
+    default:
+  }
+}, [filterByFirstName]);
+
+useEffect(() => {
+  switch (filterByLastName) {
+    case Filter.INACTIVE:
+      setUsers(users => sortByProperty(users, 'lastName', true));
+      break;
+    case Filter.ASC:
+      setUsers(users => sortByProperty(users, 'lastName', true));
+      break;
+    case Filter.DESC:
+      setUsers(users => sortByProperty(users, 'lastName', false));
+      break;
+    default:
+  }
+}, [filterByLastName]);
+
+useEffect(() => {
+  switch (filterByEmail) {
+    case Filter.INACTIVE:
+      setUsers(users => sortByProperty(users, 'email', true));
+      break;
+    case Filter.ASC:
+      setUsers(users => sortByProperty(users, 'email', true));
+      break;
+    case Filter.DESC:
+      setUsers(users => sortByProperty(users, 'email', false));
+      break;
+    default:
+  }
+}, [filterByEmail]);
+
   return (
     <Flex flexDirection='column' gap='16px'>
-      <Button
+       <Flex gap="16px">
+        <Text as="h1">Gestion des utilisateurs </Text>
+        <Button
         bg='primary.300'
         color='white'
         width='fit-content'
@@ -195,141 +288,124 @@ function AdminUsers() {
       >
         Ajouter un utilisateur
       </Button>
+      </Flex>
+      <Flex justifyContent="space-between">
+        <Text as="h2">Liste des utilisateurs</Text>
+        <UserSearch onSearch={handleSearch} /> {/* Composant de recherche à droite */}
+      </Flex>
       <TableContainer bg='white' borderRadius={16}>
         <Table variant='simple'>
-          <Thead>
-            <Tr>
-              <Th>Prénom</Th>
-              <Th>Nom</Th>
-              <Th>Email</Th>
+          <Thead bg="secondary.100">
+            <Tr >
+              <Th>Prénom
+              <IconButton
+                  ml="0px"
+                  mt="-4px"
+                  aria-label="filter"
+                  icon={<TriangleDownIcon />}
+                  bg="transparent"
+                  onClick={() => setFilterByFirstName((prevState) => (prevState + 1) % 3)}
+                  _hover={{ bg: 'transparent' }}
+                  color={
+                    filterByFirstName === Filter.INACTIVE
+                      ? 'primary.300'
+                      : filterByFirstName === Filter.ASC
+                      ? 'secondary.300'
+                      : 'redCoexya'
+                  }
+                  transform={
+                    filterByFirstName === Filter.INACTIVE
+                      ? 'rotate(270deg)'
+                      : filterByFirstName === Filter.ASC
+                      ? 'rotate(180deg)'
+                      : 'auto'
+                  }
+                  transition="transform 0.3s ease-in-out"
+                />
+              </Th>
+              <Th>Nom
+              <IconButton
+                  ml="0px"
+                  mt="-4px"
+                  aria-label="filter"
+                  icon={<TriangleDownIcon />}
+                  bg="transparent"
+                  onClick={() => setFilterByLastName((prevState) => (prevState + 1) % 3)}
+                  _hover={{ bg: 'transparent' }}
+                  color={
+                    filterByLastName === Filter.INACTIVE
+                      ? 'primary.300'
+                      : filterByLastName === Filter.ASC
+                      ? 'secondary.300'
+                      : 'redCoexya'
+                  }
+                  transform={
+                    filterByLastName === Filter.INACTIVE
+                      ? 'rotate(270deg)'
+                      : filterByLastName === Filter.ASC
+                      ? 'rotate(180deg)'
+                      : 'auto'
+                  }
+                  transition="transform 0.3s ease-in-out"
+                />
+              </Th>
+              <Th>Email
+              <IconButton
+                  ml="0px"
+                  mt="-4px"
+                  aria-label="filter"
+                  icon={<TriangleDownIcon />}
+                  bg="transparent"
+                  onClick={() => setFilterByEmail((prevState) => (prevState + 1) % 3)}
+                  _hover={{ bg: 'transparent' }}
+                  color={
+                    filterByEmail === Filter.INACTIVE
+                      ? 'primary.300'
+                      : filterByEmail === Filter.ASC
+                      ? 'secondary.300'
+                      : 'redCoexya'
+                  }
+                  transform={
+                    filterByEmail === Filter.INACTIVE
+                      ? 'rotate(270deg)'
+                      : filterByEmail === Filter.ASC
+                      ? 'rotate(180deg)'
+                      : 'auto'
+                  }
+                  transition="transform 0.3s ease-in-out"
+                />
+              </Th>
               <Th>Équipe</Th>
               <Th>Admin</Th>
+              <Th></Th>
             </Tr>
           </Thead>
           <Tbody>
             {users.map((user) => (
-              <Tr key={user._id}>
-                <Td>{user.firstName}</Td>
-                <Td>{user.lastName}</Td>
-                <Td>{user.email}</Td>
-                <Td>
-                  <Select
-                    value={user.teamId}
-                    onChange={(e) => handleTeamChange(user._id, e.target.value)}
-                  >
-                    {teams.map((team) => (
-                      <option key={team.id} value={team.id}>
-                        {team.name}
-                      </option>
-                    ))}
-                  </Select>
-                </Td>
-                <Td>
-                  <Flex align="center">
-                    <Switch
-                      isChecked={user.isAdmin}
-                      onChange={(e) => handleToggleAdmin(user._id, e.target.checked)}
-                    />
-                    <Text ml={2}>{user.isAdmin ? 'Oui' : 'Non'}</Text>
-                  </Flex>
-                </Td>
-                <Td>
-                  <Button
-                    colorScheme='red'
-                    onClick={() => handleDeleteConfirmation(user._id)}
-                  >
-                    Supprimer
-                  </Button>
-                </Td>
-              </Tr>
+              <UserRow
+                key={user._id}
+                user={user}
+                teams={teams}
+                onDelete={() => { setDeleteUserId(user._id); setDeleteUserId(user._id); }}
+                onTeamChange={handleTeamChange}
+                onToggleAdmin={handleToggleAdmin}
+              />
             ))}
           </Tbody>
         </Table>
       </TableContainer>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent bg='#F8F8F8' p='24px'>
-          <ModalHeader>Ajouter un utilisateur</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <form onSubmit={handleSubmit}>
-              <Flex flexDirection='column' gap={4}>
-                <FormControl isRequired>
-                  <Input
-                    type='text'
-                    name='firstName'
-                    value={newUser.firstName}
-                    onChange={handleInputChange}
-                    placeholder='Prénom'
-                    focusBorderColor='#166879'
-                    isRequired
-                    bg='white'
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <Input
-                    type='text'
-                    name='lastName'
-                    value={newUser.lastName}
-                    onChange={handleInputChange}
-                    placeholder='Nom'
-                    focusBorderColor='#166879'
-                    isRequired
-                    bg='white'
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <Input
-                    type='email'
-                    name='email'
-                    value={newUser.email}
-                    onChange={handleInputChange}
-                    placeholder='Email'
-                    focusBorderColor='#166879'
-                    isRequired
-                    bg='white'
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <Select
-                    placeholder='Sélectionner une équipe'
-                    focusBorderColor='#166879'
-                    value={selectedTeam}
-                    onChange={handleTeamSelectChange}
-                    isRequired
-                    bg='white'
-                  >
-                    {teams.map((team) => (
-                      <option key={team.id} value={team.id}>
-                        {team.name}
-                      </option>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl>
-                  <Flex alignItems="center">
-                    <Checkbox
-                      name="isAdmin"
-                      isChecked={newUser.isAdmin}
-                      onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
-                    />
-                    <Text ml={2}>Administrateur</Text>
-                  </Flex>
-                </FormControl>
-                <Button type='submit' bg='#166879' color='white'>
-                  Ajouter
-                </Button>
-                {isOpenError && (
-                  <Alert status="error">
-                    <AlertIcon />
-                    {errorMessage}
-                  </Alert>
-                )}
-              </Flex>
-            </form>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      <AddUserModal
+        isOpen={isOpen}
+        onClose={onClose}
+        newUser={newUser}
+        selectedTeam={selectedTeam}
+        teams={teams}
+        handleInputChange={handleInputChange}
+        handleTeamSelectChange={handleTeamSelectChange}
+        handleSubmit={handleSubmit}
+        isOpenError={isOpenError}
+        errorMessage={errorMessage}
+      />
       <Modal isOpen={deleteUserId !== ''} onClose={() => setDeleteUserId('')}>
         <ModalOverlay />
         <ModalContent>
