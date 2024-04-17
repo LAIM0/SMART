@@ -221,20 +221,20 @@ function AdminChallenges() {
                   }
                   _hover={{ bg: 'transparent' }}
                   color={
-                    filterByName === Filter.INACTIVE
+                    filterByCategory === Filter.INACTIVE
                       ? 'primary.300'
                       : (() => {
-                          if (filterByName === Filter.ASC) {
+                          if (filterByCategory === Filter.ASC) {
                             return 'secondary.300';
                           }
                           return 'redCoexya';
                         })()
                   }
                   transform={
-                    filterByName === Filter.INACTIVE
+                    filterByCategory === Filter.INACTIVE
                       ? 'rotate(270deg)'
                       : (() => {
-                          if (filterByName === Filter.ASC) {
+                          if (filterByCategory === Filter.ASC) {
                             return 'rotate(180deg)';
                           }
                           return 'auto';
@@ -256,20 +256,20 @@ function AdminChallenges() {
                   }
                   _hover={{ bg: 'transparent' }}
                   color={
-                    filterByName === Filter.INACTIVE
+                    filterByPoints === Filter.INACTIVE
                       ? 'primary.300'
                       : (() => {
-                          if (filterByName === Filter.ASC) {
+                          if (filterByPoints === Filter.ASC) {
                             return 'secondary.300';
                           }
                           return 'redCoexya';
                         })()
                   }
                   transform={
-                    filterByName === Filter.INACTIVE
+                    filterByPoints === Filter.INACTIVE
                       ? 'rotate(270deg)'
                       : (() => {
-                          if (filterByName === Filter.ASC) {
+                          if (filterByPoints === Filter.ASC) {
                             return 'rotate(180deg)';
                           }
                           return 'auto';
@@ -291,20 +291,20 @@ function AdminChallenges() {
                   }
                   _hover={{ bg: 'transparent' }}
                   color={
-                    filterByName === Filter.INACTIVE
+                    filterByDate === Filter.INACTIVE
                       ? 'primary.300'
                       : (() => {
-                          if (filterByName === Filter.ASC) {
+                          if (filterByDate === Filter.ASC) {
                             return 'secondary.300';
                           }
                           return 'redCoexya';
                         })()
                   }
                   transform={
-                    filterByName === Filter.INACTIVE
+                    filterByDate === Filter.INACTIVE
                       ? 'rotate(270deg)'
                       : (() => {
-                          if (filterByName === Filter.ASC) {
+                          if (filterByDate === Filter.ASC) {
                             return 'rotate(180deg)';
                           }
                           return 'auto';
