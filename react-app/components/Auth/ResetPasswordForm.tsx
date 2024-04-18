@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState } from 'react';
 import {
   Box,
@@ -5,22 +6,32 @@ import {
   FormControl,
   FormLabel,
   Input,
+  useToast,
   Flex,
-  Image,
 } from '@chakra-ui/react';
-import logoApp from '../Sidebar/Ecoexya.png';
 
-function ResetPasswordForm() {
-  const [newPassword, setNewPassword] = useState<string>('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [email, setEmail] = useState<string>('');
+interface ResetPasswordFormProps {
+  token: string;
+}
+
+const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const toast = useToast();
+
   const handleResetPassword = async () => {
-    try {
-      if (newPassword !== confirmNewPassword) {
-        throw new Error('Les mots de passe ne correspondent pas');
-      }
+    if (newPassword !== confirmNewPassword) {
+      toast({
+        title: 'Erreur',
+        description: 'Les mots de passe ne correspondent pas',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
 
+    try {
       const response = await fetch(
         'http://localhost:3001/users/reset-password',
         {
@@ -28,18 +39,35 @@ function ResetPasswordForm() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email, newPassword }),
+          body: JSON.stringify({ token, newPassword }),
         }
       );
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.msg || "Une erreur s'est produite");
+        throw new Error('Échec de la réinitialisation du mot de passe');
       }
 
-      // Rediriger l'utilisateur vers une autre page après la réinitialisation du mot de passe si nécessaire
+      toast({
+        title: 'Réinitialisation réussie',
+        description: 'Le mot de passe a été réinitialisé avec succès.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+
+      localStorage.setItem(
+        'resetSuccessMessage',
+        'Votre mot de passe a bien été réinitialisé.'
+      );
+      window.location.href = '/login';
     } catch (error) {
-      // setError(error instanceof Error ? error.message : 'Une erreur s\'est produite');
+      toast({
+        title: 'Erreur de réinitialisation',
+        description: 'Error',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -55,12 +83,11 @@ function ResetPasswordForm() {
         flexDirection="column"
         alignItems="center"
       >
-        <Image src={logoApp.src} w="160px" alt="logo" m={4} />
         <FormControl isRequired>
           <FormLabel>Nouveau mot de passe</FormLabel>
           <Input
+            id="new-password"
             type="password"
-            placeholder="Nouveau mot de passe"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
           />
@@ -68,8 +95,8 @@ function ResetPasswordForm() {
         <FormControl isRequired mt={4}>
           <FormLabel>Confirmer le nouveau mot de passe</FormLabel>
           <Input
+            id="confirm-new-password"
             type="password"
-            placeholder="Confirmer le nouveau mot de passe"
             value={confirmNewPassword}
             onChange={(e) => setConfirmNewPassword(e.target.value)}
           />
@@ -80,6 +107,6 @@ function ResetPasswordForm() {
       </Box>
     </Flex>
   );
-}
+};
 
 export default ResetPasswordForm;

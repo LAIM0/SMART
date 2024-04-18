@@ -8,6 +8,7 @@ import { CompletedModule } from 'src/Completed/completed.module';
 import { CompletedService } from 'src/Completed/completed.service';
 import { ChallengeSchema } from 'src/Challenge/challenge.schema';
 import { ChallengeService } from 'src/Challenge/challenge.service';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { ChallengeService } from 'src/Challenge/challenge.service';
       { name: User.name, schema: UserSchema },
       { name: 'Completed', schema: CompletedSchema },
       { name: 'Challenge', schema: ChallengeSchema },
-    ]),
+    ]),MailModule
   ],
   providers: [UserService, ChallengeService, CompletedService],
   controllers: [UserController],

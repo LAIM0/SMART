@@ -24,7 +24,6 @@ export class UserController {
   constructor(private readonly userService: UserService) {
     this.userService.createDefaultAdminIfNotExists();
   }
-  
 
   @Get()
   async findAll(): Promise<User[]> {
@@ -88,31 +87,16 @@ export class UserController {
     @Body() resetPasswordDto: ResetPasswordDto,
   ): Promise<{ msg: string }> {
     try {
-      const saltOrRounds = 10;
-      const hashedPassword = await bcrypt.hash(
-        resetPasswordDto.password,
-        saltOrRounds,
-      );
-      await this.userService.resetPassword(
-        resetPasswordDto.email,
-        hashedPassword,
+      await this.userService.resetPasswordWithToken(
+        resetPasswordDto.token,
+        resetPasswordDto.newPassword,
       );
       return { msg: 'Password reset successful' };
     } catch (error) {
-      console.log(error);
+      console.error('Error resetting password:', error);
       return { msg: error.message };
     }
   }
-  // @Post('forgot-password')
-  // async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto): Promise<void> {
-  //   const user = await this.userService.findByEmail(forgotPasswordDto.email);
-  //   if (!user) {
-  //     throw new NotFoundException('User not found');
-  //   }
-  //   const token = this.jwtService.sign({ email: user.email }, { expiresIn: '1h' });
-  //   // Envoi de l'e-mail de réinitialisation de mot de passe avec le lien contenant le token
-  //   // Vous pouvez utiliser des services comme SendGrid, Nodemailer, etc., pour envoyer des e-mails
-  // }
 
   //Get / Score & infos user
   @Get('/score')
@@ -170,16 +154,26 @@ export class UserController {
     return { loggedIn: true };
   }
 
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string) {
+    const token = await this.userService.generateResetPasswordToken(email);
+    await this.userService.sendResetPasswordEmail(email, token);
+    return {
+      message:
+        'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.',
+    };
+  }
+
   @Get('check/admin')
-  @UseGuards(AdminAuthGuard,AuthenticatedGuard ) 
+  @UseGuards(AdminAuthGuard,AuthenticatedGuard )
   checkAdminAuthentication(@Request() req) {
     // if(req.user.isAdmin){
-    //   return { isAdminLoggedIn: true }; 
+    //   return { isAdminLoggedIn: true };
     // }
     // else{
     //   throw new HttpException('Unauthorized Admin access', HttpStatus.FORBIDDEN);
     // }
-    return { isAdminLoggedIn: true }; 
+    return { isAdminLoggedIn: true };
   }
 
   @Delete('delete/:userId')
@@ -216,7 +210,7 @@ async deleteUser(@Param('userId') userId: string): Promise<{ message: string }> 
       throw error;
     }
   }
-  
+
   @Put(':userId/admin')
   async updateUserAdminStatus(
     @Param('userId') userId: string,

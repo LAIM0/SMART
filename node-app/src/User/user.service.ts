@@ -1,24 +1,20 @@
-import { Injectable,NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './user.schema';
-import { CompletedWithChallenge } from './interfaces/challengeScore.interface';
-import { Completed, CompletedDocument } from 'src/Completed/completed.schema';
+import { MailService } from '../mail/mail.service';
 import { CompletedService } from 'src/Completed/completed.service';
-import { Challenge } from 'src/Challenge/challenge.schema';
+import * as crypto from 'crypto';
 import * as bcrypt from 'bcryptjs';
+import { Challenge } from 'src/Challenge/challenge.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private completedService: CompletedService,
+    private mailService: MailService,
   ) {}
-
-  // async createUser(user: UserInterface): Promise<User> {
-  //   const newUser = new this.userModel(user);
-  //   return newUser.save();
-  // }
 
   async createUser(
     email: string,
@@ -41,14 +37,8 @@ export class UserService {
     return newUser.save();
   }
 
-  async resetPassword(email: string, hashedPassword: string): Promise<void> {
-    await this.userModel.updateOne({ email }, { passwordHash: hashedPassword });
-  }
-
   async getUser(email: string) {
-    const username = email.toLowerCase();
-    const user = await this.userModel.findOne({ email });
-    return user;
+    return this.userModel.findOne({ email });
   }
   async create(
     userName: string,
@@ -110,6 +100,41 @@ export class UserService {
 
     // Ajoute le score total à l'objet utilisateur
     return { user: user.toObject(), score: totalScore };
+  }
+
+  async generateResetPasswordToken(email: string): Promise<string> {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new Error('Utilisateur non trouvé');
+    }
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 heure
+    await user.save();
+    return resetToken;
+  }
+
+  async sendResetPasswordEmail(email: string, token: string) {
+    await this.mailService.sendResetPasswordEmail(email, token); // Utilisez la méthode existante dans le service de courrier pour envoyer l'e-mail
+  }
+
+  // Methode pour mettre à jour le mot de passe de l'utilisateur en utilisant le token
+  async resetPasswordWithToken(
+    token: string,
+    newPassword: string,
+  ): Promise<void> {
+    const user = await this.userModel.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: new Date() },
+    });
+    if (!user) {
+      throw new Error('Token invalide ou expiré');
+    }
+    const salt = bcrypt.genSaltSync(10);
+    user.passwordHash = bcrypt.hashSync(newPassword, salt);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
   }
 
   async getRanking(): Promise<{ user: User; score: number }[]> {
