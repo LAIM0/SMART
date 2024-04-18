@@ -6,7 +6,7 @@ import { Types } from 'mongoose';
 
 @Controller('challenges')
 export class ChallengeController {
-  constructor(private readonly challengeService: ChallengeService) {}
+  constructor(private readonly challengeService: ChallengeService) { }
 
   @Get('/all')
   async findAll(): Promise<Challenge[]> {

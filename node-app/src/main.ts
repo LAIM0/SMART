@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common/pipes';
 import * as session from "express-session"
 import * as passport from "passport"
+import { CategoryService } from './Category/category.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,5 +24,10 @@ async function bootstrap() {
   app.use(passport.initialize())
   app.use(passport.session())
   await app.listen(3001);
+
+  // Exécution des seeds pour les données par défaut
+  app.get(CategoryService).seedCategories();
+
+
 }
 bootstrap();
