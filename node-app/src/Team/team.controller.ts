@@ -41,4 +41,13 @@ export class TeamController {
       throw new Error('Unable to get users of team: ' + error.message);
     }
   }
+
+  @Get('ranking')
+  async getRanking(): Promise<{ team: Team; score: number }[]> {
+    try {
+      return this.teamService.getRanking();
+    } catch (error) {
+      throw new Error('Unable to get users of team: ' + error.message);
+    }
+  }
 }

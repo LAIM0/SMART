@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Flex, Heading } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import SwitchButton, {
   SELECTION_MODES,
 } from '../../components/Buttons/SwitchButton';
 import { handleAuthRouting } from '../../api/AuthApiManager';
+import RankTableUser from '../../components/Table/RankTableUser';
+import RankTableTeam from '../../components/Table/RankTableTeam';
 
 function Ranking() {
   const [isIndividual, setIsIndividual] = useState(SELECTION_MODES.INDIVIDUAL); // La valeur initiale peut être true ou false
@@ -14,25 +15,26 @@ function Ranking() {
   useEffect(() => {
     handleAuthRouting(router);
   }, []);
-  
 
   return (
-    <div>
-      <Heading>Défis</Heading>
+    <Flex p="32px" flexDirection="column">
+      <Text as="h1">Classement</Text>
       <Flex
-        p={3}
         gap={3}
         bg="white"
-        borderRadius={8}
+        borderRadius="16px"
         boxShadow="sm"
         overflowX="scroll"
+        w="fit-content"
+        mb="24px"
       >
         <SwitchButton
           isSelectedIndividual={isIndividual}
           onSelectionChange={setIsIndividual}
         />
       </Flex>
-    </div>
+      <Box mt={5}>{isIndividual ? <RankTableUser /> : <RankTableTeam />}</Box>
+    </Flex>
   );
 }
 

@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import logoApp from '../Sidebar/Ecoexya.png';
-import ForgotPasswordForm from './ForgotPasswordForm.tsx';
+import ForgotPasswordForm from './ForgotPasswordForm';
 
 interface LoginResponse {
   message: string;
@@ -57,16 +57,15 @@ export default function LoginForm() {
       setIsLoading(false);
       const data = await response.json();
       if (data.message === 'Email not verified') {
-      
         throw new Error('Adresse email non vérifiée');
-      }else if(data.message === 'Unauthorized Admin access'){
-      throw new Error("Pas d'accès administrateur");
-      }
-      else if (!response.ok) {throw new Error('Login failed');
-
+      } else if (data.message === 'Unauthorized Admin access') {
+        throw new Error("Pas d'accès administrateur");
+      } else if (!response.ok) {
+        throw new Error('La combinaison login/mot de passe est incorrect');
       } else {
         setLoginResponse({ message: 'Login successful!', status: 'success' });
-        const preLoginRoute = localStorage.getItem('preLoginRoute') || '/challenges';
+        const preLoginRoute =
+          localStorage.getItem('preLoginRoute') || '/challenges';
         localStorage.removeItem('preLoginRoute');
         router.push(preLoginRoute);
       }

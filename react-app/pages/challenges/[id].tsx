@@ -13,7 +13,7 @@ import {
 import theme from '../../styles/theme';
 import Layout from '../../components/Layout/Layout';
 import ChallengeData from '../../interfaces/challengeInterface';
-import UserData from '../../interfaces/userInterface';
+import { UserData } from '../../interfaces/userInterface';
 import ChallengeApiManager from '../../api/ChallengeApiManager';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import dateGap from '../../utils/mathFunctions';

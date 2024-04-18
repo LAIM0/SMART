@@ -1,18 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Team, TeamDocument } from './team.schema';
 import { Model, Types } from 'mongoose';
 import { CreateTeamDto, TeamDto } from '../Team/dto/team.dto';
-import { User } from 'src/User/user.schema';
+import { User, UserDocument } from 'src/User/user.schema';
 import { TeamIdDto } from './dto/teamId.dto';
 import { CompletedService } from 'src/Completed/completed.service';
+import { UserService } from 'src/User/user.service';
 
 @Injectable()
 export class TeamService {
   constructor(
     @InjectModel(Team.name) private teamModel: Model<TeamDocument>,
-    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
     private completedService: CompletedService,
+    @Inject(forwardRef(() => UserService))
+    private userService: UserService,
   ) {}
 
   async findAll(): Promise<TeamDto[]> {
@@ -60,6 +63,39 @@ export class TeamService {
     const teamUsers = usersScores.map(({ user }) => user);
 
     return { team: teamUsers, teamScore };
+  }
+
+  async getById(teamId: Types.ObjectId): Promise<TeamDto> {
+    const team = await this.teamModel.findById(teamId);
+    return this.mapTeamToDto(team);
+  }
+
+  async getRanking(): Promise<{ team: Team; score: number }[]> {
+    const teams = await this.teamModel.find();
+    if (!teams || teams.length === 0) {
+      throw new Error('No teams found');
+    }
+
+    const teamsScoresPromises = teams.map(async (team) => {
+      const users = await this.userModel.find({ teamId: team.id });
+      let totalScore = 0;
+      for (const user of users) {
+        // Assurez-vous que la propriété 'score' existe avant de l'ajouter au score total
+        if (user) {
+          const scoring = await this.userService.getScore(user.id);
+          totalScore += scoring.score;
+        }
+      }
+      return { team: team.toObject(), score: totalScore };
+    });
+
+    // Utilisez Promise.all pour résoudre toutes les promesses de score d'utilisateur
+    const teamsScores = await Promise.all(teamsScoresPromises);
+
+    // Trie les utilisateurs par leur score en ordre décroissant
+    teamsScores.sort((a, b) => b.score - a.score);
+
+    return teamsScores;
   }
 
   // Other CRUD methods

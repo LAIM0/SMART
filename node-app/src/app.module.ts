@@ -11,6 +11,7 @@ import { CompletedModule } from './Completed/completed.module';
 import { AuthModule } from './Auth/auth.module';
 import { MailService } from './mail/mail.service';
 import { ScheduleModule } from './Scheduler/schedule.module';
+import { MailModule } from './mail/mail.module';
 
 const mongoUsername = process.env.MONGO_USERNAME;
 const mongoPassword = process.env.MONGO_PASSWORD;
@@ -30,22 +31,9 @@ const mongoDb = process.env.MONGO_DB;
     CompletedModule,
     AuthModule,
     ScheduleModule,
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.MAIL_HOST,
-        port: process.env.MAIL_PORT,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: process.env.MAIL_USER,
-          pass: process.env.MAIL_PASSWORD,
-        },
-      },
-      defaults: {
-        from: '"No Reply" <noreply@example.com>',
-      },
-    }),
+    MailModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MailService],
+  providers: [AppService, MailModule],
 })
 export class AppModule {}

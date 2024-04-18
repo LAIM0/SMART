@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import {
   ThemeProvider,
@@ -6,23 +7,39 @@ import {
   CSSReset,
 } from '@chakra-ui/react';
 import ResetPasswordForm from '../components/Auth/ResetPasswordForm';
+import { GetServerSidePropsContext } from 'next'; // Assurez-vous du chemin correct
 
-function ForgotPasswordForm() {
-  // const [email, setEmail] = useState<string>('');
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { query } = context;
+  const { token } = query; // Récupération du token depuis la query string
 
-  // const handleResetPassword = async () => {
-  //   // Ajoutez ici la logique pour envoyer une demande de réinitialisation de mot de passe
-  //   console.log('Email for password reset:', email);
-  // };
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/error', // Redirection en cas d'absence de token
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { token }, // Passer le token comme prop à la page
+  };
+}
+
+const ForgotPasswordPage: React.FC<{ token: string }> = ({ token }) => {
+  if (!token) {
+    return <div>Erreur: Token non identifié</div>;
+  }
 
   return (
     <ThemeProvider theme={theme}>
       <ColorModeProvider>
         <CSSReset />
-        <ResetPasswordForm />
+        <ResetPasswordForm token={token} />
       </ColorModeProvider>
     </ThemeProvider>
   );
-}
+};
 
-export default ForgotPasswordForm;
+export default ForgotPasswordPage;

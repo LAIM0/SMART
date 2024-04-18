@@ -19,7 +19,6 @@ import {
 import { SingleDatepicker } from 'chakra-dayzed-datepicker';
 import moment from 'moment';
 import CategoryData from '../../interfaces/categoryInterface';
-// https://github.com/aboveyunhai/chakra-dayzed-datepicker/tree/main
 import { Periodicity } from '../../utils/constants';
 import ChallengeApiManager from '../../api/ChallengeApiManager';
 
