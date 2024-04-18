@@ -6,7 +6,10 @@ import {
   Get,
   Post,
   UseGuards,
-  Request,Put,Delete,Param
+  Request,
+  Put,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
@@ -113,17 +116,14 @@ export class UserController {
   @Get('/score')
   async score(
     @Body() scoreCheckDto: ScoreCheckDto,
-  ): Promise<{ user: User; score: number }> {
+  ): Promise<{ score: number }> {
     const userId = scoreCheckDto.userId;
-    return this.userService.getScoreUserWithDetails(userId);
+    return this.userService.getScore(userId);
   }
 
   //Get / ranking -- classement des user ordre décroissant de points
   @Get('/ranking')
-  async ranking(
-    @Body() scoreCheckDto: ScoreCheckDto,
-  ): Promise<{ user: User; score: number }[]> {
-    const userId = scoreCheckDto.userId;
+  async ranking(): Promise<{ user: User; score: number; teamName: string }[]> {
     return this.userService.getRanking();
   }
 
@@ -166,22 +166,26 @@ export class UserController {
   }
 
   @Delete('delete/:userId')
-  async deleteUser(@Param('userId') userId: string): Promise<{ message: string }> {
+  async deleteUser(
+    @Param('userId') userId: string,
+  ): Promise<{ message: string }> {
     try {
       // Supprimer l'utilisateur avec l'ID fourni
       await this.userService.deleteUser(userId);
-      return { message: 'L\'utilisateur a été supprimé avec succès' };
+      return { message: "L'utilisateur a été supprimé avec succès" };
     } catch (error) {
       console.error("Erreur lors de la suppression de l'utilisateur:", error);
-      throw new Error('Une erreur s\'est produite lors de la suppression de l\'utilisateur');
+      throw new Error(
+        "Une erreur s'est produite lors de la suppression de l'utilisateur",
+      );
     }
   }
   @Put(':userId/team')
   async updateUserTeam(
     @Param('userId') userId: string,
-    @Body('teamId') teamId: string
+    @Body('teamId') teamId: string,
   ) {
-    console.log("entrée put team");
+    console.log('entrée put team');
     try {
       await this.userService.updateUserTeam(userId, teamId);
       return { message: 'Team updated successfully' };
@@ -190,11 +194,11 @@ export class UserController {
       throw error;
     }
   }
-  
+
   @Put(':userId/admin')
   async updateUserAdminStatus(
     @Param('userId') userId: string,
-    @Body('isAdmin') isAdmin: boolean
+    @Body('isAdmin') isAdmin: boolean,
   ) {
     try {
       await this.userService.updateUserAdminStatus(userId, isAdmin);

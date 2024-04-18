@@ -1,4 +1,9 @@
-import { Injectable,NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './user.schema';
@@ -6,12 +11,14 @@ import { CompletedWithChallenge } from './interfaces/challengeScore.interface';
 import { Completed, CompletedDocument } from 'src/Completed/completed.schema';
 import { CompletedService } from 'src/Completed/completed.service';
 import { Challenge } from 'src/Challenge/challenge.schema';
+import { TeamService } from 'src/Team/team.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private completedService: CompletedService,
+    private teamService: TeamService,
   ) {}
 
   // async createUser(user: UserInterface): Promise<User> {
@@ -35,7 +42,7 @@ export class UserService {
       firstName: firstName,
       isAdmin: isAdmin,
       teamId: teamId,
-      firstLogin:true,
+      firstLogin: true,
     });
     return newUser.save();
   }
@@ -77,9 +84,7 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async getScoreUserWithDetails(
-    UserId: Types.ObjectId,
-  ): Promise<{ user: User; score: number }> {
+  async getScore(UserId: Types.ObjectId): Promise<{ score: number }> {
     // Récupère les détails de l'utilisateur
     const user = await this.userModel.findById(UserId);
     if (!user) {
@@ -96,10 +101,12 @@ export class UserService {
     );
 
     // Ajoute le score total à l'objet utilisateur
-    return { user: user.toObject(), score: totalScore };
+    return { score: totalScore };
   }
 
-  async getRanking(): Promise<{ user: User; score: number }[]> {
+  async getRanking(): Promise<
+    { user: User; score: number; teamName: string }[]
+  > {
     const users = await this.userModel.find();
     if (!users || users.length === 0) {
       throw new Error('No users found');
@@ -109,12 +116,13 @@ export class UserService {
       const completedChallenges = await this.completedService.getUserCompleteds(
         user.id,
       );
+      const team = await this.teamService.getById(user.teamId);
       let totalScore = completedChallenges.reduce(
         (acc, current) =>
           acc + JSON.parse(JSON.stringify(current)).challenge.points,
         0,
       );
-      return { user: user.toObject(), score: totalScore };
+      return { user: user.toObject(), score: totalScore, teamName: team.name };
     });
 
     // Utilisez Promise.all pour résoudre toutes les promesses de score d'utilisateur
@@ -131,7 +139,7 @@ export class UserService {
       // Vérifiez si l'utilisateur existe
       const user = await this.userModel.findById(userId);
       if (!user) {
-        throw new Error('L\'utilisateur n\'existe pas');
+        throw new Error("L'utilisateur n'existe pas");
       }
       // Supprimez l'utilisateur de la base de données
       await this.userModel.findByIdAndDelete(userId);
@@ -161,4 +169,3 @@ export class UserService {
     }
   }
 }
-

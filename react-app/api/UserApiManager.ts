@@ -25,7 +25,6 @@ export const addUser = async (newUser: User) => {
     const response = await axios.post(`${baseURL}/users/signup`, {
       ...newUser,
       passwordHash: 'Ecoexya24',
-      
     });
     return response.data;
   } catch (error) {
@@ -34,7 +33,7 @@ export const addUser = async (newUser: User) => {
   }
 };
 
-export const deleteUser = async (userId:string) => {
+export const deleteUser = async (userId: string) => {
   try {
     await axios.delete(`${baseURL}/users/delete/${userId}`);
   } catch (error) {
@@ -43,7 +42,7 @@ export const deleteUser = async (userId:string) => {
   }
 };
 
-export const updateUserTeam = async (userId:string, teamId:string) => {
+export const updateUserTeam = async (userId: string, teamId: string) => {
   try {
     await axios.put(`${baseURL}/users/${userId}/team`, { teamId });
   } catch (error) {
@@ -55,14 +54,30 @@ export const updateUserTeam = async (userId:string, teamId:string) => {
   }
 };
 
-export const updateUserAdminStatus = async (userId:string, isAdmin:boolean) => {
+export const updateUserAdminStatus = async (
+  userId: string,
+  isAdmin: boolean
+) => {
   try {
     const response = await axios.put(`${baseURL}/users/${userId}/admin`, {
-      isAdmin: isAdmin
+      isAdmin,
     });
     return response.data;
   } catch (error) {
     console.error("Error updating user's admin status:", error);
+    throw error;
+  }
+};
+
+export const fetchUserRanking = async () => {
+  try {
+    const response = await axios.get(`${baseURL}/users/ranking`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Erreur lors de la récupération du classement des utilisateurs:',
+      error
+    );
     throw error;
   }
 };

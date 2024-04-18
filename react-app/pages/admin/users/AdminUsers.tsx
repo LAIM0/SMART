@@ -22,7 +22,8 @@ import {
   Text,
   Checkbox,
   Alert,
-  AlertIcon,Switch
+  AlertIcon,
+  Switch,
 } from '@chakra-ui/react';
 import {
   fetchUsers,
@@ -32,15 +33,15 @@ import {
   updateUserAdminStatus,
 } from '../../../api/UserApiManager';
 
-import fetchTeams from '../../../api/TeamApiManager';
+import { fetchTeams } from '../../../api/TeamApiManager';
 import TeamData from '../../../interfaces/teamInterface';
 
 interface User {
-  _id: string,
-  firstName: string ,
-  lastName: string ,
-  email: string ,
-  teamId: string ,
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  teamId: string;
   isAdmin: boolean;
 }
 
@@ -63,8 +64,6 @@ function AdminUsers() {
   const [isOpenErrorDeleteUser, setIsOpenErrorDeleteUser] = useState(false);
   const [errorMessageDeleteUser, setErrorMessageDeleteUser] = useState('');
 
-  
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -80,12 +79,14 @@ function AdminUsers() {
     fetchData();
   }, []);
 
-  const handleDeleteConfirmation = (userId :string ) => {
+  const handleDeleteConfirmation = (userId: string) => {
     console.log(users.length, userId);
     if (users.length == 1) {
       // S'il n'y a qu'un seul utilisateur, affichez une erreur
-      setErrorMessageDeleteUser("Vous ne pouvez pas supprimer le dernier utilisateur.");
-    setIsOpenErrorDeleteUser(true);
+      setErrorMessageDeleteUser(
+        'Vous ne pouvez pas supprimer le dernier utilisateur.'
+      );
+      setIsOpenErrorDeleteUser(true);
     } else {
       // S'il y a plus d'un utilisateur, permettez la suppression en définissant l'ID de l'utilisateur à supprimer
       setDeleteUserId(userId);
@@ -93,23 +94,25 @@ function AdminUsers() {
     }
   };
 
-  const handleInputChange = (e:any) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setNewUser({ ...newUser, [name]: value });
   };
 
-  const handleTeamSelectChange = (e:any) => {
+  const handleTeamSelectChange = (e: any) => {
     setSelectedTeam(e.target.value);
     setNewUser({ ...newUser, teamId: e.target.value });
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
       const userExists = users.some((user) => user.email === newUser.email);
-      
+
       if (userExists) {
-        throw new Error("Un utilisateur avec cette adresse e-mail existe déjà.");
+        throw new Error(
+          'Un utilisateur avec cette adresse e-mail existe déjà.'
+        );
       } else {
         await addUser({
           ...newUser,
@@ -130,11 +133,14 @@ function AdminUsers() {
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Erreur lors de l'ajout de l'utilisateur:", error.message);
+        console.error(
+          "Erreur lors de l'ajout de l'utilisateur:",
+          error.message
+        );
         setErrorMessage(error.message);
       } else {
         console.error("Erreur lors de l'ajout de l'utilisateur:", error);
-        setErrorMessage('Une erreur inconnue s\'est produite.');
+        setErrorMessage("Une erreur inconnue s'est produite.");
       }
       setIsOpenError(true);
     }
@@ -148,13 +154,13 @@ function AdminUsers() {
       setUsers(updatedUsers);
     } catch (error) {
       if (error instanceof Error) {
-      setIsOpenErrorDeleteUser(true);
-      setErrorMessageDeleteUser(error.message);
+        setIsOpenErrorDeleteUser(true);
+        setErrorMessageDeleteUser(error.message);
       }
     }
   };
 
-  const handleTeamChange = async (userId:string, teamId:string) => {
+  const handleTeamChange = async (userId: string, teamId: string) => {
     try {
       await updateUserTeam(userId, teamId);
       const updatedUsers = await fetchUsers();
@@ -167,28 +173,31 @@ function AdminUsers() {
     }
   };
 
-  const handleToggleAdmin = async (userId: string,isAdmin:boolean) => {
+  const handleToggleAdmin = async (userId: string, isAdmin: boolean) => {
     try {
       await updateUserAdminStatus(userId, isAdmin);
       const updatedUsers = await fetchUsers();
       setUsers(updatedUsers);
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du statut d'administrateur:", error);
+      console.error(
+        "Erreur lors de la mise à jour du statut d'administrateur:",
+        error
+      );
     }
   };
 
   return (
-    <Flex flexDirection='column' gap='16px'>
+    <Flex flexDirection="column" gap="16px">
       <Button
-        bg='primary.300'
-        color='white'
-        width='fit-content'
+        bg="primary.300"
+        color="white"
+        width="fit-content"
         onClick={onOpen}
       >
         Ajouter un utilisateur
       </Button>
-      <TableContainer bg='white' borderRadius={16}>
-        <Table variant='simple'>
+      <TableContainer bg="white" borderRadius={16}>
+        <Table variant="simple">
           <Thead>
             <Tr>
               <Th>Prénom</Th>
@@ -220,14 +229,16 @@ function AdminUsers() {
                   <Flex align="center">
                     <Switch
                       isChecked={user.isAdmin}
-                      onChange={(e) => handleToggleAdmin(user._id, e.target.checked)}
+                      onChange={(e) =>
+                        handleToggleAdmin(user._id, e.target.checked)
+                      }
                     />
                     <Text ml={2}>{user.isAdmin ? 'Oui' : 'Non'}</Text>
                   </Flex>
                 </Td>
                 <Td>
                   <Button
-                    colorScheme='red'
+                    colorScheme="red"
                     onClick={() => handleDeleteConfirmation(user._id)}
                   >
                     Supprimer
@@ -240,56 +251,56 @@ function AdminUsers() {
       </TableContainer>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent bg='#F8F8F8' p='24px'>
+        <ModalContent bg="#F8F8F8" p="24px">
           <ModalHeader>Ajouter un utilisateur</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <form onSubmit={handleSubmit}>
-              <Flex flexDirection='column' gap={4}>
+              <Flex flexDirection="column" gap={4}>
                 <FormControl isRequired>
                   <Input
-                    type='text'
-                    name='firstName'
+                    type="text"
+                    name="firstName"
                     value={newUser.firstName}
                     onChange={handleInputChange}
-                    placeholder='Prénom'
-                    focusBorderColor='#166879'
+                    placeholder="Prénom"
+                    focusBorderColor="#166879"
                     isRequired
-                    bg='white'
+                    bg="white"
                   />
                 </FormControl>
                 <FormControl isRequired>
                   <Input
-                    type='text'
-                    name='lastName'
+                    type="text"
+                    name="lastName"
                     value={newUser.lastName}
                     onChange={handleInputChange}
-                    placeholder='Nom'
-                    focusBorderColor='#166879'
+                    placeholder="Nom"
+                    focusBorderColor="#166879"
                     isRequired
-                    bg='white'
+                    bg="white"
                   />
                 </FormControl>
                 <FormControl isRequired>
                   <Input
-                    type='email'
-                    name='email'
+                    type="email"
+                    name="email"
                     value={newUser.email}
                     onChange={handleInputChange}
-                    placeholder='Email'
-                    focusBorderColor='#166879'
+                    placeholder="Email"
+                    focusBorderColor="#166879"
                     isRequired
-                    bg='white'
+                    bg="white"
                   />
                 </FormControl>
                 <FormControl isRequired>
                   <Select
-                    placeholder='Sélectionner une équipe'
-                    focusBorderColor='#166879'
+                    placeholder="Sélectionner une équipe"
+                    focusBorderColor="#166879"
                     value={selectedTeam}
                     onChange={handleTeamSelectChange}
                     isRequired
-                    bg='white'
+                    bg="white"
                   >
                     {teams.map((team) => (
                       <option key={team.id} value={team.id}>
@@ -303,12 +314,14 @@ function AdminUsers() {
                     <Checkbox
                       name="isAdmin"
                       isChecked={newUser.isAdmin}
-                      onChange={(e) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
+                      onChange={(e) =>
+                        setNewUser({ ...newUser, isAdmin: e.target.checked })
+                      }
                     />
                     <Text ml={2}>Administrateur</Text>
                   </Flex>
                 </FormControl>
-                <Button type='submit' bg='#166879' color='white'>
+                <Button type="submit" bg="#166879" color="white">
                   Ajouter
                 </Button>
                 {isOpenError && (
@@ -330,22 +343,39 @@ function AdminUsers() {
           <ModalBody>
             Êtes-vous sûr de vouloir supprimer cet utilisateur ?
             <Flex justifyContent="flex-end" mt={4}>
-              <Button variant="outline" onClick={() => {setDeleteUserId(''); onClose()}}>Annuler</Button>
-              <Button colorScheme="red" ml={2} onClick={() => {handleDeleteUser(); onClose()}}>Confirmer</Button>
-      
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDeleteUserId('');
+                  onClose();
+                }}
+              >
+                Annuler
+              </Button>
+              <Button
+                colorScheme="red"
+                ml={2}
+                onClick={() => {
+                  handleDeleteUser();
+                  onClose();
+                }}
+              >
+                Confirmer
+              </Button>
             </Flex>
           </ModalBody>
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isOpenErrorDeleteUser} onClose={() => setIsOpenErrorDeleteUser(false)}>
+      <Modal
+        isOpen={isOpenErrorDeleteUser}
+        onClose={() => setIsOpenErrorDeleteUser(false)}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Erreur de suppression</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            {errorMessageDeleteUser}
-          </ModalBody>
+          <ModalBody>{errorMessageDeleteUser}</ModalBody>
         </ModalContent>
       </Modal>
     </Flex>
