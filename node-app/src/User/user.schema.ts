@@ -32,6 +32,9 @@ export class User {
   @Prop({ default: false })
   firstLogin: boolean;
 
+  @Prop()
+  profilePicturePath: string;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

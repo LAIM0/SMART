@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Team, TeamDocument } from './team.schema';
 import { Model, Types } from 'mongoose';
@@ -60,6 +60,17 @@ export class TeamService {
     const teamUsers = usersScores.map(({ user }) => user);
 
     return { team: teamUsers, teamScore };
+  }
+  async findById(teamId: string): Promise<Team | null> {
+    try {
+      const team = await this.teamModel.findById(teamId).exec();
+      if (!team) {
+        throw new NotFoundException('Team not found');
+      }
+      return team;
+    } catch (error) {
+      throw new NotFoundException('Team not found');
+    }
   }
 
   // Other CRUD methods

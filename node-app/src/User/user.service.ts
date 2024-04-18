@@ -7,6 +7,10 @@ import { Completed, CompletedDocument } from 'src/Completed/completed.schema';
 import { CompletedService } from 'src/Completed/completed.service';
 import { Challenge } from 'src/Challenge/challenge.schema';
 import * as bcrypt from 'bcryptjs';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as multer from 'multer';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -175,7 +179,7 @@ export class UserService {
   }
 
   async findDefaultAdmin(): Promise<User> {
-    return await this.userModel.findOne({ email: 'admin@example.com' }).exec();
+    return await this.userModel.findOne({ email: 'admin@coexya.com' }).exec();
   }
 
   async createDefaultAdminIfNotExists(): Promise<void> {
@@ -194,5 +198,55 @@ export class UserService {
       await newUser.save();
     }
   }
+
+  // async uploadProfilePicture(userId: string, file: Express.Multer.File): Promise<void> {
+  //   const user = await this.userModel.findById(userId).exec();
+  //   if (!user) {
+  //     throw new NotFoundException('User not found');
+  //   }
+
+  //   if (!file.originalname) {
+  //     throw new Error('Originalname is not defined');
+  //   }
+  
+  //   // Générer un nom de fichier unique en utilisant file.originalname
+  //   const fileName = "${uuidv4()}-${file.originalname}";
+  //   // Enregistrer l'image sur le système de fichiers
+  //   const imagePath = path.join(__dirname, '..', 'uploads', fileName);
+  //   console.log(imagePath);
+
+  //   fs.writeFileSync(imagePath, file.buffer);
+
+  //   // Mettre à jour le chemin de l'image dans la base de données
+  //   user.profilePicturePath = imagePath;
+  //   await user.save();
+  // }
+
+  async updateProfilePicture(userId: string, data: { profilePicturePath: string }): Promise<User> {
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+  
+    user.profilePicturePath = data.profilePicturePath;
+    return user.save();
+    
+  }
+
+  async updateUserProfile(userId: string, updateUserDto: UpdateUserDto): Promise<void> {
+    const user = await this.userModel.findById(userId); // Utilisez votre modèle Mongoose pour trouver l'utilisateur par ID
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+  
+    // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO
+    user.firstName = updateUserDto.firstName;
+    user.lastName = updateUserDto.lastName;
+  
+    // Enregistrez les modifications dans la base de données
+    await user.save();
+  }
+  
+  
 }
 
