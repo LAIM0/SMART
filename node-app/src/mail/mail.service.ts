@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-import { UserService } from '../User/user.service'; // Service gérant les utilisateurs
-import * as crypto from 'crypto';
+import { UserService } from '../User/user.service';
 
 @Injectable()
 export class MailService {
