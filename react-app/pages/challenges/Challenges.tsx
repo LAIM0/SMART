@@ -95,10 +95,8 @@ function Challenges() {
 
   const completedChallengesToShow = completedChallenges.filter(
     (completedChallenge) =>
-      (currentCategory.categoryName === 'Tous' ||
-        currentCategory.categoryName ===
-          completedChallenge.challenge.category) &&
-      dateGap(completedChallenge.completed.completionDate) >= 0
+      currentCategory.categoryName === 'Tous' ||
+      currentCategory.categoryName === completedChallenge.challenge.category
   );
 
   return (
