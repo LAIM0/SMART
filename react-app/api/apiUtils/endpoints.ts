@@ -36,7 +36,10 @@ const ENDPOINTS = {
   USER: {},
   TEAM: {},
   CATEGORY: {
+    CATEGORY_GET_BY_ID: (categoryId: string) => `/${ENTITIES.CATEGORY}/byId/${categoryId}`,
     CATEGORY_GET_ALL: () => `/${ENTITIES.CATEGORY}/all`,
+    CATEGORY_CREATE: () => `/${ENTITIES.CATEGORY}/create`,
+    CATEGORY_DELETE: (categoryId: string) => `/${ENTITIES.CATEGORY}/delete/${categoryId}`,
   },
 };
 

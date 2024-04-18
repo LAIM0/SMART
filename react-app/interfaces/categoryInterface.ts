@@ -1,6 +1,6 @@
 interface CategoryData {
   categoryName: string;
-  id: string;
+  _id: string;
 }
 
 export default CategoryData;
