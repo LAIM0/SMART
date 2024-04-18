@@ -18,7 +18,6 @@ const ForgotPasswordForm: React.FC = () => {
 
   const handleResetPassword = async () => {
     try {
-      // Remplacez 'http://localhost:3001/auth/forgot-password' par l'URL de votre API
       const response = await fetch(
         'http://localhost:3001/users/forgot-password',
         {
@@ -32,7 +31,7 @@ const ForgotPasswordForm: React.FC = () => {
 
       if (!response.ok) {
         throw new Error(
-          "Une erreur s'est produite lors de l'envoi de la demande de réinitialisation de mot de passe"
+          "1. Une erreur s'est produite lors de l'envoi de la demande de réinitialisation de mot de passe"
         );
       }
 
@@ -54,7 +53,7 @@ const ForgotPasswordForm: React.FC = () => {
       );
       window.location.href = '/login';
     } catch (error) {
-      console.error(error);
+      console.log(error);
       setError(
         "Une erreur s'est produite lors de l'envoi de la demande de réinitialisation de mot de passe."
       );

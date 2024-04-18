@@ -32,7 +32,7 @@ export class UserService {
       firstName: firstName,
       isAdmin: isAdmin,
       teamId: teamId,
-      firstLogin:true,
+      firstLogin: true,
     });
     return newUser.save();
   }
@@ -169,7 +169,7 @@ export class UserService {
       // Vérifiez si l'utilisateur existe
       const user = await this.userModel.findById(userId);
       if (!user) {
-        throw new Error('L\'utilisateur n\'existe pas');
+        throw new Error("L'utilisateur n'existe pas");
       }
       // Supprimez l'utilisateur de la base de données
       await this.userModel.findByIdAndDelete(userId);
@@ -200,7 +200,7 @@ export class UserService {
   }
 
   async findDefaultAdmin(): Promise<User> {
-    return await this.userModel.findOne({ email: 'admin@example.com' }).exec();
+    return await this.userModel.findOne({ email: 'admin@coexya.com' }).exec();
   }
 
   async createDefaultAdminIfNotExists(): Promise<void> {
@@ -220,4 +220,3 @@ export class UserService {
     }
   }
 }
-
