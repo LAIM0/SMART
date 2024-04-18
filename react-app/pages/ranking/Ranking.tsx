@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, Heading } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import SwitchButton, {
   SELECTION_MODES,
@@ -17,23 +17,24 @@ function Ranking() {
   }, []);
 
   return (
-    <div>
-      <Heading>Défis</Heading>
+    <Flex p="32px" flexDirection="column">
+      <Text as="h1">Classement</Text>
       <Flex
-        p={3}
         gap={3}
         bg="white"
-        borderRadius={8}
+        borderRadius="16px"
         boxShadow="sm"
         overflowX="scroll"
+        w="fit-content"
+        mb="24px"
       >
         <SwitchButton
           isSelectedIndividual={isIndividual}
           onSelectionChange={setIsIndividual}
         />
       </Flex>
-      <Box p={10}>{isIndividual ? <RankTableUser /> : <RankTableTeam />}</Box>
-    </div>
+      <Box mt={5}>{isIndividual ? <RankTableUser /> : <RankTableTeam />}</Box>
+    </Flex>
   );
 }
 

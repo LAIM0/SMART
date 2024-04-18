@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './user.schema';
@@ -6,7 +11,7 @@ import { MailService } from '../mail/mail.service';
 import { CompletedService } from 'src/Completed/completed.service';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcryptjs';
-import { Challenge } from 'src/Challenge/challenge.schema';
+import { TeamService } from 'src/Team/team.service';
 
 @Injectable()
 export class UserService {
@@ -14,6 +19,7 @@ export class UserService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private completedService: CompletedService,
     private mailService: MailService,
+    private teamService: TeamService,
   ) {}
 
   async createUser(
@@ -80,9 +86,7 @@ export class UserService {
     }
   }
 
-  async getScoreUserWithDetails(
-    UserId: Types.ObjectId,
-  ): Promise<{ user: User; score: number }> {
+  async getScore(UserId: Types.ObjectId): Promise<{ score: number }> {
     // Récupère les détails de l'utilisateur
     const user = await this.userModel.findById(UserId);
     if (!user) {
@@ -99,7 +103,7 @@ export class UserService {
     );
 
     // Ajoute le score total à l'objet utilisateur
-    return { user: user.toObject(), score: totalScore };
+    return { score: totalScore };
   }
 
   async generateResetPasswordToken(email: string): Promise<string> {
@@ -137,7 +141,9 @@ export class UserService {
     await user.save();
   }
 
-  async getRanking(): Promise<{ user: User; score: number }[]> {
+  async getRanking(): Promise<
+    { user: User; score: number; teamName: string }[]
+  > {
     const users = await this.userModel.find();
     if (!users || users.length === 0) {
       throw new Error('No users found');
@@ -147,12 +153,13 @@ export class UserService {
       const completedChallenges = await this.completedService.getUserCompleteds(
         user.id,
       );
+      const team = await this.teamService.getById(user.teamId);
       let totalScore = completedChallenges.reduce(
         (acc, current) =>
           acc + JSON.parse(JSON.stringify(current)).challenge.points,
         0,
       );
-      return { user: user.toObject(), score: totalScore };
+      return { user: user.toObject(), score: totalScore, teamName: team.name };
     });
 
     // Utilisez Promise.all pour résoudre toutes les promesses de score d'utilisateur

@@ -6,18 +6,18 @@ import {
   Get,
   Post,
   UseGuards,
-  Request,Put,Delete,Param
+  Request,
+  Put,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
 import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
 import { UserService } from './user.service';
-import { AuthService } from 'src/Auth/auth.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
-import {AdminAuthGuard } from 'src/Auth/admin.guard';
-import { HttpException } from '@nestjs/common';
-import { HttpStatus } from '@nestjs/common';
+import { AdminAuthGuard } from 'src/Auth/admin.guard';
 
 @Controller('users')
 export class UserController {
@@ -102,17 +102,14 @@ export class UserController {
   @Get('/score')
   async score(
     @Body() scoreCheckDto: ScoreCheckDto,
-  ): Promise<{ user: User; score: number }> {
+  ): Promise<{ score: number }> {
     const userId = scoreCheckDto.userId;
-    return this.userService.getScoreUserWithDetails(userId);
+    return this.userService.getScore(userId);
   }
 
   //Get / ranking -- classement des user ordre décroissant de points
   @Get('/ranking')
-  async ranking(
-    @Body() scoreCheckDto: ScoreCheckDto,
-  ): Promise<{ user: User; score: number }[]> {
-    const userId = scoreCheckDto.userId;
+  async ranking(): Promise<{ user: User; score: number; teamName: string }[]> {
     return this.userService.getRanking();
   }
 
@@ -165,7 +162,7 @@ export class UserController {
   }
 
   @Get('check/admin')
-  @UseGuards(AdminAuthGuard,AuthenticatedGuard )
+  @UseGuards(AdminAuthGuard, AuthenticatedGuard)
   checkAdminAuthentication(@Request() req) {
     // if(req.user.isAdmin){
     //   return { isAdminLoggedIn: true };
@@ -177,31 +174,37 @@ export class UserController {
   }
 
   @Delete('delete/:userId')
-async deleteUser(@Param('userId') userId: string): Promise<{ message: string }> {
-  try {
-    // Récupérer l'administrateur par défaut
-    const defaultAdmin = await this.userService.findDefaultAdmin();
-    const user = await this.userService.findById(userId);
-    // Vérifier si l'utilisateur à supprimer est l'administrateur par défaut
-    if (user.email === defaultAdmin.email) {
-      throw new Error('Vous ne pouvez pas supprimer l\'administrateur par défaut.');
-    }
+  async deleteUser(
+    @Param('userId') userId: string,
+  ): Promise<{ message: string }> {
+    try {
+      // Récupérer l'administrateur par défaut
+      const defaultAdmin = await this.userService.findDefaultAdmin();
+      const user = await this.userService.findById(userId);
+      // Vérifier si l'utilisateur à supprimer est l'administrateur par défaut
+      if (user.email === defaultAdmin.email) {
+        throw new Error(
+          "Vous ne pouvez pas supprimer l'administrateur par défaut.",
+        );
+      }
 
-    // Supprimer l'utilisateur avec l'ID fourni
-    await this.userService.deleteUser(userId);
-    return { message: 'L\'utilisateur a été supprimé avec succès' };
-  } catch (error) {
-    console.error("Erreur lors de la suppression de l'utilisateur:", error);
-    throw new Error('Une erreur s\'est produite lors de la suppression de l\'utilisateur');
+      // Supprimer l'utilisateur avec l'ID fourni
+      await this.userService.deleteUser(userId);
+      return { message: "L'utilisateur a été supprimé avec succès" };
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'utilisateur:", error);
+      throw new Error(
+        "Une erreur s'est produite lors de la suppression de l'utilisateur",
+      );
+    }
   }
-}
 
   @Put(':userId/team')
   async updateUserTeam(
     @Param('userId') userId: string,
-    @Body('teamId') teamId: string
+    @Body('teamId') teamId: string,
   ) {
-    console.log("entrée put team");
+    console.log('entrée put team');
     try {
       await this.userService.updateUserTeam(userId, teamId);
       return { message: 'Team updated successfully' };
@@ -214,13 +217,15 @@ async deleteUser(@Param('userId') userId: string): Promise<{ message: string }> 
   @Put(':userId/admin')
   async updateUserAdminStatus(
     @Param('userId') userId: string,
-    @Body('isAdmin') isAdmin: boolean
+    @Body('isAdmin') isAdmin: boolean,
   ) {
     try {
       const defaultAdmin = await this.userService.findDefaultAdmin();
       const user = await this.userService.findById(userId);
       if (user.email === defaultAdmin.email) {
-        throw new Error('Vous ne pouvez pas changer les droits de cet utilisateur.');
+        throw new Error(
+          'Vous ne pouvez pas changer les droits de cet utilisateur.',
+        );
       }
       await this.userService.updateUserAdminStatus(userId, isAdmin);
       return { message: 'User admin status updated successfully' };

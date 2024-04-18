@@ -9,7 +9,7 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import dateGap from '../../utils/mathFunctions';
 import CategoryApiManager from '../../api/CategoryApiManager';
 import ChallengeCard from '../../components/Challenges/ChallengeCard';
-import UserData from '../../interfaces/userInterface';
+import { UserData } from '../../interfaces/userInterface';
 
 function Challenges() {
   const router = useRouter();
@@ -52,6 +52,7 @@ function Challenges() {
             userData.data.id
           );
         setCompletedChallenges(tempCompletedChallenges);
+        console.log(tempCompletedChallenges);
       } catch (error) {
         console.error(
           'Erreur lors de la récupération des challenges complétés:',
