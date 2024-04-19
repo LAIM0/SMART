@@ -37,6 +37,8 @@ export class User {
 
   @Prop()
   resetPasswordExpires: Date;
+  profilePicturePath: string;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
