@@ -25,12 +25,13 @@ function FormCreateModifyCategory({
     e.preventDefault();
     if (categoryToModify === null) {
       const newCategory = {
+        id: ``,
         categoryName,
       };
 
       const fetchData = async () => {
         try {
-          await CategoryApiManager.create(newCategory.categoryName);
+          await CategoryApiManager.create(newCategory);
           onCloseModal();
         } catch (error) {
           console.error('Erreur lors de la création des données :', error);
@@ -40,12 +41,13 @@ function FormCreateModifyCategory({
       fetchData();
     } else {
       const newCategory = {
+        id: `${categoryToModify.id}`,
         categoryName,
       };
 
       const fetchData = async () => {
         try {
-          await CategoryApiManager.modify(categoryToModify.id, newCategory.categoryName);
+          await CategoryApiManager.modify(newCategory);
           onCloseModal();
         } catch (error) {
           console.error('Erreur lors de la modification des données :', error);

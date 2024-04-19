@@ -32,21 +32,25 @@ class CategoryApiManager {
     }
   }
 
-  static async create(categoryName: string): Promise<void> {
+  static async create(categoryData: CategoryData): Promise<void> {
+    const { id, ...dataWithoutId } = categoryData;
     try {
-      await ApiMethods.post(ENDPOINTS.CATEGORY.CATEGORY_CREATE(), {
-        categoryName,
-      });
+      await ApiMethods.post(
+        ENDPOINTS.CATEGORY.CATEGORY_CREATE(),
+        dataWithoutId
+      );
     } catch (error) {
       throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
     }
   }
 
-  static async modify(id: string, categoryName: string): Promise<void> {
+  static async modify(categoryData: CategoryData): Promise<void> {
+    const { id, ...dataWithoutId } = categoryData;
     try {
-      await ApiMethods.put(ENDPOINTS.CATEGORY.CATEGORY_MODIFY(id), {
-        categoryName,
-      });
+      await ApiMethods.put(
+        ENDPOINTS.CATEGORY.CATEGORY_MODIFY(id),
+        dataWithoutId
+      );
     } catch (error) {
       throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
     }
