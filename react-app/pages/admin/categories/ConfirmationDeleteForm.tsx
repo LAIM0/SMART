@@ -1,7 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
 // eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from 'prop-types';
 
@@ -20,9 +17,9 @@ function ConfirmationDeleteForm({
 }: ConfirmationDeleteFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    console.log(categoryToDelete.id);
     try {
-      await CategoryApiManager.delete(categoryToDelete._id);
+      await CategoryApiManager.delete(categoryToDelete.id);
       onCloseModal();
     } catch (error) {
       console.error('Erreur lors de la suppression des données:', error);
@@ -34,7 +31,7 @@ function ConfirmationDeleteForm({
       <Flex flexDirection="column" gap={4} borderRadius={8}>
         <Flex>
           L&apos;ensemble des défis de la catégorie{' '}
-          {categoryToDelete.categoryName} vont passer dans la catégorie Autre.
+          {categoryToDelete?.categoryName} vont passer dans la catégorie Autre.
         </Flex>
         <Button bg="#166879" color="white" onClick={handleSubmit}>
           Créer une catégorie
@@ -47,7 +44,7 @@ function ConfirmationDeleteForm({
 ConfirmationDeleteForm.propTypes = {
   onCloseModal: PropTypes.func.isRequired,
   categoryToDelete: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     categoryName: PropTypes.string.isRequired,
   }).isRequired,
 };

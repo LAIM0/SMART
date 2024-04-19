@@ -242,58 +242,57 @@ function Challenges() {
           <div>
             {(currentCategory.categoryName === 'Tous' ||
               currentCategory.id === c.challenge.category) && (
-              <Card
-                key={c.challenge.id}
-                onClick={() => router.push(`/challenges/${c.challenge.id}`)}
-                boxShadow="md"
-                borderRadius={12}
-                bg="#166879"
-                p={4}
-                gap={2}
-                maxWidth="500px"
-                minWidth="300px"
-                marginBottom={8}
-                marginRight={8}
-                transition="transform 0.3s ease"
-                _hover={{
-                  transform: 'translate(20px)',
-                  cursor: 'pointer',
-                }}
-              >
-                <Heading size="md" color="white">
-                  {c.challenge.title}{' '}
-                </Heading>
-                <Text minHeight="40px" color="white">
-                  {c.challenge.description}
-                </Text>
-                <Flex gap={2}>
-                  <Box
-                    width="auto"
-                    bg="white"
-                    color="#166879"
-                    p={2}
-                    borderRadius={8}
-                  >
-                    <Text fontWeight="bold">{c.challenge.points} pts</Text>
-                  </Box>
-                  <Box
-                    width="auto"
-                    bg="#4FD1C5"
-                    color="white"
-                    p={2}
-                    borderRadius={8}
-                  >
-                    <Text fontWeight="bold">
-                      {dateGap(c.challenge.endDate) === 0
-                        ? "Aujourd'hui"
-                        : `il y a ${
-                            dateGap(c.completed.completionDate) * -1
+                <Card
+                  key={c.challenge.id}
+                  onClick={() => router.push(`/challenges/${c.challenge.id}`)}
+                  boxShadow="md"
+                  borderRadius={12}
+                  bg="#166879"
+                  p={4}
+                  gap={2}
+                  maxWidth="500px"
+                  minWidth="300px"
+                  marginBottom={8}
+                  marginRight={8}
+                  transition="transform 0.3s ease"
+                  _hover={{
+                    transform: 'translate(20px)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Heading size="md" color="white">
+                    {c.challenge.title}{' '}
+                  </Heading>
+                  <Text minHeight="40px" color="white">
+                    {c.challenge.description}
+                  </Text>
+                  <Flex gap={2}>
+                    <Box
+                      width="auto"
+                      bg="white"
+                      color="#166879"
+                      p={2}
+                      borderRadius={8}
+                    >
+                      <Text fontWeight="bold">{c.challenge.points} pts</Text>
+                    </Box>
+                    <Box
+                      width="auto"
+                      bg="#4FD1C5"
+                      color="white"
+                      p={2}
+                      borderRadius={8}
+                    >
+                      <Text fontWeight="bold">
+                        {dateGap(c.challenge.endDate) === 0
+                          ? "Aujourd'hui"
+                          : `il y a ${dateGap(c.completed.completionDate) * -1
                           }jours`}
-                    </Text>
-                  </Box>
-                </Flex>
-              </Card>
-            )}
+                      </Text>
+                    </Box>
+                  </Flex>
+                </Card>
+              )}
           </div>
         ))}
       </Flex>

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Category, CategoryDocument } from './category.schema';
+import { CategoryInterface } from './interfaces/category.interface';
 
 @Injectable()
 export class CategoryService {
@@ -21,16 +22,14 @@ export class CategoryService {
     return this.categoryModel.findById(CategoryId).exec();
   }
 
-  async create(categoryData: Partial<Category>): Promise<Category> {
+  async create(categoryData: CategoryInterface): Promise<Category> {
     const createdChallenge = new this.categoryModel(categoryData);
     return createdChallenge.save();
   }
 
   async delete(CategoryId: Types.ObjectId): Promise<void> {
     try {
-      this.categoryModel.findByIdAndDelete(CategoryId);
       await this.categoryModel.deleteOne({ _id: CategoryId });
-
       console.log('Données supprimées avec succès');
     } catch (error) {
       console.error('Erreur lors de la suppression des données :', error);
