@@ -42,6 +42,16 @@ class CategoryApiManager {
     }
   }
 
+  static async modify(id: string, categoryName: string): Promise<void> {
+    try {
+      await ApiMethods.put(ENDPOINTS.CATEGORY.CATEGORY_MODIFY(id), {
+        categoryName,
+      });
+    } catch (error) {
+      throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
+    }
+  }
+
   static async delete(id: string): Promise<void> {
     try {
       await axios.delete(`http://localhost:3001/categories/delete/${id}`);

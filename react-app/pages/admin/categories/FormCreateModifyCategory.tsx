@@ -45,7 +45,7 @@ function FormCreateModifyCategory({
 
       const fetchData = async () => {
         try {
-          await CategoryApiManager.update(newCategory.categoryName);
+          await CategoryApiManager.modify(categoryToModify.id, newCategory.categoryName);
           onCloseModal();
         } catch (error) {
           console.error('Erreur lors de la modification des données :', error);

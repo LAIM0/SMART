@@ -26,6 +26,7 @@ const ENDPOINTS = {
     CATEGORY_GET_ALL: () => `/${ENTITIES.CATEGORY}/all`,
     CATEGORY_CREATE: () => `/${ENTITIES.CATEGORY}/create`,
     CATEGORY_DELETE: (categoryId: string) => `/${ENTITIES.CATEGORY}/delete/${categoryId}`,
+    CATEGORY_MODIFY: (categoryId: string) => `/${ENTITIES.CATEGORY}/modify/${categoryId}`,
   },
 };
 

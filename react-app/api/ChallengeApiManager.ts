@@ -1,4 +1,4 @@
-import axios from axios;
+import axios from 'axios';
 import ChallengeData from '../interfaces/challengeInterface';
 import ENDPOINTS from './apiUtils/endpoints';
 import ApiMethods from './apiUtils/apiMethods';
