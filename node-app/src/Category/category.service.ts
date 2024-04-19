@@ -23,8 +23,25 @@ export class CategoryService {
   }
 
   async create(categoryData: CategoryInterface): Promise<Category> {
-    const createdChallenge = new this.categoryModel(categoryData);
-    return createdChallenge.save();
+    const createdCategory = new this.categoryModel(categoryData);
+    return createdCategory.save();
+  }
+
+  async modify(CategoryId: Types.ObjectId, categoryData: CategoryInterface): Promise<Category> {
+
+    try {
+      const categoryToUpdate = await this.categoryModel.findById(CategoryId);
+
+      if (!categoryToUpdate) {
+        throw new Error("La catégorie à mettre à jour n'existe pas.");
+      }
+
+      Object.assign(categoryToUpdate, categoryData);
+
+      return await categoryToUpdate.save();
+    } catch (error) {
+      throw new Error('Erreur lors de la modification de la catégorie : ' + error.message);
+    }
   }
 
   async delete(CategoryId: Types.ObjectId): Promise<void> {
