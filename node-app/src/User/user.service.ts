@@ -153,7 +153,11 @@ export class UserService {
       const completedChallenges = await this.completedService.getUserCompleteds(
         user.id,
       );
-      const team = await this.teamService.getById(user.teamId);
+      let team = { name: "Pas d'équipe" };
+      if (user.teamId) {
+        team = await this.teamService.getById(user.teamId);
+      }
+
       let totalScore = completedChallenges.reduce(
         (acc, current) =>
           acc + JSON.parse(JSON.stringify(current)).challenge.points,
