@@ -4,33 +4,56 @@ import PropTypes from 'prop-types';
 
 import { FormControl, Input, Flex, Button } from '@chakra-ui/react';
 import CategoryApiManager from '../../../api/CategoryApiManager';
+import CategoryData from '../../../interfaces/categoryInterface';
 
 interface FormCreateModifyCategoryProps {
   onCloseModal: () => void;
+  categoryToModify: CategoryData | null;
 }
 
 function FormCreateModifyCategory({
   onCloseModal,
+  categoryToModify,
 }: FormCreateModifyCategoryProps) {
-  const [categoryName, setCategoryName] = useState<string>('');
   // const [icon, setIcon] = useState<string>(''); -> Assuming icon is a string representing icon name or URL
+
+  const [categoryName, setCategoryName] = useState<string>(
+    categoryToModify ? categoryToModify.categoryName : ''
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newCategory = {
-      categoryName,
-    };
+    if (categoryToModify === null) {
+      const newCategory = {
+        categoryName,
+      };
 
-    const fetchData = async () => {
-      try {
-        await CategoryApiManager.create(newCategory.categoryName);
-        onCloseModal();
-      } catch (error) {
-        console.error('Erreur lors de la création des données :', error);
-      }
-    };
+      const fetchData = async () => {
+        try {
+          await CategoryApiManager.create(newCategory.categoryName);
+          onCloseModal();
+        } catch (error) {
+          console.error('Erreur lors de la création des données :', error);
+        }
+      };
 
-    fetchData();
+      fetchData();
+    } else {
+      const newCategory = {
+        categoryName,
+      };
+
+      const fetchData = async () => {
+        try {
+          await CategoryApiManager.update(newCategory.categoryName);
+          onCloseModal();
+        } catch (error) {
+          console.error('Erreur lors de la modification des données :', error);
+        }
+      };
+
+      fetchData();
+    }
   };
 
   return (
@@ -46,9 +69,17 @@ function FormCreateModifyCategory({
             bg="white"
           />
         </FormControl>
-        <Button bg="#166879" color="white" onClick={handleSubmit}>
-          Créer une catégorie
-        </Button>
+        {categoryToModify === null && (
+          <Button bg="#166879" color="white" onClick={handleSubmit}>
+            Créer une catégorie
+          </Button>
+        )}
+        {categoryToModify !== null && (
+          <Button bg="#166879" color="white" onClick={handleSubmit}>
+            Enregistrer les modifications
+          </Button>
+        )}
+
       </Flex>
     </FormControl>
   );

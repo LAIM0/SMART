@@ -28,6 +28,12 @@ export class CategoryService {
   }
 
   async delete(CategoryId: Types.ObjectId): Promise<void> {
+
+    const categoryToDelete = await this.categoryModel.findById(CategoryId)
+
+    if (categoryToDelete.categoryName === 'Autre') {
+      throw new Error("Vous n'êtes pas autorisé à supprimer cette entité.");
+    }
     try {
       await this.categoryModel.deleteOne({ _id: CategoryId });
       console.log('Données supprimées avec succès');

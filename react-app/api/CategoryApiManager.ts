@@ -1,3 +1,4 @@
+import axios from 'axios';
 import ENDPOINTS from './apiUtils/endpoints';
 import ApiMethods from './apiUtils/apiMethods';
 import CategoryData from '../interfaces/categoryInterface';
@@ -43,7 +44,7 @@ class CategoryApiManager {
 
   static async delete(id: string): Promise<void> {
     try {
-      await ApiMethods.delete(ENDPOINTS.CATEGORY.CATEGORY_DELETE(id));
+      await axios.delete(`http://localhost:3001/categories/delete/${id}`);
     } catch (error) {
       throw new Error(
         `Erreur lors de la suppression de la catégorie: ${error}`

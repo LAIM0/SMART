@@ -41,7 +41,7 @@ function AdminCategories() {
     };
 
     fetchData();
-  }, []);
+  }, [categories]);
 
   const {
     isOpen: isOpenFormModal,
@@ -57,13 +57,22 @@ function AdminCategories() {
 
   const handleOpenConfirmationDeleteModal = async (category: CategoryData) => {
     await setCategoryToDelete(category);
-    console.log(categoryToDelete ? categoryToDelete.id : '');
     onOpenConfirmationDeleteModal();
+  };
+
+  const handleOpenreateModifyModal = async (category: CategoryData) => {
+    await setCurrentCategory(category);
+    onOpenFormModal();
   };
 
   const handleCloseConfirmationDeleteModal = () => {
     setCurrentCategory(null);
     onCloseConfirmationDeleteModal();
+  };
+
+  const handleCloseCreateModifyModal = () => {
+    setCurrentCategory(null);
+    onCloseFormModal();
   };
 
   return (
@@ -88,33 +97,53 @@ function AdminCategories() {
           </Thead>
           {categories.map((category) => (
             <Tr
-              onClick={() => {
-                setCurrentCategory(category);
-              }}
               key={category.id}
               _hover={{ bg: 'lightgray', cursor: 'pointer' }}
             >
               <Td width="80%">{category.categoryName}</Td>
-              <Td width="20%">
-                <Button
-                  variant="outline"
-                  colorScheme="red"
-                  onClick={() => handleOpenConfirmationDeleteModal(category)}
-                >
-                  Supprimer
-                </Button>
+
+              <Td width="20%" textAlign="right" paddingRight="24px">
+                {category.categoryName !== 'Autre' && (
+                  <Flex>
+                    <Button
+                      variant="outline"
+                      colorScheme="blue"
+                      onClick={() => handleOpenreateModifyModal(category)}
+                    >
+                      Modifier
+                    </Button>
+                    <Button
+                      marginLeft="16px"
+                      variant="outline"
+                      colorScheme="red"
+                      onClick={() =>
+                        handleOpenConfirmationDeleteModal(category)
+                      }
+                    >
+                      Supprimer
+                    </Button>
+                  </Flex>
+                )}
               </Td>
             </Tr>
           ))}
         </Table>
       </TableContainer>
-      <Modal isOpen={isOpenFormModal} onClose={onCloseFormModal}>
+      <Modal isOpen={isOpenFormModal} onClose={handleCloseCreateModifyModal}>
         <ModalOverlay />
         <ModalContent bg="#F8F8F8" p="24px">
-          <ModalHeader>Ajouter une catégorie</ModalHeader>
+          {currentCategory !== null && (
+            <ModalHeader>Modifier {currentCategory?.categoryName}</ModalHeader>
+          )}
+          {currentCategory === null && (
+            <ModalHeader>Ajouter une catégorie</ModalHeader>
+          )}
           <ModalCloseButton />
           <ModalBody>
-            <FormCreateModifyCategory onCloseModal={onCloseFormModal} />
+            <FormCreateModifyCategory
+              onCloseModal={handleCloseCreateModifyModal}
+              categoryToModify={currentCategory}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -130,7 +159,7 @@ function AdminCategories() {
           <ModalCloseButton />
           <ModalBody>
             <ConfirmationDeleteForm
-              onCloseModal={onCloseFormModal}
+              onCloseModal={handleCloseConfirmationDeleteModal}
               categoryToDelete={categoryToDelete}
             />
           </ModalBody>

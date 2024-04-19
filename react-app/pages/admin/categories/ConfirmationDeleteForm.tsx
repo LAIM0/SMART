@@ -30,11 +30,11 @@ function ConfirmationDeleteForm({
     <FormControl>
       <Flex flexDirection="column" gap={4} borderRadius={8}>
         <Flex>
-          L&apos;ensemble des défis de la catégorie{' '}
-          {categoryToDelete?.categoryName} vont passer dans la catégorie Autre.
+          L&apos;ensemble des défis {categoryToDelete?.categoryName} vont passer
+          dans Autre.
         </Flex>
-        <Button bg="#166879" color="white" onClick={handleSubmit}>
-          Créer une catégorie
+        <Button colorScheme="red" color="white" onClick={handleSubmit}>
+          Confirmer la supression
         </Button>
       </Flex>
     </FormControl>
