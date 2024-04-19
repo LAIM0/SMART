@@ -1,6 +1,5 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
   Flex,
   Button,
@@ -14,7 +13,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   useDisclosure,
@@ -27,7 +25,10 @@ import CategoryApiManager from '../../../api/CategoryApiManager';
 function AdminCategories() {
   const [categories, setCategories] = useState<CategoryData[]>([]);
   const [currentCategory, setCurrentCategory] = useState<CategoryData | null>(null);
-  const [categoryToDelete, setCategoryToDelete] = useState<CategoryData | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<CategoryData>({
+    id: '',
+    categoryName: '',
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,14 +55,15 @@ function AdminCategories() {
     onClose: onCloseConfirmationDeleteModal,
   } = useDisclosure();
 
-  const clearCurrentCategory = () => {
-    setCurrentCategory(null);
-  };
-
   const handleOpenConfirmationDeleteModal = async (category: CategoryData) => {
     await setCategoryToDelete(category);
-    console.log(categoryToDelete ? categoryToDelete._id : '');
+    console.log(categoryToDelete ? categoryToDelete.id : '');
     onOpenConfirmationDeleteModal();
+  };
+
+  const handleCloseConfirmationDeleteModal = () => {
+    setCurrentCategory(null);
+    onCloseConfirmationDeleteModal();
   };
 
   return (
@@ -89,7 +91,7 @@ function AdminCategories() {
               onClick={() => {
                 setCurrentCategory(category);
               }}
-              key={category._id}
+              key={category.id}
               _hover={{ bg: 'lightgray', cursor: 'pointer' }}
             >
               <Td width="80%">{category.categoryName}</Td>
@@ -118,7 +120,7 @@ function AdminCategories() {
       </Modal>
       <Modal
         isOpen={isOpenConfirmationDeleteModal}
-        onClose={onCloseConfirmationDeleteModal}
+        onClose={handleCloseConfirmationDeleteModal}
       >
         <ModalOverlay />
         <ModalContent bg="#F8F8F8" p="24px">

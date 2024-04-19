@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
-
+import React, { useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from 'prop-types';
 
 import { FormControl, Input, Flex, Button } from '@chakra-ui/react';
-import CategoryData from '../../../interfaces/categoryInterface';
 import CategoryApiManager from '../../../api/CategoryApiManager';
 
 interface FormCreateModifyCategoryProps {
