@@ -7,6 +7,7 @@ interface ChangeProfilePictureModalProps {
 }
 
 const ChangeProfilePictureModal: React.FC<ChangeProfilePictureModalProps> = ({ profilePicture, onSubmit }) => {
+  console.log("dans modal",profilePicture);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 

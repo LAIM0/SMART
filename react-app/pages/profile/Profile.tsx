@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Flex, Text, Button, Image,Icon } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import UserData from '../../interfaces/userInterface';
+import {UserData} from '../../interfaces/userInterface';
 import { handleAuthRouting } from '../../api/AuthApiManager';
 import User from '../../interfaces/userAdminInterface';
 import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
@@ -79,6 +79,7 @@ const Profile: React.FC = () => {
       );
       console.log('Upload successful:', response.data);
       setProfilePicture(response.data.profilePicturePath);
+      
     } catch (error) {
       console.error('Erreur lors de l\'envoi de la photo de profil:', error);
     }
@@ -114,6 +115,7 @@ const Profile: React.FC = () => {
   };
 
   console.log(initialFirstName, initialLastName);
+  console.log("profile",profilePicture);
 
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
