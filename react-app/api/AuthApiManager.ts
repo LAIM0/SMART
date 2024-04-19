@@ -62,4 +62,27 @@ export const checkAdminAuthentication = async () => {
       localStorage.setItem('preLoginRoute', window.location.pathname);
       router.push('/login');
     }
+
+  };
+
+  export const resetPassword = async (email: string) => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/users/forgot-password`,
+        { email },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+  
+      if (response.status !== 200) {
+        throw new Error(
+          "Une erreur s'est produite lors de l'envoi de la demande de réinitialisation de mot de passe"
+        );
+      }
+  
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        "Une erreur s'est produite lors de l'envoi de la demande de réinitialisation de mot de passe"
+      );
+    }
   };

@@ -10,6 +10,7 @@ import {
   Alert,
   AlertIcon,
 } from '@chakra-ui/react';
+import { resetPassword } from '../../api/AuthApiManager';
 
 const ForgotPasswordForm: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -18,26 +19,9 @@ const ForgotPasswordForm: React.FC = () => {
 
   const handleResetPassword = async () => {
     try {
-      const response = await fetch(
-        'http://localhost:3001/users/forgot-password',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          "1. Une erreur s'est produite lors de l'envoi de la demande de réinitialisation de mot de passe"
-        );
-      }
+      await resetPassword(email);
 
       setError(null);
-
-      // Afficher un message de succès
       toast({
         title: 'Demande envoyée',
         description:
