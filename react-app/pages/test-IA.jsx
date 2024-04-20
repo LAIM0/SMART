@@ -16,9 +16,10 @@ function TextGenerationApp() {
       'https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1';
 
     const requestBody = {
-      inputs: `[INST] Create a challenge with a positive impact on the planet in the field of ${themeChallenge}. Answer as 'Title:title of the challenge. Description:description of the challenge'\n[/INST]`,
+      inputs: `[INST] Développez un défi visant à avoir un impact positif sur l'environnement dans le domaine de ${themeChallenge}. Ce défi doit être conçu de manière à être réalisable par un employé en un laps de temps court, environ une semaine, et à être facilement mesurable. Fournissez une réponse structurée avec les éléments suivants : 'Titre: titre du défi. Description: description détaillée du défi, incluant ses objectifs, son impact attendu et les critères de mesure de sa réussite.'\n[/INST]`,
       parameters: {
         return_full_text: false,
+        max_new_tokens: 256,
       },
     };
 
@@ -50,6 +51,7 @@ function TextGenerationApp() {
       <Layout>
         <Flex flexDirection="column" px="32px" py="24px" gap="16px">
           <Text as="h1">EcoexIA</Text>
+          <Text>Choisissez une catégorie</Text>
           <Input
             bg="white"
             onChange={(e) => setThemeChallenge(e.target.value)}
@@ -63,7 +65,7 @@ function TextGenerationApp() {
             Générer une idée
           </Button>
           <Text as="h2">
-            {proposition.split('Description:')[0].split('Title:')[1]}
+            {proposition.split('Description:')[0].split('Titre:')[1]}
           </Text>
           <Text>{proposition.split('Description:')[1]}</Text>
         </Flex>
