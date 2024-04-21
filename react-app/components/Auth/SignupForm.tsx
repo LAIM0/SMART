@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import logoApp from '../Sidebar/Ecoexya.png';
+import { validateEmail } from '../../api/AuthApiManager';
 
 export default function SignupForm() {
   const [email, setUsername] = useState<string>('');
@@ -51,35 +52,18 @@ export default function SignupForm() {
   }, []);
 
   const handleLoginClick = () => {
-    window.location.href = '/login';
+    window.location.href = '/auth/login';
   };
 
   const handleSignup = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent form from submitting and refreshing the page
     setIsLoading(true);
 
-    // Implement your API call here. Replace the URL with your login endpoint
     try {
       if (passwordHash !== confirmPassword) {
         throw new Error("Passwords don't match");
       }
       console.log('selectedData', selectedTeam);
-      // const selectedTeamData = teams.find(team => team.id === selectedTeam.id);
-      // console.log(selectedTeamData);
-
-      // if (!selectedTeamData) {
-      //   throw new Error('Selected team not found');
-      // }
-
-      const requestData = {
-        email,
-        passwordHash,
-        lastName,
-        firstName,
-        isAdmin: false,
-        teamId: selectedTeam,
-      };
-      console.log('Request Data:', requestData);
       const response = await fetch('http://localhost:3001/users/signup', {
         method: 'POST',
         headers: {
@@ -102,7 +86,8 @@ export default function SignupForm() {
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const data = await response.json();
-      window.location.href = '/login';
+      
+      window.location.href = '/auth/login';
       // Redirect the user or update the state based on the successful login
     } catch (err) {
       setIsLoading(false);

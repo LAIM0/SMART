@@ -10,7 +10,7 @@ import {
   Alert,
   AlertIcon,
 } from '@chakra-ui/react';
-import LoginForm from '../components/Auth/LoginForm';
+import LoginForm from '../../components/Auth/LoginForm';
 
 export default function LogIn() {
   const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(

@@ -6,7 +6,7 @@ import {
   ColorModeProvider,
   CSSReset,
 } from '@chakra-ui/react';
-import ResetPasswordForm from '../components/Auth/ResetPasswordForm';
+import ResetPasswordForm from '../../components/Auth/ResetPasswordForm';
 import { GetServerSidePropsContext } from 'next'; // Assurez-vous du chemin correct
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

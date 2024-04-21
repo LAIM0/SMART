@@ -5,7 +5,7 @@ import {
   ColorModeProvider,
   CSSReset,
 } from '@chakra-ui/react';
-import SignupForm from '../components/Auth/SignupForm';
+import SignupForm from '../../components/Auth/SignupForm';
 
 export default function SignUp() {
   return (

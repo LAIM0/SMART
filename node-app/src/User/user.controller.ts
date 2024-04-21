@@ -10,7 +10,9 @@ import {
   Put,
   Delete,
   Param,
-  UploadedFile,UseInterceptors,Response
+  UploadedFile,UseInterceptors,Response,
+  Query,
+  Res
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as bcrypt from 'bcryptjs';
@@ -79,6 +81,8 @@ export class UserController {
         createUserDto.isAdmin,
         createUserDto.teamId,
       );
+      const token = await this.userService.generateUserToken(createUserDto.email);
+      await this.userService.sendvalidationEmail(createUserDto.email, token);
 
       return {
         msg: 'User successfully registered',
@@ -161,7 +165,7 @@ export class UserController {
 
   @Post('forgot-password')
   async forgotPassword(@Body('email') email: string) {
-    const token = await this.userService.generateResetPasswordToken(email);
+    const token = await this.userService.generateUserToken(email);
     await this.userService.sendResetPasswordEmail(email, token);
     return {
       message:
@@ -291,6 +295,26 @@ async updateUserProfile(
   }
 }
 
- 
+@Get('validate-email')
+  async validateEmailWithToken(@Query('token') token: string, @Res() res: Response) {
+    console.log("entreée endpoint validate mail");
+    try {
+      const response= await this.userService.updateFirstLoginStatusWithToken(token);
+      console.log(response);
+      return { msg: 'email vérifié successful' };
+    } catch (error) {
+      return { msg: error.message };
+    }
+  }
+
+  @Post('send-validatation-email')
+  async validateEmail(@Body('email') email: string) {
+    const token = await this.userService.generateUserToken(email);
+    await this.userService.sendvalidationEmail(email, token);
+    return {
+      message:
+        'Un email vous a été envoyé pour valider votre compte avant votre première connexion',
+    };
+  }
 
 }

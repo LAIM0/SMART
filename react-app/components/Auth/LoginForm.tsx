@@ -36,7 +36,7 @@ export default function LoginForm() {
   const [showSignUp, setShowSignUp] = useState<boolean>(true);
 
   const handleSignupClick = () => {
-    router.push('/signup');
+    router.push('/auth/signup');
   };
 
   const handleLogin = async (event: React.FormEvent) => {

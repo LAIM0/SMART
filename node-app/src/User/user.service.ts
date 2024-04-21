@@ -110,7 +110,7 @@ export class UserService {
     return { score: totalScore };
   }
 
-  async generateResetPasswordToken(email: string): Promise<string> {
+  async generateUserToken(email: string): Promise<string> {
     const user = await this.userModel.findOne({ email });
     if (!user) {
       throw new Error('Utilisateur non trouvé');
@@ -124,6 +124,10 @@ export class UserService {
 
   async sendResetPasswordEmail(email: string, token: string) {
     await this.mailService.sendResetPasswordEmail(email, token); // Utilisez la méthode existante dans le service de courrier pour envoyer l'e-mail
+  }
+
+  async sendvalidationEmail(email: string, token: string) {
+    await this.mailService.sendValidationEmail(email, token); // Utilisez la méthode existante dans le service de courrier pour envoyer l'e-mail
   }
 
   // Methode pour mettre à jour le mot de passe de l'utilisateur en utilisant le token
@@ -144,6 +148,22 @@ export class UserService {
     user.resetPasswordExpires = undefined;
     await user.save();
   }
+
+  async updateFirstLoginStatusWithToken(token: string): Promise<void> {
+    const user = await this.userModel.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: new Date() },
+    });
+    console.log(user);
+    if (!user) {
+      throw new Error('Token invalide ou expiré');
+    }
+    user.firstLogin = false;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+  }
+  
 
   async getRanking(): Promise<
     { user: User; score: number; teamName: string }[]
@@ -229,34 +249,13 @@ export class UserService {
         lastName: 'Admin',
         firstName: 'Admin',
         isAdmin: true,
-        teamId: '', // Remplissez avec l'ID de l'équipe appropriée si nécessaire
+        teamId: '', 
+        firstLogin: false,
       });
       await newUser.save();
     }
   }
 
-  // async uploadProfilePicture(userId: string, file: Express.Multer.File): Promise<void> {
-  //   const user = await this.userModel.findById(userId).exec();
-  //   if (!user) {
-  //     throw new NotFoundException('User not found');
-  //   }
-
-  //   if (!file.originalname) {
-  //     throw new Error('Originalname is not defined');
-  //   }
-  
-  //   // Générer un nom de fichier unique en utilisant file.originalname
-  //   const fileName = "${uuidv4()}-${file.originalname}";
-  //   // Enregistrer l'image sur le système de fichiers
-  //   const imagePath = path.join(__dirname, '..', 'uploads', fileName);
-  //   console.log(imagePath);
-
-  //   fs.writeFileSync(imagePath, file.buffer);
-
-  //   // Mettre à jour le chemin de l'image dans la base de données
-  //   user.profilePicturePath = imagePath;
-  //   await user.save();
-  // }
 
   async updateProfilePicture(userId: string, data: { profilePicturePath: string }): Promise<User> {
     const user = await this.userModel.findById(userId).exec();
@@ -281,6 +280,19 @@ export class UserService {
   
     // Enregistrez les modifications dans la base de données
     await user.save();
+  }
+
+  async updateFirstLoginStatus(userId: string): Promise<void> {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      user.firstLogin = false; // Mettez à jour la propriété firstLogin à false
+      await user.save();
+    } catch (error) {
+      throw new Error('Failed to update first login status');
+    }
   }
   
   
