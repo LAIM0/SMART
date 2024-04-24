@@ -15,11 +15,23 @@ function TextGenerationApp() {
     const apiUrl =
       'https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1';
 
+    const temp = Math.random() * 0.1 + 0.6;
+    console.log(temp);
+
+    const topp = Math.random() * 0.1 + 0.9;
+    console.log(topp);
+
+    const difficulty = parseInt(Math.random() * 10);
+    console.log('difficulty : ', difficulty);
+
     const requestBody = {
-      inputs: `[INST] Développez un défi visant à avoir un impact positif sur l'environnement dans le domaine de ${themeChallenge}. Ce défi doit être conçu de manière à être réalisable par un employé en un laps de temps court, environ une semaine, et à être facilement mesurable. Fournissez une réponse structurée avec les éléments suivants : 'Titre: titre du défi. Description: description détaillée du défi, incluant ses objectifs, son impact attendu et les critères de mesure de sa réussite.'\n[/INST]`,
+      inputs: `[INST] Tu es responsable du département RSE d'une SSII ayant des bureaux en France. Chaque semaine tu inventes des défis en français qui peuvent être réalisés par les collaborateurs afin qu'ils aient un impact positif en transformant leurs habitudes. Cette semaine, créé un défi en français sur le thème "${themeChallenge}" de difficulté ${difficulty}/10. Réponds sous la forme : 'Titre : résumé amusant du défi (3 à 6 mots). Description : Action à faire, nombre de fois, durée (1 phrase).\n[/INST]`,
       parameters: {
         return_full_text: false,
         max_new_tokens: 256,
+        temperature: temp,
+        random_seed: null,
+        top_p: topp,
       },
     };
 
@@ -65,9 +77,12 @@ function TextGenerationApp() {
             Générer une idée
           </Button>
           <Text as="h2">
-            {proposition.split('Description:')[0].split('Titre:')[1]}
+            {proposition.split(':')[1].split('Description')[0]}
           </Text>
-          <Text>{proposition.split('Description:')[1]}</Text>
+          <Text>
+            {proposition.split('Description :')[1]}
+            {proposition.split('Description:')[1]}
+          </Text>
         </Flex>
       </Layout>
     </ChakraProvider>

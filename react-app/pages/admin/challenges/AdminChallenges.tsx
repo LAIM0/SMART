@@ -18,6 +18,7 @@ import ChallengeData from '../../../interfaces/challengeInterface';
 import dateGap from '../../../utils/mathFunctions';
 import FormUpdateChallenge from '../../../components/Challenges/FormUpdateChallenge';
 import { Filter } from '../../../utils/constants';
+import FormCreateChallengeIA from '../../../components/Challenges/FormCreateChallengeIA';
 
 function AdminChallenges() {
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
@@ -167,6 +168,7 @@ function AdminChallenges() {
       <Flex gap="16px">
         <Text as="h1">Gestion des défis</Text>
         <FormCreateChallenge refresh={refresh} />
+        <FormCreateChallengeIA refresh={refresh} />
       </Flex>
       <Text as="h2">Défis en cours</Text>
       <TableContainer bg="white" borderRadius={16}>
