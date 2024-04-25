@@ -64,7 +64,7 @@ const ForgotPasswordForm: React.FC = () => {
       </FormControl>
       <Button
         mt={4}
-        colorScheme="teal"
+        
         bg="#166879"
         color="white"
         onClick={handleResetPassword}

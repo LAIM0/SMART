@@ -104,10 +104,16 @@ function AdminUsers() {
     }
   };
 
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setNewUser({ ...newUser, [name]: value });
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setNewUser({ ...newUser, [name]: checked });
+    } else {
+      setNewUser({ ...newUser, [name]: value });
+    }
   };
+
+  
 
   const handleTeamSelectChange = (e: any) => {
     setSelectedTeam(e.target.value);
