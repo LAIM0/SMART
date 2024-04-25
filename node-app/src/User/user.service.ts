@@ -33,6 +33,7 @@ export class UserService {
     firstName: string,
     isAdmin: boolean,
     teamId: string,
+    firstLogin:boolean,
   ): Promise<User> {
     console.log('createUser');
     const newUser = new this.userModel({
@@ -42,7 +43,7 @@ export class UserService {
       firstName: firstName,
       isAdmin: isAdmin,
       teamId: teamId,
-      firstLogin: true,
+      firstLogin: firstLogin,
     });
     return newUser.save();
   }
@@ -123,11 +124,15 @@ export class UserService {
   }
 
   async sendResetPasswordEmail(email: string, token: string) {
-    await this.mailService.sendResetPasswordEmail(email, token); // Utilisez la méthode existante dans le service de courrier pour envoyer l'e-mail
+    await this.mailService.sendResetPasswordEmail(email, token); 
   }
 
   async sendvalidationEmail(email: string, token: string) {
-    await this.mailService.sendValidationEmail(email, token); // Utilisez la méthode existante dans le service de courrier pour envoyer l'e-mail
+    await this.mailService.sendValidationEmail(email, token); 
+  }
+
+  async sendInitializePasswordEmail(email: string, token: string) {
+    await this.mailService.sendInitializePassword(email, token); 
   }
 
   // Methode pour mettre à jour le mot de passe de l'utilisateur en utilisant le token
@@ -146,6 +151,7 @@ export class UserService {
     user.passwordHash = bcrypt.hashSync(newPassword, salt);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
+    user.passWordInitialized=true;
     await user.save();
   }
 
@@ -217,7 +223,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    user.teamId = new Types.ObjectId(teamId); // Convertir l'ID de l'équipe en ObjectId
+    user.teamId = teamId; // Affectez directement teamId sans le convertir en ObjectId
     await user.save();
   }
 

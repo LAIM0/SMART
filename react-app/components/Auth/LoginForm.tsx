@@ -53,14 +53,19 @@ export default function LoginForm() {
         body: JSON.stringify({ username, password }),
         credentials: 'include',
       });
+      
 
       setIsLoading(false);
       const data = await response.json();
-      if (data.message === 'Email not verified') {
+      console.log(data.message);
+      if (data.message === 'Password not initialized') {
+        throw new Error("Veuillez réinitialiser votre mot de passe");
+      }else if (data.message === 'Email not verified') {
         throw new Error('Adresse email non vérifiée');
       } else if (data.message === 'Unauthorized Admin access') {
         throw new Error("Pas d'accès administrateur");
-      } else if (!response.ok) {
+      
+      }else if (!response.ok) {
         throw new Error('La combinaison login/mot de passe est incorrect');
       } else {
         setLoginResponse({ message: 'Login successful!', status: 'success' });

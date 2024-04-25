@@ -77,7 +77,7 @@ export class TeamService {
     }
   }
 
-  async getById(teamId: Types.ObjectId): Promise<TeamDto> {
+  async getById(teamId: string): Promise<TeamDto> {
     const team = await this.teamModel.findById(teamId);
     return this.mapTeamToDto(team);
   }

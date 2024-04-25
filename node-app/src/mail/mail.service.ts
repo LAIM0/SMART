@@ -34,6 +34,16 @@ export class MailService {
       context: { loginUrl },
     });
   }
+
+  async sendInitializePassword(email: string, token: string) {
+    const resetPasswordUrl = `http://localhost:3000/auth/forgotpwd?token=${token}`;
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Bienvenue sur Ecoexya',
+      template: 'initialize-password',
+      context: { resetPasswordUrl },
+    });
+  }
 }
 
 /*

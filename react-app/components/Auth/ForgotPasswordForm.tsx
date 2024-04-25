@@ -35,7 +35,7 @@ const ForgotPasswordForm: React.FC = () => {
         'resetSuccessMessage',
         'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.'
       );
-      window.location.href = '/login';
+      window.location.href = '/auth/login';
     } catch (error) {
       console.log(error);
       setError(

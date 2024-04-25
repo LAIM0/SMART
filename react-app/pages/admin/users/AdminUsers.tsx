@@ -35,6 +35,7 @@ import User from '../../../interfaces/userAdminInterface';
 import UserSearch from '../../../components/User/searchbar';
 import UserRow from '../../../components/User/userRow';
 import AddUserModal from '../../../components/User/addUserModal';
+import { initializePassword } from '../../../api/AuthApiManager';
 
 function isAxiosError(error: any): error is AxiosError {
   return error.isAxiosError !== undefined;
@@ -55,6 +56,8 @@ function AdminUsers() {
     email: '',
     teamId: '',
     isAdmin: false,
+    passwordInitialized: false,
+    firstLogin: false,
   });
   const [selectedTeam, setSelectedTeam] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -131,12 +134,15 @@ function AdminUsers() {
           email: '',
           teamId: '',
           isAdmin: false,
+          passwordInitialized: false,
+          firstLogin: false,
         });
         setSelectedTeam('');
         const updatedUsers = await fetchUsers();
         setUsers(updatedUsers);
         setIsOpenError(false);
         onClose();
+        await initializePassword(newUser.email);
       }
     } catch (error) {
       if (error instanceof Error) {

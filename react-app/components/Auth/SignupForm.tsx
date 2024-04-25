@@ -15,7 +15,8 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import logoApp from '../Sidebar/Ecoexya.png';
-import { validateEmail } from '../../api/AuthApiManager';
+import { sendValitaionEmail, validateEmail } from '../../api/AuthApiManager';
+import { useRouter } from 'next/router';
 
 export default function SignupForm() {
   const [email, setUsername] = useState<string>('');
@@ -29,6 +30,7 @@ export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<string>('');
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,7 +60,7 @@ export default function SignupForm() {
   const handleSignup = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent form from submitting and refreshing the page
     setIsLoading(true);
-
+  
     try {
       if (passwordHash !== confirmPassword) {
         throw new Error("Passwords don't match");
@@ -76,24 +78,30 @@ export default function SignupForm() {
           firstName,
           isAdmin: false,
           teamId: selectedTeam,
+          passwordInitialized: true,
+          firstLogin: true,
         }),
       });
-
+  
       console.log(response);
-
+  
       setIsLoading(false);
       if (!response.ok) throw new Error('Sign up failed');
-
+  
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const data = await response.json();
+  
+      // Maintenant, l'utilisateur est créé avec succès, nous pouvons envoyer l'e-mail de validation
+      await sendValitaionEmail(email);
       
-      window.location.href = '/auth/login';
-      // Redirect the user or update the state based on the successful login
+     router.push('/auth/login');
+      
     } catch (err) {
       setIsLoading(false);
       setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
+  
 
   return (
     <Flex width="full" align="center" justifyContent="center" minHeight="100vh">

@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  isNotEmpty,
 } from 'class-validator';
 import { Types } from 'mongoose';
 import { ObjectId } from 'mongoose';
@@ -37,4 +38,12 @@ export class CreateUserDto {
 
   @IsOptional()
   level?: number;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  passwordInitialized: boolean;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  firstLogin: boolean;
 }

@@ -73,12 +73,6 @@ export const checkAdminAuthentication = async () => {
         { headers: { 'Content-Type': 'application/json' } }
       );
   
-      if (response.status !== 200) {
-        throw new Error(
-          "Une erreur s'est produite lors de l'envoi de la demande de réinitialisation de mot de passe"
-        );
-      }
-  
       return response.data;
     } catch (error) {
       throw new Error(
@@ -86,6 +80,23 @@ export const checkAdminAuthentication = async () => {
       );
     }
   };
+
+  export const sendValitaionEmail = async (email: string) => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/users/send-validatation-email`,
+        { email },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+  
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        "Une erreur s'est produite lors de l'envoi de la demande de validation de votre email"
+      );
+    }
+  };
+
 
   export const validateEmail = async (token: string | undefined) => {
     console.log(token);
@@ -104,6 +115,22 @@ export const checkAdminAuthentication = async () => {
     } catch (error) {
       throw new Error(
         "Une erreur s'est produite lors de la vérification de votre email"
+      );
+    }
+  };
+
+  export const initializePassword = async (email: string) => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/users/initialize-password`,
+        { email },
+        { headers: { 'Content-Type': 'application/json' } }
+        
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        "Une erreur s'est produite lors de l'envoi de la demande d'initialisation de mot de passe"
       );
     }
   };
