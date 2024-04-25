@@ -36,71 +36,72 @@ interface AddUserModalProps {
   errorMessage: string;
 }
 
-const AddUserModal: React.FC<AddUserModalProps> = ({
-  isOpen,
-  onClose,
-  newUser,
-  selectedTeam,
-  teams,
-  handleInputChange,
-  handleTeamSelectChange,
-  handleSubmit,
-  isOpenError,
-  errorMessage,
-}) => {
+function AddUserModal(props: AddUserModalProps) {
+  const {
+    isOpen,
+    onClose,
+    newUser,
+    selectedTeam,
+    teams,
+    handleInputChange,
+    handleTeamSelectChange,
+    handleSubmit,
+    isOpenError,
+    errorMessage,
+  } = props;
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent bg='#F8F8F8' p='24px'>
+      <ModalContent bg="#F8F8F8" p="24px">
         <ModalHeader>Ajouter un utilisateur</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <form onSubmit={handleSubmit}>
-            <Flex flexDirection='column' gap={4}>
+            <Flex flexDirection="column" gap={4}>
               <FormControl isRequired>
                 <Input
-                  type='text'
-                  name='firstName'
+                  type="text"
+                  name="firstName"
                   value={newUser.firstName}
                   onChange={handleInputChange}
-                  placeholder='Prénom'
-                  focusBorderColor='#166879'
+                  placeholder="Prénom"
+                  focusBorderColor="#166879"
                   isRequired
-                  bg='white'
+                  bg="white"
                 />
               </FormControl>
               <FormControl isRequired>
                 <Input
-                  type='text'
-                  name='lastName'
+                  type="text"
+                  name="lastName"
                   value={newUser.lastName}
                   onChange={handleInputChange}
-                  placeholder='Nom'
-                  focusBorderColor='#166879'
+                  placeholder="Nom"
+                  focusBorderColor="#166879"
                   isRequired
-                  bg='white'
+                  bg="white"
                 />
               </FormControl>
               <FormControl isRequired>
                 <Input
-                  type='email'
-                  name='email'
+                  type="email"
+                  name="email"
                   value={newUser.email}
                   onChange={handleInputChange}
-                  placeholder='Email'
-                  focusBorderColor='#166879'
+                  placeholder="Email"
+                  focusBorderColor="#166879"
                   isRequired
-                  bg='white'
+                  bg="white"
                 />
               </FormControl>
               <FormControl isRequired>
                 <Select
-                  placeholder='Sélectionner une équipe'
-                  focusBorderColor='#166879'
+                  placeholder="Sélectionner une équipe"
+                  focusBorderColor="#166879"
                   value={selectedTeam}
                   onChange={handleTeamSelectChange}
                   isRequired
-                  bg='white'
+                  bg="white"
                 >
                   {teams.map((team) => (
                     <option key={team.id} value={team.id}>
@@ -114,12 +115,16 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
                   <Checkbox
                     name="isAdmin"
                     isChecked={newUser.isAdmin}
-                    onChange={(e) => handleInputChange(e as React.ChangeEvent<HTMLInputElement>)}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e as React.ChangeEvent<HTMLInputElement>
+                      )
+                    }
                   />
                   <Text ml={2}>Administrateur</Text>
                 </Flex>
               </FormControl>
-              <Button type='submit' bg='#166879' color='white'>
+              <Button type="submit" bg="#166879" color="white">
                 Ajouter
               </Button>
               {isOpenError && (
@@ -134,6 +139,6 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
       </ModalContent>
     </Modal>
   );
-};
+}
 
 export default AddUserModal;

@@ -1,5 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, FormControl, FormLabel, Input, Select } from '@chakra-ui/react';
+import {
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+} from '@chakra-ui/react';
 import TeamData from '../../interfaces/teamInterface';
 import User from '../../interfaces/userAdminInterface';
 
@@ -7,23 +20,27 @@ interface UserProfileUpdateModalProps {
   user: User;
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { firstName: string; lastName: string; teamId:string}) => void;
+  onSubmit: (data: {
+    firstName: string;
+    lastName: string;
+    teamId: string;
+  }) => void;
   initialFirstName: string;
   initialLastName: string;
   teams: TeamData[];
-  fetchUserProfile: () => void; // Ajout de la fonction fetchUserProfile
 }
 
-const UserProfileUpdateModal: React.FC<UserProfileUpdateModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  initialFirstName,
-  initialLastName,
-  user,
-  teams,
-  fetchUserProfile, // Utilisation de la fonction fetchUserProfile
-}) => {
+function UserProfileUpdateModal(props: UserProfileUpdateModalProps) {
+  const {
+    isOpen,
+    onClose,
+    onSubmit,
+    initialFirstName,
+    initialLastName,
+    user,
+    teams,
+  } = props;
+
   const [firstName, setFirstName] = useState(initialFirstName);
   const [lastName, setLastName] = useState(initialLastName);
   const [selectedTeam, setSelectedTeam] = useState(user.teamId || '');
@@ -35,7 +52,7 @@ const UserProfileUpdateModal: React.FC<UserProfileUpdateModalProps> = ({
   }, [isOpen, initialFirstName, initialLastName, user.teamId]);
 
   const handleSubmit = () => {
-    onSubmit({ firstName, lastName,teamId: selectedTeam });
+    onSubmit({ firstName, lastName, teamId: selectedTeam });
     onClose();
   };
 
@@ -48,15 +65,24 @@ const UserProfileUpdateModal: React.FC<UserProfileUpdateModalProps> = ({
         <ModalBody>
           <FormControl>
             <FormLabel>Prénom</FormLabel>
-            <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+            <Input
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
           </FormControl>
           <FormControl mt={4}>
             <FormLabel>Nom de famille</FormLabel>
-            <Input value={lastName} onChange={(e) => setLastName(e.target.value)} />
+            <Input
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
           </FormControl>
           <FormControl mt={4}>
             <FormLabel>Équipe</FormLabel>
-            <Select value={selectedTeam} onChange={(e) => setSelectedTeam(e.target.value)}>
+            <Select
+              value={selectedTeam}
+              onChange={(e) => setSelectedTeam(e.target.value)}
+            >
               {teams.map((team) => (
                 <option key={team.id} value={team.id}>
                   {team.name}
@@ -74,6 +100,6 @@ const UserProfileUpdateModal: React.FC<UserProfileUpdateModalProps> = ({
       </ModalContent>
     </Modal>
   );
-};
+}
 
 export default UserProfileUpdateModal;

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState } from 'react';
 import {
   Box,
@@ -12,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { resetPassword } from '../../api/AuthApiManager';
 
-const ForgotPasswordForm: React.FC = () => {
+function ForgotPasswordForm() {
   const [email, setEmail] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const toast = useToast();
@@ -36,6 +35,7 @@ const ForgotPasswordForm: React.FC = () => {
         'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.'
       );
       window.location.href = '/auth/login';
+      // eslint-disable-next-line @typescript-eslint/no-shadow
     } catch (error) {
       console.log(error);
       setError(
@@ -62,17 +62,11 @@ const ForgotPasswordForm: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      <Button
-        mt={4}
-        
-        bg="#166879"
-        color="white"
-        onClick={handleResetPassword}
-      >
+      <Button mt={4} bg="#166879" color="white" onClick={handleResetPassword}>
         Envoyer la demande de réinitialisation
       </Button>
     </Box>
   );
-};
+}
 
 export default ForgotPasswordForm;

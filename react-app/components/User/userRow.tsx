@@ -1,9 +1,11 @@
+/* eslint-disable no-underscore-dangle */
 // UserRow.tsx
 
 import React from 'react';
 import { Tr, Td, Select, Switch, Button, Flex, Text } from '@chakra-ui/react';
 import TeamData from '../../interfaces/teamInterface';
 import User from '../../interfaces/userAdminInterface';
+
 interface UserRowProps {
   user: User;
   teams: TeamData[];
@@ -12,7 +14,13 @@ interface UserRowProps {
   onToggleAdmin: (userId: string, isAdmin: boolean) => void;
 }
 
-const UserRow: React.FC<UserRowProps> = ({ user, teams, onDelete, onTeamChange, onToggleAdmin }) => {
+function UserRow({
+  user,
+  teams,
+  onDelete,
+  onTeamChange,
+  onToggleAdmin,
+}: UserRowProps) {
   return (
     <Tr>
       <Td>{user.firstName}</Td>
@@ -40,15 +48,12 @@ const UserRow: React.FC<UserRowProps> = ({ user, teams, onDelete, onTeamChange, 
         </Flex>
       </Td>
       <Td>
-        <Button
-          colorScheme='red'
-          onClick={() => onDelete(user._id)}
-        >
+        <Button colorScheme="red" onClick={() => onDelete(user._id)}>
           Supprimer
         </Button>
       </Td>
     </Tr>
   );
-};
+}
 
 export default UserRow;

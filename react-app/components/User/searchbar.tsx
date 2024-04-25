@@ -1,11 +1,18 @@
 import React, { useState, ChangeEvent } from 'react';
-import { FormControl, Input, Flex, IconButton, InputGroup, InputRightElement, useTheme } from '@chakra-ui/react';
+import {
+  FormControl,
+  Input,
+  Flex,
+  IconButton,
+  InputGroup,
+  InputRightElement,
+} from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import UserSearchProps from '../../interfaces/userSearchInterface';
 
-const UserSearch: React.FC<UserSearchProps> = ({ onSearch }) => {
+function UserSearch(props: UserSearchProps) {
+  const { onSearch } = props;
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const theme = useTheme(); // Importez le thème
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = event.target.value;
@@ -23,19 +30,18 @@ const UserSearch: React.FC<UserSearchProps> = ({ onSearch }) => {
             placeholder="Rechercher user"
             value={searchTerm}
             onChange={handleChange}
-            
           />
           <InputRightElement>
             <IconButton
               aria-label="Rechercher"
               icon={<SearchIcon />}
-              color='primary.300' // Utiliser la couleur du thème
+              color="primary.300" // Utiliser la couleur du thème
             />
           </InputRightElement>
         </InputGroup>
       </FormControl>
     </Flex>
   );
-};
+}
 
 export default UserSearch;

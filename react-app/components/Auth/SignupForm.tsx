@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useState, useEffect } from 'react';
 import {
   Flex,
@@ -14,9 +15,9 @@ import {
   Image,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import logoApp from '../Sidebar/Ecoexya.png';
-import { sendValitaionEmail, validateEmail } from '../../api/AuthApiManager';
 import { useRouter } from 'next/router';
+import logoApp from '../Sidebar/Ecoexya.png';
+import { sendValitaionEmail } from '../../api/AuthApiManager';
 
 export default function SignupForm() {
   const [email, setUsername] = useState<string>('');
@@ -36,7 +37,6 @@ export default function SignupForm() {
     const fetchData = async () => {
       const response = await axios.get('http://localhost:3001/teams');
       setTeams(response.data);
-      console.log('Response data:', response.data);
       if (response.data.length === 0) {
         const defaultTeam = await axios.post(
           'http://localhost:3001/teams/default',
@@ -44,7 +44,6 @@ export default function SignupForm() {
             name: 'Equipe par défaut',
           }
         );
-        console.log('Default team added:', defaultTeam.data);
         // Mettre à jour la liste des équipes après l'ajout de l'équipe par défaut
         setTeams([defaultTeam.data]);
       }
@@ -60,7 +59,7 @@ export default function SignupForm() {
   const handleSignup = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent form from submitting and refreshing the page
     setIsLoading(true);
-  
+
     try {
       if (passwordHash !== confirmPassword) {
         throw new Error("Passwords don't match");
@@ -82,26 +81,24 @@ export default function SignupForm() {
           firstLogin: true,
         }),
       });
-  
+
       console.log(response);
-  
+
       setIsLoading(false);
       if (!response.ok) throw new Error('Sign up failed');
-  
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const data = await response.json();
-  
+
       // Maintenant, l'utilisateur est créé avec succès, nous pouvons envoyer l'e-mail de validation
       await sendValitaionEmail(email);
-      
-     router.push('/auth/login');
-      
+
+      router.push('/auth/login');
     } catch (err) {
       setIsLoading(false);
       setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
-  
 
   return (
     <Flex width="full" align="center" justifyContent="center" minHeight="100vh">

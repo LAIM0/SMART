@@ -11,9 +11,8 @@ import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPict
 import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
-import { updateUserTeam } from '../../api/UserApiManager';
 
-const Profile: React.FC = () => {
+function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const [teamName, setTeamName] = useState<any>(null);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
@@ -22,7 +21,6 @@ const Profile: React.FC = () => {
   const [initialLastName, setInitialLastName] = useState('');
   const [teams, setTeams] = useState<TeamData[]>([]);
   const toast = useToast();
-
   const router = useRouter();
   useEffect(() => {
     handleAuthRouting(router);
@@ -50,13 +48,14 @@ const Profile: React.FC = () => {
       if (userResponse.data.profilePicturePath) {
         setProfilePicture(userResponse.data.profilePicturePath);
       } else {
-        setProfilePicture('/profile-picture-default.png-1713451127942-613847853');
+        setProfilePicture(
+          '/profile-picture-default.png-1713451127942-613847853'
+        );
       }
       setInitialFirstName(userResponse.data.firstName);
       setInitialLastName(userResponse.data.lastName);
-      console.log(initialFirstName, initialLastName);
     } catch (error) {
-      console.error('Erreur lors de la requête:', error);
+      /* empty */
     }
   };
 
@@ -80,13 +79,17 @@ const Profile: React.FC = () => {
       console.log('Upload successful:', response.data);
       setProfilePicture(response.data.profilePicturePath);
     } catch (error) {
-      console.error("Erreur lors de l'envoi de la photo de profil:", error);
+      /* empty */
     }
   };
 
-  
-  const handleUpdateSubmit = async (data: { firstName: string; lastName: string; teamId:string}) => {
+  const handleUpdateSubmit = async (data: {
+    firstName: string;
+    lastName: string;
+    teamId: string;
+  }) => {
     try {
+      // eslint-disable-next-line no-underscore-dangle
       const userId = user?._id;
       const response = await axios.put(
         `http://localhost:3001/users/update/${userId}`,
@@ -100,7 +103,7 @@ const Profile: React.FC = () => {
       console.log('Update successful:', response.data);
       fetchUserProfile();
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du profil:', error);
+      /* empty */
     }
   };
 
@@ -111,7 +114,7 @@ const Profile: React.FC = () => {
   const handlePasswordReset = () => {
     try {
       if (user) {
-        const email = user.email;
+        const { email } = user;
         resetPassword(email);
         toast({
           title: 'Demande envoyée',
@@ -126,10 +129,9 @@ const Profile: React.FC = () => {
           'resetSuccessMessage',
           'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.'
         );
-        
       }
     } catch (error) {
-      console.log(error);
+      /* empty */
     }
   };
 
@@ -140,7 +142,10 @@ const Profile: React.FC = () => {
           <Text as="h1" ml="8px" gap="10px">
             Mon profil
           </Text>
-          <FaUser fontSize="24px" style={{ marginTop: '-15px', marginLeft: '10px' }} />
+          <FaUser
+            fontSize="24px"
+            style={{ marginTop: '-15px', marginLeft: '10px' }}
+          />
         </Flex>
         <Button bg="primary.300" color="white" onClick={handleEditProfileClick}>
           Modifier
@@ -180,11 +185,10 @@ const Profile: React.FC = () => {
           initialLastName={initialLastName}
           user={user}
           teams={teams}
-          fetchUserProfile={fetchUserProfile} // Passer la fonction fetchUserProfile comme prop
         />
       )}
     </Flex>
   );
-};
+}
 
 export default Profile;
