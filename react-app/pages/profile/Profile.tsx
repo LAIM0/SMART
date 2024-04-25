@@ -1,3 +1,4 @@
+// Profile.tsx
 import React, { useEffect, useState } from 'react';
 import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
 import axios from 'axios';
@@ -8,6 +9,9 @@ import { handleAuthRouting, resetPassword } from '../../api/AuthApiManager';
 import User from '../../interfaces/userAdminInterface';
 import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
 import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
+import TeamData from '../../interfaces/teamInterface';
+import { fetchTeams } from '../../api/TeamApiManager';
+import { updateUserTeam } from '../../api/UserApiManager';
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -16,6 +20,7 @@ const Profile: React.FC = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [initialFirstName, setInitialFirstName] = useState('');
   const [initialLastName, setInitialLastName] = useState('');
+  const [teams, setTeams] = useState<TeamData[]>([]);
   const toast = useToast();
 
   const router = useRouter();
@@ -23,43 +28,41 @@ const Profile: React.FC = () => {
     handleAuthRouting(router);
   }, []);
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get<UserData>(
-          'http://localhost:3001/users/me',
-          { withCredentials: true }
-        );
-        const userId = response.data.id;
-        const userResponse = await axios.get(
-          `http://localhost:3001/users/byId/${userId}`
-        );
-        const { teamId } = userResponse.data;
-        const teamname = await axios.get(
-          `http://localhost:3001/teams/byId/${teamId}`
-        );
-        setUser(userResponse.data);
-        setTeamName(teamname.data);
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axios.get<UserData>(
+        'http://localhost:3001/users/me',
+        { withCredentials: true }
+      );
+      const userId = response.data.id;
+      const userResponse = await axios.get(
+        `http://localhost:3001/users/byId/${userId}`
+      );
+      const { teamId } = userResponse.data;
+      const teamname = await axios.get(
+        `http://localhost:3001/teams/byId/${teamId}`
+      );
+      const fetchedTeams = await fetchTeams();
+      setTeams(fetchedTeams);
+      setUser(userResponse.data);
+      setTeamName(teamname.data);
 
-        
-        if (userResponse.data.profilePicturePath) {
-          setProfilePicture(userResponse.data.profilePicturePath);
-        } else {
-          
-          setProfilePicture(
-            '/profile-picture-default.png-1713451127942-613847853'
-          ); 
-        }
-        setInitialFirstName(userResponse.data.firstName);
-        setInitialLastName(userResponse.data.lastName);
-        console.log(initialFirstName, initialLastName);
-      } catch (error) {
-        console.error('Erreur lors de la requête:', error);
+      if (userResponse.data.profilePicturePath) {
+        setProfilePicture(userResponse.data.profilePicturePath);
+      } else {
+        setProfilePicture('/profile-picture-default.png-1713451127942-613847853');
       }
-    };
+      setInitialFirstName(userResponse.data.firstName);
+      setInitialLastName(userResponse.data.lastName);
+      console.log(initialFirstName, initialLastName);
+    } catch (error) {
+      console.error('Erreur lors de la requête:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchUserProfile();
-  }, []);
+  }, []); // Effect se déclenche une seule fois au chargement initial
 
   const handleUploadProfilePicture = async (file: File) => {
     try {
@@ -80,10 +83,9 @@ const Profile: React.FC = () => {
       console.error("Erreur lors de l'envoi de la photo de profil:", error);
     }
   };
-  const handleUpdateSubmit = async (data: {
-    firstName: string;
-    lastName: string;
-  }) => {
+
+  
+  const handleUpdateSubmit = async (data: { firstName: string; lastName: string; teamId:string}) => {
     try {
       const userId = user?._id;
       const response = await axios.put(
@@ -91,10 +93,12 @@ const Profile: React.FC = () => {
         {
           firstName: data.firstName,
           lastName: data.lastName,
+          teamId: data.teamId,
         },
         { withCredentials: true }
       );
       console.log('Update successful:', response.data);
+      fetchUserProfile();
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
     }
@@ -106,33 +110,28 @@ const Profile: React.FC = () => {
 
   const handlePasswordReset = () => {
     try {
-    if(user){
-      const email= user.email;
-      resetPassword(email);
-      toast({
-        title: 'Demande envoyée',
-        description:
-          'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
+      if (user) {
+        const email = user.email;
+        resetPassword(email);
+        toast({
+          title: 'Demande envoyée',
+          description:
+            'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
 
-      localStorage.setItem(
-        'resetSuccessMessage',
-        'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.'
-      );
-      window.location.href = 'auth/login';
-    } }catch (error) {
+        localStorage.setItem(
+          'resetSuccessMessage',
+          'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.'
+        );
+        
+      }
+    } catch (error) {
       console.log(error);
-
     }
-    
-    };
-    
-  
-
-  
+  };
 
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
@@ -141,10 +140,7 @@ const Profile: React.FC = () => {
           <Text as="h1" ml="8px" gap="10px">
             Mon profil
           </Text>
-          <FaUser
-            fontSize="24px"
-            style={{ marginTop: '-15px', marginLeft: '10px' }}
-          />
+          <FaUser fontSize="24px" style={{ marginTop: '-15px', marginLeft: '10px' }} />
         </Flex>
         <Button bg="primary.300" color="white" onClick={handleEditProfileClick}>
           Modifier
@@ -175,13 +171,18 @@ const Profile: React.FC = () => {
           )}
         </Box>
       </Flex>
-      <UserProfileUpdateModal
-        isOpen={isUpdateModalOpen}
-        onClose={() => setIsUpdateModalOpen(false)}
-        onSubmit={handleUpdateSubmit}
-        initialFirstName={initialFirstName}
-        initialLastName={initialLastName}
-      />
+      {user && (
+        <UserProfileUpdateModal
+          isOpen={isUpdateModalOpen}
+          onClose={() => setIsUpdateModalOpen(false)}
+          onSubmit={handleUpdateSubmit}
+          initialFirstName={initialFirstName}
+          initialLastName={initialLastName}
+          user={user}
+          teams={teams}
+          fetchUserProfile={fetchUserProfile} // Passer la fonction fetchUserProfile comme prop
+        />
+      )}
     </Flex>
   );
 };

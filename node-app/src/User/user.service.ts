@@ -283,6 +283,7 @@ export class UserService {
     // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO
     user.firstName = updateUserDto.firstName;
     user.lastName = updateUserDto.lastName;
+    user.teamId = updateUserDto.teamId;
   
     // Enregistrez les modifications dans la base de données
     await user.save();

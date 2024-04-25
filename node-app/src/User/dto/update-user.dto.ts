@@ -10,4 +10,8 @@ export class UpdateUserDto {
   @IsNotEmpty()
   @IsString()
   lastName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  teamId: string;
 }
