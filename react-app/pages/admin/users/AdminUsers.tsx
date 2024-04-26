@@ -1,3 +1,6 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
 import {
   Flex,
@@ -35,12 +38,12 @@ import User from '../../../interfaces/userAdminInterface';
 import UserSearch from '../../../components/User/searchbar';
 import UserRow from '../../../components/User/userRow';
 import AddUserModal from '../../../components/User/addUserModal';
+import { initializePassword } from '../../../api/AuthApiManager';
 
 function isAxiosError(error: any): error is AxiosError {
   return error.isAxiosError !== undefined;
 }
 
-// eslint-disable-next-line react-hooks/exhaustive-deps
 function AdminUsers() {
   // const router = useRouter();
   // useEffect(() => {
@@ -55,6 +58,8 @@ function AdminUsers() {
     email: '',
     teamId: '',
     isAdmin: false,
+    passwordInitialized: false,
+    firstLogin: false,
   });
   const [selectedTeam, setSelectedTeam] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -86,24 +91,13 @@ function AdminUsers() {
     fetchData();
   }, []);
 
-  const handleDeleteConfirmation = (userId: string) => {
-    console.log(users.length, userId);
-    if (users.length === 1) {
-      // S'il n'y a qu'un seul utilisateur, affichez une erreur
-      setErrorMessageDeleteUser(
-        'Vous ne pouvez pas supprimer le dernier utilisateur.'
-      );
-      setIsOpenErrorDeleteUser(true);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setNewUser({ ...newUser, [name]: checked });
     } else {
-      // S'il y a plus d'un utilisateur, permettez la suppression en définissant l'ID de l'utilisateur à supprimer
-      setDeleteUserId(userId);
-      onClose();
+      setNewUser({ ...newUser, [name]: value });
     }
-  };
-
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setNewUser({ ...newUser, [name]: value });
   };
 
   const handleTeamSelectChange = (e: any) => {
@@ -131,12 +125,15 @@ function AdminUsers() {
           email: '',
           teamId: '',
           isAdmin: false,
+          passwordInitialized: false,
+          firstLogin: false,
         });
         setSelectedTeam('');
         const updatedUsers = await fetchUsers();
         setUsers(updatedUsers);
         setIsOpenError(false);
         onClose();
+        await initializePassword(newUser.email);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -176,6 +173,7 @@ function AdminUsers() {
 
   const handleTeamChange = async (userId: string, teamId: string) => {
     try {
+      console.log(userId, teamId);
       await updateUserTeam(userId, teamId);
       const updatedUsers = await fetchUsers();
       setUsers(updatedUsers);

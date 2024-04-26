@@ -17,8 +17,8 @@ export class User {
   @Prop({ required: true })
   firstName: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Team' })
-  teamId?: Types.ObjectId;
+  @Prop()
+  teamId?: string;
 
   @Prop({ required: true,default: false })
   isAdmin: boolean;
@@ -29,7 +29,7 @@ export class User {
   @Prop({ default: 0 })
   level: number;
 
-  @Prop({ default: false })
+  @Prop()
   firstLogin: boolean;
 
   @Prop()
@@ -40,6 +40,9 @@ export class User {
 
   @Prop()
   profilePicturePath: string;
+
+  @Prop({default: false})
+  passWordInitialized: boolean;
 
 }
 

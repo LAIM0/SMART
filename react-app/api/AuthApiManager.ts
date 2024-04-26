@@ -21,7 +21,7 @@ export const handleAuthRouting = async (router: NextRouter) => {
     const { loggedIn } = await checkAuthentication();
     if (!loggedIn) {
       localStorage.setItem('preLoginRoute', window.location.pathname);
-      router.push('/login');
+      router.push('/auth/login');
     }
   } catch (error) {
     console.error(
@@ -29,7 +29,7 @@ export const handleAuthRouting = async (router: NextRouter) => {
       error
     );
     localStorage.setItem('preLoginRoute', window.location.pathname);
-    router.push('/login');
+    router.push('/auth/login');
   }
 };
 
@@ -52,7 +52,7 @@ export const checkAdminAuthentication = async () => {
       console.log(isAdminLoggedIn);
       if (!isAdminLoggedIn) {
         localStorage.setItem('preLoginRoute', window.location.pathname);
-        router.push('/login');
+        router.push('/auth/login');
       }
     } catch (error) {
       console.error(
@@ -60,6 +60,78 @@ export const checkAdminAuthentication = async () => {
         error
       );
       localStorage.setItem('preLoginRoute', window.location.pathname);
-      router.push('/login');
+      router.push('/auth/login');
+    }
+
+  };
+
+  export const resetPassword = async (email: string) => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/users/forgot-password`,
+        { email },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+  
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        "Une erreur s'est produite lors de l'envoi de la demande de réinitialisation de mot de passe"
+      );
     }
   };
+
+  export const sendValitaionEmail = async (email: string) => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/users/send-validatation-email`,
+        { email },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+  
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        "Une erreur s'est produite lors de l'envoi de la demande de validation de votre email"
+      );
+    }
+  };
+
+
+  export const validateEmail = async (token: string | undefined) => {
+    console.log(token);
+    try {
+      if (!token) {
+        throw new Error('Token non défini');
+      }
+      
+      const response = await axios.get(`${baseURL}/users/validate-email`, {
+        params: { token }, // Passer le token en tant que paramètre de requête
+      });
+  
+      console.log(response);
+  
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        "Une erreur s'est produite lors de la vérification de votre email"
+      );
+    }
+  };
+
+  export const initializePassword = async (email: string) => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/users/initialize-password`,
+        { email },
+        { headers: { 'Content-Type': 'application/json' } }
+        
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        "Une erreur s'est produite lors de l'envoi de la demande d'initialisation de mot de passe"
+      );
+    }
+  };
+  

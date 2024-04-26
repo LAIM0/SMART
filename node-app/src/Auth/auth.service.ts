@@ -19,12 +19,19 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
         if (!passwordValid) {
           throw new NotAcceptableException('invalid password');
         }
+
+        if(!user.passWordInitialized){
+          throw new NotAcceptableException('Password not initialized');
+
+        }
     
         if (user.firstLogin) {
           // Send password reset email and prevent direct login
           // Implement email sending logic here
           throw new NotAcceptableException('Email not verified');
         }
+
+        
     
         return {
           id: user.id,

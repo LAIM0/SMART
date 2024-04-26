@@ -10,7 +10,9 @@ import {
   Put,
   Delete,
   Param,
-  UploadedFile,UseInterceptors,Response
+  UploadedFile,UseInterceptors,Response,
+  Query,
+  Res
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as bcrypt from 'bcryptjs';
@@ -59,18 +61,6 @@ export class UserController {
         createUserDto.passwordHash,
         saltOrRounds,
       );
-      const newUser = {
-        email: createUserDto.email,
-        passwordHash: hashedPassword,
-        lastName: createUserDto.lastName,
-        firstName: createUserDto.firstName,
-        isAdmin: createUserDto.isAdmin,
-        teamId: createUserDto.teamId,
-      };
-
-      // Log the user data before calling createUser method
-      console.log('User data:', newUser);
-
       const result = await this.userService.createUser(
         createUserDto.email,
         hashedPassword,
@@ -78,7 +68,9 @@ export class UserController {
         createUserDto.firstName,
         createUserDto.isAdmin,
         createUserDto.teamId,
+        createUserDto.firstLogin,
       );
+      
 
       return {
         msg: 'User successfully registered',
@@ -161,7 +153,7 @@ export class UserController {
 
   @Post('forgot-password')
   async forgotPassword(@Body('email') email: string) {
-    const token = await this.userService.generateResetPasswordToken(email);
+    const token = await this.userService.generateUserToken(email);
     await this.userService.sendResetPasswordEmail(email, token);
     return {
       message:
@@ -208,19 +200,24 @@ export class UserController {
   }
 
   @Put(':userId/team')
-  async updateUserTeam(
-    @Param('userId') userId: string,
-    @Body('teamId') teamId: string,
-  ) {
-    console.log('entrée put team');
-    try {
-      await this.userService.updateUserTeam(userId, teamId);
-      return { message: 'Team updated successfully' };
-    } catch (error) {
-      console.error("Error updating user's team:", error);
-      throw error;
-    }
+async updateUserTeam(
+  @Param('userId') userId: string,
+  @Body('teamId') teamId: string,
+) {
+  console.log('entrée put team');
+  try {
+    // Assurez-vous que teamId est une chaîne
+    teamId = teamId.toString();
+
+    // Appelez votre service pour mettre à jour l'équipe de l'utilisateur
+    await this.userService.updateUserTeam(userId, teamId);
+
+    return { message: 'Team updated successfully' };
+  } catch (error) {
+    console.error("Error updating user's team:", error);
+    throw error;
   }
+}
 
   @Put(':userId/admin')
   async updateUserAdminStatus(
@@ -291,6 +288,36 @@ async updateUserProfile(
   }
 }
 
- 
+@Get('validate-email')
+  async validateEmailWithToken(@Query('token') token: string, @Res() res: Response) {
+    console.log("entreée endpoint validate mail");
+    try {
+      const response= await this.userService.updateFirstLoginStatusWithToken(token);
+      console.log(response);
+      return { msg: 'email vérifié successful' };
+    } catch (error) {
+      return { msg: error.message };
+    }
+  }
+
+  @Post('send-validatation-email')
+  async validateEmail(@Body('email') email: string) {
+    const token = await this.userService.generateUserToken(email);
+    await this.userService.sendvalidationEmail(email, token);
+    return {
+      message:
+        'Un email vous a été envoyé pour valider votre compte avant votre première connexion',
+    };
+  }
+
+  @Post('initialize-password')
+  async initializePassword(@Body('email') email: string) {
+    const token = await this.userService.generateUserToken(email);
+    await this.userService.sendInitializePasswordEmail(email, token);
+    return {
+      message:
+        'Un email vous a été envoyé pour initialiser votre mot de passe avant votre première connexion',
+    };
+  }
 
 }

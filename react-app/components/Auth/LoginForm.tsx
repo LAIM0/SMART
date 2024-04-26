@@ -36,7 +36,7 @@ export default function LoginForm() {
   const [showSignUp, setShowSignUp] = useState<boolean>(true);
 
   const handleSignupClick = () => {
-    router.push('/signup');
+    router.push('/auth/signup');
   };
 
   const handleLogin = async (event: React.FormEvent) => {
@@ -56,7 +56,10 @@ export default function LoginForm() {
 
       setIsLoading(false);
       const data = await response.json();
-      if (data.message === 'Email not verified') {
+      console.log(data.message);
+      if (data.message === 'Password not initialized') {
+        throw new Error('Veuillez réinitialiser votre mot de passe');
+      } else if (data.message === 'Email not verified') {
         throw new Error('Adresse email non vérifiée');
       } else if (data.message === 'Unauthorized Admin access') {
         throw new Error("Pas d'accès administrateur");

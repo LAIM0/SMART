@@ -33,6 +33,7 @@ export class UserService {
     firstName: string,
     isAdmin: boolean,
     teamId: string,
+    firstLogin:boolean,
   ): Promise<User> {
     console.log('createUser');
     const newUser = new this.userModel({
@@ -42,7 +43,7 @@ export class UserService {
       firstName: firstName,
       isAdmin: isAdmin,
       teamId: teamId,
-      firstLogin: true,
+      firstLogin: firstLogin,
     });
     return newUser.save();
   }
@@ -110,7 +111,7 @@ export class UserService {
     return { score: totalScore };
   }
 
-  async generateResetPasswordToken(email: string): Promise<string> {
+  async generateUserToken(email: string): Promise<string> {
     const user = await this.userModel.findOne({ email });
     if (!user) {
       throw new Error('Utilisateur non trouvé');
@@ -123,7 +124,15 @@ export class UserService {
   }
 
   async sendResetPasswordEmail(email: string, token: string) {
-    await this.mailService.sendResetPasswordEmail(email, token); // Utilisez la méthode existante dans le service de courrier pour envoyer l'e-mail
+    await this.mailService.sendResetPasswordEmail(email, token); 
+  }
+
+  async sendvalidationEmail(email: string, token: string) {
+    await this.mailService.sendValidationEmail(email, token); 
+  }
+
+  async sendInitializePasswordEmail(email: string, token: string) {
+    await this.mailService.sendInitializePassword(email, token); 
   }
 
   // Methode pour mettre à jour le mot de passe de l'utilisateur en utilisant le token
@@ -142,8 +151,25 @@ export class UserService {
     user.passwordHash = bcrypt.hashSync(newPassword, salt);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
+    user.passWordInitialized=true;
     await user.save();
   }
+
+  async updateFirstLoginStatusWithToken(token: string): Promise<void> {
+    const user = await this.userModel.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: new Date() },
+    });
+    console.log(user);
+    if (!user) {
+      throw new Error('Token invalide ou expiré');
+    }
+    user.firstLogin = false;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+  }
+  
 
   async getRanking(): Promise<
     { user: User; score: number; teamName: string }[]
@@ -197,7 +223,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    user.teamId = new Types.ObjectId(teamId); // Convertir l'ID de l'équipe en ObjectId
+    user.teamId = teamId; // Affectez directement teamId sans le convertir en ObjectId
     await user.save();
   }
 
@@ -229,34 +255,13 @@ export class UserService {
         lastName: 'Admin',
         firstName: 'Admin',
         isAdmin: true,
-        teamId: '', // Remplissez avec l'ID de l'équipe appropriée si nécessaire
+        teamId: '', 
+        firstLogin: false,
       });
       await newUser.save();
     }
   }
 
-  // async uploadProfilePicture(userId: string, file: Express.Multer.File): Promise<void> {
-  //   const user = await this.userModel.findById(userId).exec();
-  //   if (!user) {
-  //     throw new NotFoundException('User not found');
-  //   }
-
-  //   if (!file.originalname) {
-  //     throw new Error('Originalname is not defined');
-  //   }
-  
-  //   // Générer un nom de fichier unique en utilisant file.originalname
-  //   const fileName = "${uuidv4()}-${file.originalname}";
-  //   // Enregistrer l'image sur le système de fichiers
-  //   const imagePath = path.join(__dirname, '..', 'uploads', fileName);
-  //   console.log(imagePath);
-
-  //   fs.writeFileSync(imagePath, file.buffer);
-
-  //   // Mettre à jour le chemin de l'image dans la base de données
-  //   user.profilePicturePath = imagePath;
-  //   await user.save();
-  // }
 
   async updateProfilePicture(userId: string, data: { profilePicturePath: string }): Promise<User> {
     const user = await this.userModel.findById(userId).exec();
@@ -278,9 +283,23 @@ export class UserService {
     // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO
     user.firstName = updateUserDto.firstName;
     user.lastName = updateUserDto.lastName;
+    user.teamId = updateUserDto.teamId;
   
     // Enregistrez les modifications dans la base de données
     await user.save();
+  }
+
+  async updateFirstLoginStatus(userId: string): Promise<void> {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      user.firstLogin = false; // Mettez à jour la propriété firstLogin à false
+      await user.save();
+    } catch (error) {
+      throw new Error('Failed to update first login status');
+    }
   }
   
   

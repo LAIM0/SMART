@@ -1,74 +1,71 @@
+// Profile.tsx
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text, Button, Image, Icon } from '@chakra-ui/react';
+import { Box, Flex, Text, Button, Image, Icon ,useToast} from '@chakra-ui/react';
+import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { UserData } from '../../interfaces/userInterface';
-import { handleAuthRouting } from '../../api/AuthApiManager';
+import { handleAuthRouting, resetPassword } from '../../api/AuthApiManager';
 import User from '../../interfaces/userAdminInterface';
 import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
 import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
 import ChallengeCard from '../../components/Challenges/ChallengeCard';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
+import TeamData from '../../interfaces/teamInterface';
+import { fetchTeams } from '../../api/TeamApiManager';
 
-const Profile: React.FC = () => {
+
+function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const [teamName, setTeamName] = useState<any>(null);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [initialFirstName, setInitialFirstName] = useState('');
   const [initialLastName, setInitialLastName] = useState('');
-
+  const [teams, setTeams] = useState<TeamData[]>([]);
+  const toast = useToast();
   const router = useRouter();
   useEffect(() => {
     handleAuthRouting(router);
   }, []);
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get<UserData>(
-          'http://localhost:3001/users/me',
-          { withCredentials: true }
-        );
-        const userId = response.data.id;
-        const userResponse = await axios.get(
-          `http://localhost:3001/users/byId/${userId}`
-        );
-        const teamId = userResponse.data.teamId;
-        const teamname = await axios.get(
-          `http://localhost:3001/teams/byId/${teamId}`
-        );
-        setUser(userResponse.data);
-        setTeamName(teamname.data);
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axios.get<UserData>(
+        'http://localhost:3001/users/me',
+        { withCredentials: true }
+      );
+      const userId = response.data.id;
+      const userResponse = await axios.get(
+        `http://localhost:3001/users/byId/${userId}`
+      );
+      const { teamId } = userResponse.data;
+      const teamname = await axios.get(
+        `http://localhost:3001/teams/byId/${teamId}`
+      );
+      const fetchedTeams = await fetchTeams();
+      setTeams(fetchedTeams);
+      setUser(userResponse.data);
+      setTeamName(teamname.data);
 
-        // Vérifiez si l'utilisateur a une photo de profil
-        if (userResponse.data.profilePicturePath) {
-          setProfilePicture(userResponse.data.profilePicturePath);
-        } else {
-          // Si l'utilisateur n'a pas de photo de profil, utilisez une image par défaut
-          setProfilePicture(
-            '/profile-picture-default.png-1713451127942-613847853'
-          ); // Remplacez '/default-profile-picture.jpg' par le chemin de votre image par défaut
-        }
-        setInitialFirstName(userResponse.data.firstName);
-        setInitialLastName(userResponse.data.lastName);
-        console.log(initialFirstName, initialLastName);
-      } catch (error) {
-        console.error('Erreur lors de la requête:', error);
+      if (userResponse.data.profilePicturePath) {
+        setProfilePicture(userResponse.data.profilePicturePath);
+      } else {
+        setProfilePicture(
+          '/profile-picture-default.png-1713451127942-613847853'
+        );
       }
-    };
-
-    fetchUserProfile();
-  }, []);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      setSelectedFile(files[0]);
+      setInitialFirstName(userResponse.data.firstName);
+      setInitialLastName(userResponse.data.lastName);
+    } catch (error) {
+      /* empty */
     }
   };
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []); // Effect se déclenche une seule fois au chargement initial
 
   const handleUploadProfilePicture = async (file: File) => {
     try {
@@ -86,26 +83,31 @@ const Profile: React.FC = () => {
       console.log('Upload successful:', response.data);
       setProfilePicture(response.data.profilePicturePath);
     } catch (error) {
-      console.error("Erreur lors de l'envoi de la photo de profil:", error);
+      /* empty */
     }
   };
+
   const handleUpdateSubmit = async (data: {
     firstName: string;
     lastName: string;
+    teamId: string;
   }) => {
     try {
+      // eslint-disable-next-line no-underscore-dangle
       const userId = user?._id;
       const response = await axios.put(
         `http://localhost:3001/users/update/${userId}`,
         {
           firstName: data.firstName,
           lastName: data.lastName,
+          teamId: data.teamId,
         },
         { withCredentials: true }
       );
       console.log('Update successful:', response.data);
+      fetchUserProfile();
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du profil:', error);
+      /* empty */
     }
   };
 
@@ -114,8 +116,26 @@ const Profile: React.FC = () => {
   };
 
   const handlePasswordReset = () => {
-    // Gérez la logique de réinitialisation du mot de passe ici
-    console.log('Reset password clicked');
+    try {
+      if (user) {
+        const { email } = user;
+        resetPassword(email);
+        toast({
+          title: 'Demande envoyée',
+          description:
+            'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        localStorage.setItem(
+          'resetSuccessMessage',
+          'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.'
+        );
+      }
+    } catch (error) {
+      /* empty */
+    }
   };
 
   console.log(initialFirstName, initialLastName);
@@ -144,6 +164,7 @@ const Profile: React.FC = () => {
 
     fetchCompletedChallenges();
   }, [user]);
+        
 
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
@@ -152,6 +173,10 @@ const Profile: React.FC = () => {
           <Text as="h1" ml="8px" gap="10px">
             Mon profil
           </Text>
+          <FaUser
+            fontSize="24px"
+            style={{ marginTop: '-15px', marginLeft: '10px' }}
+          />
         </Flex>
         <Button bg="primary.300" color="white" onClick={handleEditProfileClick}>
           Modifier
@@ -184,13 +209,16 @@ const Profile: React.FC = () => {
           )}
         </Box>
       </Flex>
+      {user && (
       <UserProfileUpdateModal
         isOpen={isUpdateModalOpen}
         onClose={() => setIsUpdateModalOpen(false)}
         onSubmit={handleUpdateSubmit}
         initialFirstName={initialFirstName}
         initialLastName={initialLastName}
-      />
+        user={user}
+        teams={teams}
+      />)}
       <Flex flexDirection="column">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">
@@ -218,6 +246,6 @@ const Profile: React.FC = () => {
       </Flex>
     </Flex>
   );
-};
+}
 
 export default Profile;

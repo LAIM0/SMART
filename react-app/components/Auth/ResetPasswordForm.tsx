@@ -8,7 +8,9 @@ import {
   Input,
   useToast,
   Flex,
+  Image
 } from '@chakra-ui/react';
+import logoApp from '../Sidebar/Ecoexya.png';
 
 interface ResetPasswordFormProps {
   token: string;
@@ -59,7 +61,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
         'resetSuccessMessage',
         'Votre mot de passe a bien été réinitialisé.'
       );
-      window.location.href = '/login';
+      window.location.href = '/auth/login';
     } catch (error) {
       toast({
         title: 'Erreur de réinitialisation',
@@ -73,6 +75,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
 
   return (
     <Flex width="full" align="center" justifyContent="center" minHeight="100vh">
+       
       <Box
         p={8}
         maxWidth="500px"
@@ -83,6 +86,9 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
         flexDirection="column"
         alignItems="center"
       >
+        <Box textAlign="center">
+          <Image src={logoApp.src} w="160px" alt="logo" m={4} />
+        </Box>
         <FormControl isRequired>
           <FormLabel>Nouveau mot de passe</FormLabel>
           <Input
@@ -101,7 +107,14 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
             onChange={(e) => setConfirmNewPassword(e.target.value)}
           />
         </FormControl>
-        <Button mt={4} colorScheme="teal" onClick={handleResetPassword}>
+        <Button
+              bg="#166879"
+              color="white"
+              variant="outline"
+              type="submit"
+              width="full"
+              mt={4}
+            onClick={handleResetPassword}>
           Réinitialiser le mot de passe
         </Button>
       </Box>
