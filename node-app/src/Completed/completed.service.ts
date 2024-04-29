@@ -29,8 +29,15 @@ export class CompletedService {
   async getUserCompleteds(
     UserId: Types.ObjectId,
   ): Promise<{ completed: Completed; challenge: Challenge }[]> {
-    const completeds = await this.completedModel.find({ userId: UserId });
-    console.log(completeds);
+    const completeds = await this.completedModel.find({
+      userId: UserId.toString(),
+    });
+    console.log(`Completed challenges found: ${completeds.length}`, completeds);
+
+    if (completeds.length === 0) {
+      return []; // Retourne un tableau vide si aucun challenge complété n'est trouvé
+    }
+
     const completedsWithChallenges = await Promise.all(
       completeds.map(async (completedChall) => {
         const chall = await this.challengeService.getById(
@@ -45,22 +52,32 @@ export class CompletedService {
 
   async getCompletedByUserIdByChallengeId(
     userId: Types.ObjectId,
-    challengeId: Types.ObjectId
+    challengeId: Types.ObjectId,
   ): Promise<CompletedInterface[]> {
     console.log('params', userId, challengeId);
-    return this.completedModel.find({ userId: userId, challengeId: challengeId }).exec();
+    return this.completedModel
+      .find({ userId: userId, challengeId: challengeId })
+      .exec();
   }
 
- async delete(userId: Types.ObjectId, challengeId: Types.ObjectId): Promise<void> {
+  async delete(
+    userId: Types.ObjectId,
+    challengeId: Types.ObjectId,
+  ): Promise<void> {
     console.log('params pour la suppression', userId, challengeId);
-    await this.completedModel.deleteOne({ userId: userId, challengeId: challengeId });
+    await this.completedModel.deleteOne({
+      userId: userId,
+      challengeId: challengeId,
+    });
+  }
+
+  async deleteChallengeOccurrences(challengeId: Types.ObjectId): Promise<void> {
+    const completedToDelete = await this.completedModel
+      .find({ challengeId: challengeId })
+      .exec();
+    completedToDelete.map(
+      async (completed) =>
+        await this.completedModel.deleteOne({ _id: completed.id }),
+    );
+  }
 }
-
-async deleteChallengeOccurrences(challengeId: Types.ObjectId): Promise<void> {
-    const completedToDelete = await this.completedModel.find({ challengeId: challengeId }).exec()
-    completedToDelete.map(async (completed) => await this.completedModel.deleteOne({_id: completed.id}));
-}
-
-
-}
-

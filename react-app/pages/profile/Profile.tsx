@@ -19,6 +19,7 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import TeamApiManager from '../../api/TeamApiManager';
+import { updateAllLevels } from '../../api/UserApiManager';
 import LogoutConfirmationModal from '../../components/Profile/logoutModal';
 
 function Profile() {
@@ -50,6 +51,11 @@ function Profile() {
       const teamname = await axios.get(
         `http://localhost:3001/teams/byId/${teamId}`
       );
+
+      console.log('Try to update all users levels...');
+      await updateAllLevels();
+      console.log('User levels updated successfully.');
+
       const fetchedTeams = await TeamApiManager.fetchTeams();
       setTeams(fetchedTeams);
       setUser(userResponse.data);
