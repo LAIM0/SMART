@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Query,Param,HttpException,HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  Param,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { TeamService } from './team.service';
 import { Team } from './team.schema';
 import { CreateTeamDto } from './dto/team.dto';
@@ -52,12 +61,11 @@ export class TeamController {
   }
   @Get('byId/:teamId')
   async findById(@Param('teamId') teamId: string): Promise<Team> {
-  try {
-    const team = await this.teamService.findById(teamId);
-    return team;
-  } catch (error) {
-    throw new HttpException('Team not found', HttpStatus.NOT_FOUND);
+    try {
+      const team = await this.teamService.findById(teamId);
+      return team;
+    } catch (error) {
+      throw new HttpException('Team not found', HttpStatus.NOT_FOUND);
+    }
   }
-}
-
 }

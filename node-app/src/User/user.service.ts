@@ -16,6 +16,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as multer from 'multer';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ScoreCheckDto } from './dto/score-check.dto';
+import { UpdateUserTeamDto } from './dto/update-user-team.dto';
 
 @Injectable()
 export class UserService {
@@ -41,7 +43,7 @@ export class UserService {
       lastName: lastName,
       firstName: firstName,
       isAdmin: isAdmin,
-      teamId: teamId,
+      teamId: new Types.ObjectId(teamId),
       firstLogin: true,
     });
     return newUser.save();
@@ -90,22 +92,22 @@ export class UserService {
     }
   }
 
-  async getScore(UserId: Types.ObjectId): Promise<{ score: number }> {
+  async getScore(scoreCheckDto: ScoreCheckDto): Promise<{ score: number }> {
     // Récupère les détails de l'utilisateur
-    const user = await this.userModel.findById(UserId);
+    const user = await this.userModel.findById(scoreCheckDto.userId);
+    console.log('user ===>', user);
     if (!user) {
       throw new Error('User not found');
     }
 
     // Récupère les challenges complétés par l'utilisateur
-    const completedChallenges =
-      await this.completedService.getUserCompleteds(UserId);
+    const completedChallenges = await this.completedService.getUserCompleteds(
+      scoreCheckDto.userId,
+    );
     let totalScore = completedChallenges.reduce(
-      (acc, current) =>
-        acc + JSON.parse(JSON.stringify(current)).challenge.points,
+      (acc, current) => acc + current.challenge.points,
       0,
     );
-
     // Ajoute le score total à l'objet utilisateur
     return { score: totalScore };
   }
@@ -163,8 +165,7 @@ export class UserService {
       }
 
       let totalScore = completedChallenges.reduce(
-        (acc, current) =>
-          acc + JSON.parse(JSON.stringify(current)).challenge.points,
+        (acc, current) => acc + current.challenge.points,
         0,
       );
       return { user: user.toObject(), score: totalScore, teamName: team.name };
@@ -192,13 +193,16 @@ export class UserService {
       throw new Error(error.message);
     }
   }
-  async updateUserTeam(userId: string, teamId: string): Promise<void> {
-    const user = await this.userModel.findById(userId);
+  async updateUserTeam(
+    userId: string,
+    updateUserTeamDto: UpdateUserTeamDto,
+  ): Promise<void> {
+    const user = await this.userModel.findByIdAndUpdate(userId, {
+      teamId: updateUserTeamDto.teamId,
+    });
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    user.teamId = new Types.ObjectId(teamId); // Convertir l'ID de l'équipe en ObjectId
-    await user.save();
   }
 
   async updateUserAdminStatus(userId: string, isAdmin: boolean): Promise<void> {
@@ -244,7 +248,7 @@ export class UserService {
   //   if (!file.originalname) {
   //     throw new Error('Originalname is not defined');
   //   }
-  
+
   //   // Générer un nom de fichier unique en utilisant file.originalname
   //   const fileName = "${uuidv4()}-${file.originalname}";
   //   // Enregistrer l'image sur le système de fichiers
@@ -258,30 +262,37 @@ export class UserService {
   //   await user.save();
   // }
 
-  async updateProfilePicture(userId: string, data: { profilePicturePath: string }): Promise<User> {
+  async updateProfilePicture(
+    userId: string,
+    data: { profilePicturePath: string },
+  ): Promise<User> {
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
       throw new NotFoundException('User not found');
     }
-  
+
     user.profilePicturePath = data.profilePicturePath;
     return user.save();
-    
   }
 
-  async updateUserProfile(userId: string, updateUserDto: UpdateUserDto): Promise<void> {
+  async updateUserProfile(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<void> {
     const user = await this.userModel.findById(userId); // Utilisez votre modèle Mongoose pour trouver l'utilisateur par ID
     if (!user) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-  
+
     // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO
     user.firstName = updateUserDto.firstName;
     user.lastName = updateUserDto.lastName;
-  
+
     // Enregistrez les modifications dans la base de données
     await user.save();
   }
-  
-  
+
+  async getUsersfromTeam(teamIdObj: Types.ObjectId): Promise<User[]> {
+    return this.userModel.find({ teamId: teamIdObj }).exec();
+  }
 }

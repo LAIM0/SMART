@@ -10,7 +10,9 @@ import {
   Put,
   Delete,
   Param,
-  UploadedFile,UseInterceptors,Response
+  UploadedFile,
+  UseInterceptors,
+  Response,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as bcrypt from 'bcryptjs';
@@ -19,10 +21,10 @@ import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
 import { UserService } from './user.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
-import {AdminAuthGuard } from 'src/Auth/admin.guard';
+import { AdminAuthGuard } from 'src/Auth/admin.guard';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
-import {diskStorage} from 'multer'
+import { diskStorage } from 'multer';
 import { Observable, of } from 'rxjs';
 import { join } from 'path';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -112,7 +114,7 @@ export class UserController {
     @Body() scoreCheckDto: ScoreCheckDto,
   ): Promise<{ score: number }> {
     const userId = scoreCheckDto.userId;
-    return this.userService.getScore(userId);
+    return this.userService.getScore(scoreCheckDto);
   }
 
   //Get / ranking -- classement des user ordre décroissant de points
@@ -147,7 +149,7 @@ export class UserController {
     const { id, userName, firstName } = req.user; // Supposons que req.user contient l'id et le nom d'utilisateur de l'utilisateur connecté
 
     console.log(req.user);
-    return { id, email: userName, firstName};
+    return { id, email: userName, firstName };
   }
 
   @Get('check')
@@ -245,52 +247,60 @@ export class UserController {
 
   @Get('byId/:userId')
   async findById(@Param('userId') userId: string): Promise<User> {
-    
     return this.userService.findById(userId);
-  } 
-
-@UseGuards(AuthenticatedGuard)
-@Post('upload')
-@UseInterceptors(FileInterceptor('file',  {
-  storage: diskStorage({
-    destination: './uploads', // Le répertoire où les fichiers seront stockés
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      // Utilisation de la fonction de rappel pour générer un nom de fichier unique
-      cb(null, file.originalname + '-' + uniqueSuffix);
-    },
-  }),
-}))
-async uploadProfilePicture(@Request() req,
-  @Param('userId') userId: string,
-  @UploadedFile() file: Express.Multer.File,
-): Promise<User> {
-  console.log(file);
-  const user = req.user;
-  console.log(user);
-  return this.userService.updateProfilePicture(user.id, { profilePicturePath: file.filename });
-  //return of({imagepath: file.filename});
-}
-
-@Get('profile-picture/:profilePicture')
-FindProfilePicture(@Param('profilePicture') profilePicture, @Response() res): Promise<User> {
-  return res.sendFile(join(process.cwd(), 'uploads/'+profilePicture));
-}
-
-@Put('update/:userId')
-async updateUserProfile(
-  @Param('userId') userId: string,
-  @Body() updateUserDto: UpdateUserDto, // Créez un DTO approprié pour les données de mise à jour du profil
-): Promise<{ message: string }> {
-  try {
-    await this.userService.updateUserProfile(userId, updateUserDto); // Appelez votre service pour mettre à jour le profil de l'utilisateur
-    return { message: 'Profil utilisateur mis à jour avec succès' };
-  } catch (error) {
-    console.error("Erreur lors de la mise à jour du profil de l'utilisateur:", error);
-    throw error;
   }
-}
 
- 
+  @UseGuards(AuthenticatedGuard)
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads', // Le répertoire où les fichiers seront stockés
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          // Utilisation de la fonction de rappel pour générer un nom de fichier unique
+          cb(null, file.originalname + '-' + uniqueSuffix);
+        },
+      }),
+    }),
+  )
+  async uploadProfilePicture(
+    @Request() req,
+    @Param('userId') userId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<User> {
+    console.log(file);
+    const user = req.user;
+    console.log(user);
+    return this.userService.updateProfilePicture(user.id, {
+      profilePicturePath: file.filename,
+    });
+    //return of({imagepath: file.filename});
+  }
 
+  @Get('profile-picture/:profilePicture')
+  FindProfilePicture(
+    @Param('profilePicture') profilePicture,
+    @Response() res,
+  ): Promise<User> {
+    return res.sendFile(join(process.cwd(), 'uploads/' + profilePicture));
+  }
+
+  @Put('update/:userId')
+  async updateUserProfile(
+    @Param('userId') userId: string,
+    @Body() updateUserDto: UpdateUserDto, // Créez un DTO approprié pour les données de mise à jour du profil
+  ): Promise<{ message: string }> {
+    try {
+      await this.userService.updateUserProfile(userId, updateUserDto); // Appelez votre service pour mettre à jour le profil de l'utilisateur
+      return { message: 'Profil utilisateur mis à jour avec succès' };
+    } catch (error) {
+      console.error(
+        "Erreur lors de la mise à jour du profil de l'utilisateur:",
+        error,
+      );
+      throw error;
+    }
+  }
 }

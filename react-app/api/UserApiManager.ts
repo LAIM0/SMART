@@ -45,6 +45,7 @@ export const deleteUser = async (userId: string) => {
 export const updateUserTeam = async (userId: string, teamId: string) => {
   try {
     await axios.put(`${baseURL}/users/${userId}/team`, { teamId });
+    console.log('Team Id changed : ', teamId);
   } catch (error) {
     console.error(
       "Erreur lors de la mise à jour de l'équipe de l'utilisateur:",
