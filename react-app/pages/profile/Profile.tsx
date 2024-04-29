@@ -61,10 +61,6 @@ function Profile() {
 
       if (userResponse.data.profilePicturePath) {
         setProfilePicture(userResponse.data.profilePicturePath);
-      } else {
-        setProfilePicture(
-          '/profile-picture-default.png-1713451127942-613847853'
-        );
       }
       setInitialFirstName(userResponse.data.firstName);
       setInitialLastName(userResponse.data.lastName);

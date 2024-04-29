@@ -44,6 +44,8 @@ export class User {
   @Prop({default: false})
   passWordInitialized: boolean;
 
+  @Prop()
+  isTeamAdmin: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

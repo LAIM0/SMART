@@ -11,7 +11,7 @@ export interface UserDataRanking {
   lastName: string;
   firstName: string;
   teamId: string;
-  profilePicture: string;
+  profilePicturePath: string;
   level: number;
   firstLogin: boolean;
 }
