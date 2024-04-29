@@ -1,20 +1,16 @@
 /* eslint-disable no-underscore-dangle */
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  Flex,
-  Text,
-  Button,
-  Image,
-  Icon,
-  useToast,
-} from '@chakra-ui/react';
+import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { UserData } from '../../interfaces/userInterface';
-import { handleAuthRouting, logout, resetPassword } from '../../api/AuthApiManager';
+import {
+  handleAuthRouting,
+  logout,
+  resetPassword,
+} from '../../api/AuthApiManager';
 import User from '../../interfaces/userAdminInterface';
 import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
 import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
@@ -61,10 +57,6 @@ function Profile() {
 
       if (userResponse.data.profilePicturePath) {
         setProfilePicture(userResponse.data.profilePicturePath);
-      } else {
-        setProfilePicture(
-          '/profile-picture-default.png-1713451127942-613847853'
-        );
       }
       setInitialFirstName(userResponse.data.firstName);
       setInitialLastName(userResponse.data.lastName);

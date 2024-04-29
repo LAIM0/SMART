@@ -26,13 +26,9 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
         }
     
         if (user.firstLogin) {
-          // Send password reset email and prevent direct login
-          // Implement email sending logic here
           throw new NotAcceptableException('Email not verified');
         }
 
-        
-    
         return {
           id: user.id,
           userName: user.email,
