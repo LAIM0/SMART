@@ -33,7 +33,7 @@ export class UserService {
     firstName: string,
     isAdmin: boolean,
     teamId: string,
-    firstLogin:boolean,
+    firstLogin: boolean,
   ): Promise<User> {
     console.log('createUser');
     const newUser = new this.userModel({
@@ -92,23 +92,74 @@ export class UserService {
   }
 
   async getScore(UserId: Types.ObjectId): Promise<{ score: number }> {
-    // Récupère les détails de l'utilisateur
+    // Trouve l'utilisateur par son ID dans la base de données
     const user = await this.userModel.findById(UserId);
     if (!user) {
       throw new Error('User not found');
     }
 
-    // Récupère les challenges complétés par l'utilisateur
+    // Récupère tous les défis complétés par l'utilisateur
     const completedChallenges =
       await this.completedService.getUserCompleteds(UserId);
-    let totalScore = completedChallenges.reduce(
-      (acc, current) =>
-        acc + JSON.parse(JSON.stringify(current)).challenge.points,
-      0,
-    );
+    let totalScore = 0;
 
-    // Ajoute le score total à l'objet utilisateur
+    // Calcule le score total en additionnant les points de chaque défi complété
+    for (const completedChallenge of completedChallenges) {
+      totalScore += completedChallenge.challenge.points;
+    }
+
+    // Affiche dans les logs l'ID de l'utilisateur et le score total calculé
+    console.log(`User ID: ${UserId} - Total score calculated: ${totalScore}`);
     return { score: totalScore };
+  }
+
+  async updateAllLevels(): Promise<{ success: boolean; error?: string }> {
+    try {
+      // Récupère tous les utilisateurs enregistrés dans la base de données
+      const users = await this.userModel.find().exec();
+
+      // Boucle sur chaque utilisateur pour mettre à jour son niveau
+      for (const user of users) {
+        const { score } = await this.getScore(user._id);
+
+        // Calcule le niveau en utilisant une formule logarithmique basée sur le score
+        const niveau = Math.log(score + 1) / Math.log(10);
+        await this.userModel.findByIdAndUpdate(user._id, {
+          level: Math.floor(niveau),
+        });
+
+        // Affiche dans les logs l'ID de l'utilisateur, son score, et son niveau avant arrondi
+        console.log(
+          `User ${user._id} updated. Score: ${score}, Level (before rounding): ${niveau}`,
+        );
+      }
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating user levels:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  async getLevel(
+    userId: Types.ObjectId,
+  ): Promise<{ success: boolean; level?: number; error?: string }> {
+    try {
+      // Récupère le score de l'utilisateur spécifié
+      const { score } = await this.getScore(userId);
+
+      // Calcule le niveau en utilisant une formule logarithmique basée sur le score, sans arrondir
+      const niveau = Math.log(score + 1) / Math.log(10);
+
+      // Affiche dans les logs l'ID de l'utilisateur et son niveau calculé
+      console.log(`User ${userId} level calculated: ${niveau}`);
+
+      // Retourne le succès avec le niveau calculé
+      return { success: true, level: niveau };
+    } catch (error) {
+      // Log l'erreur si la récupération du score ou le calcul échoue
+      console.error(`Error calculating level for user ${userId}:`, error);
+      return { success: false, error: error.message };
+    }
   }
 
   async generateUserToken(email: string): Promise<string> {
@@ -124,15 +175,15 @@ export class UserService {
   }
 
   async sendResetPasswordEmail(email: string, token: string) {
-    await this.mailService.sendResetPasswordEmail(email, token); 
+    await this.mailService.sendResetPasswordEmail(email, token);
   }
 
   async sendvalidationEmail(email: string, token: string) {
-    await this.mailService.sendValidationEmail(email, token); 
+    await this.mailService.sendValidationEmail(email, token);
   }
 
   async sendInitializePasswordEmail(email: string, token: string) {
-    await this.mailService.sendInitializePassword(email, token); 
+    await this.mailService.sendInitializePassword(email, token);
   }
 
   // Methode pour mettre à jour le mot de passe de l'utilisateur en utilisant le token
@@ -151,7 +202,7 @@ export class UserService {
     user.passwordHash = bcrypt.hashSync(newPassword, salt);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
-    user.passWordInitialized=true;
+    user.passWordInitialized = true;
     await user.save();
   }
 
@@ -169,7 +220,6 @@ export class UserService {
     user.resetPasswordExpires = undefined;
     await user.save();
   }
-  
 
   async getRanking(): Promise<
     { user: User; score: number; teamName: string }[]
@@ -255,36 +305,40 @@ export class UserService {
         lastName: 'Admin',
         firstName: 'Admin',
         isAdmin: true,
-        teamId: '', 
+        teamId: '',
         firstLogin: false,
       });
       await newUser.save();
     }
   }
 
-
-  async updateProfilePicture(userId: string, data: { profilePicturePath: string }): Promise<User> {
+  async updateProfilePicture(
+    userId: string,
+    data: { profilePicturePath: string },
+  ): Promise<User> {
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
       throw new NotFoundException('User not found');
     }
-  
+
     user.profilePicturePath = data.profilePicturePath;
     return user.save();
-    
   }
 
-  async updateUserProfile(userId: string, updateUserDto: UpdateUserDto): Promise<void> {
+  async updateUserProfile(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<void> {
     const user = await this.userModel.findById(userId); // Utilisez votre modèle Mongoose pour trouver l'utilisateur par ID
     if (!user) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-  
+
     // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO
     user.firstName = updateUserDto.firstName;
     user.lastName = updateUserDto.lastName;
     user.teamId = updateUserDto.teamId;
-  
+
     // Enregistrez les modifications dans la base de données
     await user.save();
   }
@@ -301,6 +355,4 @@ export class UserService {
       throw new Error('Failed to update first login status');
     }
   }
-  
-  
 }

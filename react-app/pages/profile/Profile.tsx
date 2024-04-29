@@ -1,6 +1,14 @@
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text, Button, Image, Icon ,useToast} from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Text,
+  Button,
+  Image,
+  Icon,
+  useToast,
+} from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -14,7 +22,7 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
-
+import { updateAllLevels } from '../../api/UserApiManager';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -44,6 +52,11 @@ function Profile() {
       const teamname = await axios.get(
         `http://localhost:3001/teams/byId/${teamId}`
       );
+
+      console.log('Try to update all users levels...');
+      await updateAllLevels();
+      console.log('User levels updated successfully.');
+
       const fetchedTeams = await fetchTeams();
       setTeams(fetchedTeams);
       setUser(userResponse.data);
@@ -164,7 +177,6 @@ function Profile() {
 
     fetchCompletedChallenges();
   }, [user]);
-        
 
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
@@ -210,15 +222,16 @@ function Profile() {
         </Box>
       </Flex>
       {user && (
-      <UserProfileUpdateModal
-        isOpen={isUpdateModalOpen}
-        onClose={() => setIsUpdateModalOpen(false)}
-        onSubmit={handleUpdateSubmit}
-        initialFirstName={initialFirstName}
-        initialLastName={initialLastName}
-        user={user}
-        teams={teams}
-      />)}
+        <UserProfileUpdateModal
+          isOpen={isUpdateModalOpen}
+          onClose={() => setIsUpdateModalOpen(false)}
+          onSubmit={handleUpdateSubmit}
+          initialFirstName={initialFirstName}
+          initialLastName={initialLastName}
+          user={user}
+          teams={teams}
+        />
+      )}
       <Flex flexDirection="column">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">
