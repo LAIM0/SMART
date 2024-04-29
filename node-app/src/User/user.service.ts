@@ -62,19 +62,22 @@ export class UserService {
     firstName: string,
     isAdmin: boolean,
   ): Promise<User> {
-    const existingUser = await this.userModel.findOne({ name: userName });
+    const existingUser = await this.userModel.findOne({ email: userName });
     if (existingUser) {
       return existingUser;
     }
+    const defaultProfilePicture = '/profile-picture-default.png-1713451127942-613847853'; 
     const newUser = new this.userModel({
       email: userName,
       passwordHash: password,
       lastName: lastName,
       firstName: firstName,
       isAdmin: isAdmin,
+      profilePicturePath: defaultProfilePicture, // Valeur par défaut pour profilePicturePath
     });
     return newUser.save();
   }
+  
 
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
