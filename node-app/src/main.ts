@@ -37,5 +37,10 @@ async function bootstrap() {
   app.get(CategoryService).seedCategories();
 
 
+
+  // Exécution des seeds pour les données par défaut
+  app.get(CategoryService).seedCategories();
+
+
 }
 bootstrap();
