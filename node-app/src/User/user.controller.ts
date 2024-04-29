@@ -26,12 +26,13 @@ import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
 import { AdminAuthGuard } from 'src/Auth/admin.guard';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
-import { diskStorage } from 'multer';
 import { Observable, of } from 'rxjs';
-import { join } from 'path';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { Category } from 'src/Category/category.schema';
 import { Types } from 'mongoose';
+import { diskStorage } from 'multer';
+import { join } from 'path';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { LevelCheckDto } from './dto/level-check.dto';
 import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
 
 @Controller('users')
@@ -102,13 +103,34 @@ export class UserController {
     }
   }
 
-  //Get / Score & infos user
   @Get('/score')
   async score(
-    @Body() scoreCheckDto: ScoreCheckDto,
+    @Query() scoreCheckDto: ScoreCheckDto,
   ): Promise<{ score: number }> {
     const userId = scoreCheckDto.userId;
     return this.userService.getScore(userId);
+  }
+
+  @Get('/update-all-levels')
+  async updateAllLevels(): Promise<{ success: boolean; error?: string }> {
+    try {
+      await this.userService.updateAllLevels();
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating user levels:', error);
+      return {
+        success: false,
+        error: 'An error occurred while updating user levels',
+      };
+    }
+  }
+
+  @Get('/level')
+  async getLevel(
+    @Query() levelCheckDto: LevelCheckDto,
+  ): Promise<{ success: boolean; level?: number; error?: string }> {
+    const userId = levelCheckDto.userId;
+    return this.userService.getLevel(userId);
   }
 
   //Get / ranking -- classement des user ordre décroissant de points
@@ -264,60 +286,6 @@ export class UserController {
   @Get('byId/:userId')
   async findById(@Param('userId') userId: string): Promise<User> {
     return this.userService.findById(userId);
-  }
-
-  @UseGuards(AuthenticatedGuard)
-  @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads', // Le répertoire où les fichiers seront stockés
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          // Utilisation de la fonction de rappel pour générer un nom de fichier unique
-          cb(null, file.originalname + '-' + uniqueSuffix);
-        },
-      }),
-    }),
-  )
-  async uploadProfilePicture(
-    @Request() req,
-    @Param('userId') userId: string,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<User> {
-    console.log(file);
-    const user = req.user;
-    console.log(user);
-    return this.userService.updateProfilePicture(user.id, {
-      profilePicturePath: file.filename,
-    });
-    //return of({imagepath: file.filename});
-  }
-
-  @Get('profile-picture/:profilePicture')
-  FindProfilePicture(
-    @Param('profilePicture') profilePicture,
-    @Response() res,
-  ): Promise<User> {
-    return res.sendFile(join(process.cwd(), 'uploads/' + profilePicture));
-  }
-
-  @Put('update/:userId')
-  async updateUserProfile(
-    @Param('userId') userId: string,
-    @Body() updateUserDto: UpdateUserDto, // Créez un DTO approprié pour les données de mise à jour du profil
-  ): Promise<{ message: string }> {
-    try {
-      await this.userService.updateUserProfile(userId, updateUserDto); // Appelez votre service pour mettre à jour le profil de l'utilisateur
-      return { message: 'Profil utilisateur mis à jour avec succès' };
-    } catch (error) {
-      console.error(
-        "Erreur lors de la mise à jour du profil de l'utilisateur:",
-        error,
-      );
-      throw error;
-    }
   }
 
   @UseGuards(AuthenticatedGuard)

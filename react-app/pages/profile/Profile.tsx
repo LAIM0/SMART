@@ -18,7 +18,7 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
-import { getScoreByCat } from '../../api/UserApiManager';
+import { getScoreByCat, updateAllLevels } from '../../api/UserApiManager';
 import CategoryList from '../../components/Profile/CategoryList';
 import LogoutConfirmationModal from '../../components/Profile/logoutModal';
 
@@ -52,6 +52,11 @@ function Profile() {
       const teamname = await axios.get(
         `http://localhost:3001/teams/byId/${teamId}`
       );
+
+      console.log('Try to update all users levels...');
+      await updateAllLevels();
+      console.log('User levels updated successfully.');
+
       const fetchedTeams = await fetchTeams();
       const fetchedCatScore = await getScoreByCat(userId);
       setCategoriesScore(fetchedCatScore);
