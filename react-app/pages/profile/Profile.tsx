@@ -21,8 +21,16 @@ import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
+<<<<<<< HEAD
 import { handleAuthRouting, resetPassword } from '../../api/AuthApiManager';
 >>>>>>> a5b025a6 (feat: profil - score by category)
+=======
+import {
+  handleAuthRouting,
+  logout,
+  resetPassword,
+} from '../../api/AuthApiManager';
+>>>>>>> 3d674be1 (feat Deconnexion)
 import User from '../../interfaces/userAdminInterface';
 import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
 import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
@@ -41,7 +49,11 @@ import CategoryCard from '../../components/Profile/CategoryCard';
 >>>>>>> a825e835 (feat: little fix)
 import { getScoreByCat } from '../../api/UserApiManager';
 import CategoryList from '../../components/Profile/CategoryList';
+<<<<<<< HEAD
 >>>>>>> a5b025a6 (feat: profil - score by category)
+=======
+import LogoutConfirmationModal from '../../components/Profile/logoutModal';
+>>>>>>> 3d674be1 (feat Deconnexion)
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -55,7 +67,11 @@ function Profile() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 =======
   const [categoriesScore, setCategoriesScore] = useState<ScoreByCatData[]>([]);
+<<<<<<< HEAD
 >>>>>>> a5b025a6 (feat: profil - score by category)
+=======
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+>>>>>>> 3d674be1 (feat Deconnexion)
   const toast = useToast();
   const router = useRouter();
   useEffect(() => {
