@@ -5,7 +5,8 @@ import * as session from "express-session";
 import * as passport from "passport";
 import 'moment/locale/fr'; 
 import * as moment from 'moment'; 
-import { UserService } from './User/user.service';
+import { CategoryService } from './Category/category.service';
+
 
 async function bootstrap() {
   // Initialise Moment.js avec la locale et les options nécessaires
@@ -31,5 +32,9 @@ async function bootstrap() {
   app.use(passport.initialize())
   app.use(passport.session())
   await app.listen(3001);
+
+  // Exécution des seeds pour les données par défaut
+  app.get(CategoryService).seedCategories();
+
 }
 bootstrap();

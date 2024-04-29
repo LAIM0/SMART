@@ -9,4 +9,4 @@ import { CategorySchema } from './category.schema';
   controllers: [CategoryController],
   providers: [CategoryService],
 })
-export class CategoryModule {}
+export class CategoryModule { }
