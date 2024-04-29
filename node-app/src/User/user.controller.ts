@@ -72,7 +72,6 @@ export class UserController {
         createUserDto.firstLogin,
       );
 
-
       return {
         msg: 'User successfully registered',
         userName: result.email,
