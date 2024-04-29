@@ -210,6 +210,7 @@ export class UserService {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     user.passWordInitialized = true;
+    user.passWordInitialized = true;
     await user.save();
   }
 

@@ -22,14 +22,17 @@ import { UserService } from './user.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
 import { AdminAuthGuard } from 'src/Auth/admin.guard';
+import { FileInterceptor } from '@nestjs/platform-express/multer';
+import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import { Observable, of } from 'rxjs';
+import { Category } from 'src/Category/category.schema';
+import { Types } from 'mongoose';
+import { diskStorage } from 'multer';
 import { join } from 'path';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LevelCheckDto } from './dto/level-check.dto';
 import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
-import { Category } from 'src/Category/category.schema';
-import { Types } from 'mongoose';
-import { FileInterceptor } from '@nestjs/platform-express/multer';
-import { diskStorage } from 'multer';
 
 @Controller('users')
 export class UserController {
@@ -338,60 +341,6 @@ export class UserController {
     }
   }
 
-  @UseGuards(AuthenticatedGuard)
-  @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads', // Le répertoire où les fichiers seront stockés
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          // Utilisation de la fonction de rappel pour générer un nom de fichier unique
-          cb(null, file.originalname + '-' + uniqueSuffix);
-        },
-      }),
-    }),
-  )
-  async uploadProfilePicture(
-    @Request() req,
-    @Param('userId') userId: string,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<User> {
-    console.log(file);
-    const user = req.user;
-    console.log(user);
-    return this.userService.updateProfilePicture(user.id, {
-      profilePicturePath: file.filename,
-    });
-    //return of({imagepath: file.filename});
-  }
-
-  @Get('profile-picture/:profilePicture')
-  FindProfilePicture(
-    @Param('profilePicture') profilePicture,
-    @Response() res,
-  ): Promise<User> {
-    return res.sendFile(join(process.cwd(), 'uploads/' + profilePicture));
-  }
-
-  @Put('update/:userId')
-  async updateUserProfile(
-    @Param('userId') userId: string,
-    @Body() updateUserDto: UpdateUserDto, // Créez un DTO approprié pour les données de mise à jour du profil
-  ): Promise<{ message: string }> {
-    try {
-      await this.userService.updateUserProfile(userId, updateUserDto); // Appelez votre service pour mettre à jour le profil de l'utilisateur
-      return { message: 'Profil utilisateur mis à jour avec succès' };
-    } catch (error) {
-      console.error(
-        "Erreur lors de la mise à jour du profil de l'utilisateur:",
-        error,
-      );
-      throw error;
-    }
-  }
-
   @Get('validate-email')
   async validateEmailWithToken(
     @Query('token') token: string,
@@ -399,8 +348,6 @@ export class UserController {
   ) {
     console.log('entreée endpoint validate mail');
     try {
-      const response =
-        await this.userService.updateFirstLoginStatusWithToken(token);
       const response =
         await this.userService.updateFirstLoginStatusWithToken(token);
       console.log(response);

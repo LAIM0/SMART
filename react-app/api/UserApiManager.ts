@@ -104,6 +104,5 @@ export const getScoreByCat = async (userId: string) => {
       'Erreur lors de la récupération du classement des utilisateurs:',
       error
     );
-    throw error;
   }
 };

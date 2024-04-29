@@ -41,6 +41,7 @@ import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { updateAllLevels } from '../../api/UserApiManager';
 import LogoutConfirmationModal from '../../components/Profile/logoutModal';
 =======
@@ -48,6 +49,9 @@ import CategoryCard from '../../components/Profile/CategoryCard';
 =======
 >>>>>>> a825e835 (feat: little fix)
 import { getScoreByCat } from '../../api/UserApiManager';
+=======
+import { getScoreByCat, updateAllLevels } from '../../api/UserApiManager';
+>>>>>>> c1a50e1f (add calcul niveau)
 import CategoryList from '../../components/Profile/CategoryList';
 <<<<<<< HEAD
 >>>>>>> a5b025a6 (feat: profil - score by category)
