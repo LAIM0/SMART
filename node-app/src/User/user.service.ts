@@ -224,7 +224,6 @@ export class UserService {
     await user.save();
   }
 
-
   async getRanking(): Promise<
     { user: User; score: number; teamName: string }[]
   > {
@@ -327,7 +326,6 @@ export class UserService {
 
     user.profilePicturePath = data.profilePicturePath;
     return user.save();
-
   }
 
   async updateUserProfile(
