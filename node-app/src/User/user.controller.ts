@@ -307,7 +307,10 @@ export class UserController {
   }
 
   @Get('profile-picture/:profilePicture')
-  FindProfilePicture(@Param('profilePicture') profilePicture, @Response() res): Promise<User> {
+  FindProfilePicture(
+    @Param('profilePicture') profilePicture,
+    @Response() res,
+  ): Promise<User> {
     return res.sendFile(join(process.cwd(), 'uploads/' + profilePicture));
   }
 
