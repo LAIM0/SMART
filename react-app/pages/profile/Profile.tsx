@@ -202,7 +202,6 @@ function Profile() {
     fetchCompletedChallenges();
   }, [user]);
 
-
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
       <Flex alignItems="center" justifyContent="space-between">
