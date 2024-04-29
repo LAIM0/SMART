@@ -38,12 +38,14 @@ export class User {
   @Prop()
   resetPasswordExpires: Date;
 
-  @Prop()
+  @Prop({ default: "profile-picture-default.png-1713713349070-217063153" })
   profilePicturePath: string;
 
   @Prop({default: false})
   passWordInitialized: boolean;
 
+  @Prop()
+  isTeamAdmin: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

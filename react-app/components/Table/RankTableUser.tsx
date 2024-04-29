@@ -56,8 +56,8 @@ function RankTableUser() {
           <Image
             boxSize="100px"
             objectFit="cover"
-            src="https://bit.ly/dan-abramov"
-            alt="Dan Abramov"
+            src={`http://localhost:3001/users/profile-picture/${player.user.profilePicturePath}`}
+            alt="Pas de photo de profil"
             borderRadius="lg"
           />
         </Stack>

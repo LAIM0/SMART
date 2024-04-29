@@ -1,11 +1,16 @@
+/* eslint-disable no-underscore-dangle */
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text, Button, Image, Icon ,useToast} from '@chakra-ui/react';
+import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { UserData } from '../../interfaces/userInterface';
-import { handleAuthRouting, resetPassword } from '../../api/AuthApiManager';
+import {
+  handleAuthRouting,
+  logout,
+  resetPassword,
+} from '../../api/AuthApiManager';
 import User from '../../interfaces/userAdminInterface';
 import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
 import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
@@ -14,7 +19,7 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
-
+import LogoutConfirmationModal from '../../components/Profile/logoutModal';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -24,6 +29,7 @@ function Profile() {
   const [initialFirstName, setInitialFirstName] = useState('');
   const [initialLastName, setInitialLastName] = useState('');
   const [teams, setTeams] = useState<TeamData[]>([]);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const toast = useToast();
   const router = useRouter();
   useEffect(() => {
@@ -51,10 +57,6 @@ function Profile() {
 
       if (userResponse.data.profilePicturePath) {
         setProfilePicture(userResponse.data.profilePicturePath);
-      } else {
-        setProfilePicture(
-          '/profile-picture-default.png-1713451127942-613847853'
-        );
       }
       setInitialFirstName(userResponse.data.firstName);
       setInitialLastName(userResponse.data.lastName);
@@ -138,6 +140,27 @@ function Profile() {
     }
   };
 
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    try {
+      logout();
+
+      router.push('/auth/login');
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion :', error);
+    } finally {
+      setIsLogoutModalOpen(false);
+    }
+  };
+
+  // Fonction pour fermer la modal de confirmation
+  const handleCloseLogoutModal = () => {
+    setIsLogoutModalOpen(false);
+  };
+
   console.log(initialFirstName, initialLastName);
   console.log('profile', profilePicture);
 
@@ -164,7 +187,6 @@ function Profile() {
 
     fetchCompletedChallenges();
   }, [user]);
-        
 
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
@@ -178,9 +200,23 @@ function Profile() {
             style={{ marginTop: '-15px', marginLeft: '10px' }}
           />
         </Flex>
-        <Button bg="primary.300" color="white" onClick={handleEditProfileClick}>
-          Modifier
-        </Button>
+        <Flex>
+          <Button
+            bg="primary.300"
+            color="white"
+            onClick={handleEditProfileClick}
+          >
+            Modifier
+          </Button>
+          <Button
+            bg="primary.300"
+            color="white"
+            marginLeft="4px"
+            onClick={handleLogoutClick}
+          >
+            Se déconnecter
+          </Button>
+        </Flex>
       </Flex>
       <Flex flexDirection="row" alignItems="center" gap="16px">
         <ChangeProfilePictureModal
@@ -189,36 +225,35 @@ function Profile() {
         />
         <Box flex="2">
           {user && (
-            <>
-              <Flex flexDirection="column" gap="6px">
-                <Text as="h2">
-                  {user.firstName} {user.lastName}
-                </Text>
-                <Text as="h3">{teamName.name}</Text>
-                <Text>{user.email}</Text>
-                <Text
-                  color="primary.300"
-                  textDecoration="underline"
-                  cursor="pointer"
-                  onClick={handlePasswordReset}
-                >
-                  Mot de passe oublié
-                </Text>
-              </Flex>
-            </>
+            <Flex flexDirection="column" gap="6px">
+              <Text as="h2">
+                {user.firstName} {user.lastName}
+              </Text>
+              <Text as="h3">{teamName.name}</Text>
+              <Text>{user.email}</Text>
+              <Text
+                color="primary.300"
+                textDecoration="underline"
+                cursor="pointer"
+                onClick={handlePasswordReset}
+              >
+                Mot de passe oublié
+              </Text>
+            </Flex>
           )}
         </Box>
       </Flex>
       {user && (
-      <UserProfileUpdateModal
-        isOpen={isUpdateModalOpen}
-        onClose={() => setIsUpdateModalOpen(false)}
-        onSubmit={handleUpdateSubmit}
-        initialFirstName={initialFirstName}
-        initialLastName={initialLastName}
-        user={user}
-        teams={teams}
-      />)}
+        <UserProfileUpdateModal
+          isOpen={isUpdateModalOpen}
+          onClose={() => setIsUpdateModalOpen(false)}
+          onSubmit={handleUpdateSubmit}
+          initialFirstName={initialFirstName}
+          initialLastName={initialLastName}
+          user={user}
+          teams={teams}
+        />
+      )}
       <Flex flexDirection="column">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">
@@ -242,7 +277,11 @@ function Profile() {
             <Text as="p">Aucun challenge relevé récemment</Text>
           )}
         </Flex>
-        ;
+        <LogoutConfirmationModal
+          isOpen={isLogoutModalOpen}
+          onClose={handleCloseLogoutModal}
+          onConfirm={handleConfirmLogout}
+        />
       </Flex>
     </Flex>
   );
