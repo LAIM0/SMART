@@ -38,7 +38,6 @@ export class UserService {
     isAdmin: boolean,
     teamId: string,
     firstLogin: boolean,
-    firstLogin: boolean,
   ): Promise<User> {
     console.log('createUser');
     const newUser = new this.userModel({
@@ -210,7 +209,6 @@ export class UserService {
     user.passwordHash = bcrypt.hashSync(newPassword, salt);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
-    user.passWordInitialized = true;
     user.passWordInitialized = true;
     await user.save();
   }
