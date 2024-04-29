@@ -10,9 +10,11 @@ import {
   Put,
   Delete,
   Param,
-  UploadedFile,UseInterceptors,Response,
+  UploadedFile,
+  UseInterceptors,
+  Response,
   Query,
-  Res
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as bcrypt from 'bcryptjs';
@@ -21,13 +23,11 @@ import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
 import { UserService } from './user.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
-import {AdminAuthGuard } from 'src/Auth/admin.guard';
-import { HttpException } from '@nestjs/common';
-import { HttpStatus } from '@nestjs/common';
-import {diskStorage} from 'multer'
-import { Observable, of } from 'rxjs';
+import { AdminAuthGuard } from 'src/Auth/admin.guard';
+import { diskStorage } from 'multer';
 import { join } from 'path';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LevelCheckDto } from './dto/level-check.dto';
 import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
 
 @Controller('users')
@@ -71,7 +71,6 @@ export class UserController {
         createUserDto.teamId,
         createUserDto.firstLogin,
       );
-      
 
       return {
         msg: 'User successfully registered',
@@ -99,13 +98,34 @@ export class UserController {
     }
   }
 
-  //Get / Score & infos user
   @Get('/score')
   async score(
-    @Body() scoreCheckDto: ScoreCheckDto,
+    @Query() scoreCheckDto: ScoreCheckDto,
   ): Promise<{ score: number }> {
     const userId = scoreCheckDto.userId;
     return this.userService.getScore(userId);
+  }
+
+  @Get('/update-all-levels')
+  async updateAllLevels(): Promise<{ success: boolean; error?: string }> {
+    try {
+      await this.userService.updateAllLevels();
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating user levels:', error);
+      return {
+        success: false,
+        error: 'An error occurred while updating user levels',
+      };
+    }
+  }
+
+  @Get('/level')
+  async getLevel(
+    @Query() levelCheckDto: LevelCheckDto,
+  ): Promise<{ success: boolean; level?: number; error?: string }> {
+    const userId = levelCheckDto.userId;
+    return this.userService.getLevel(userId);
   }
 
   //Get / ranking -- classement des user ordre décroissant de points
@@ -140,7 +160,7 @@ export class UserController {
     const { id, userName, firstName } = req.user; // Supposons que req.user contient l'id et le nom d'utilisateur de l'utilisateur connecté
 
     console.log(req.user);
-    return { id, email: userName, firstName};
+    return { id, email: userName, firstName };
   }
 
   @Get('check')
@@ -211,24 +231,24 @@ export class UserController {
   }
 
   @Put(':userId/team')
-async updateUserTeam(
-  @Param('userId') userId: string,
-  @Body('teamId') teamId: string,
-) {
-  console.log('entrée put team');
-  try {
-    // Assurez-vous que teamId est une chaîne
-    teamId = teamId.toString();
+  async updateUserTeam(
+    @Param('userId') userId: string,
+    @Body('teamId') teamId: string,
+  ) {
+    console.log('entrée put team');
+    try {
+      // Assurez-vous que teamId est une chaîne
+      teamId = teamId.toString();
 
-    // Appelez votre service pour mettre à jour l'équipe de l'utilisateur
-    await this.userService.updateUserTeam(userId, teamId);
+      // Appelez votre service pour mettre à jour l'équipe de l'utilisateur
+      await this.userService.updateUserTeam(userId, teamId);
 
-    return { message: 'Team updated successfully' };
-  } catch (error) {
-    console.error("Error updating user's team:", error);
-    throw error;
+      return { message: 'Team updated successfully' };
+    } catch (error) {
+      console.error("Error updating user's team:", error);
+      throw error;
+    }
   }
-}
 
   @Put(':userId/admin')
   async updateUserAdminStatus(
@@ -253,58 +273,69 @@ async updateUserTeam(
 
   @Get('byId/:userId')
   async findById(@Param('userId') userId: string): Promise<User> {
-    
     return this.userService.findById(userId);
-  } 
+  }
 
-@UseGuards(AuthenticatedGuard)
-@Post('upload')
-@UseInterceptors(FileInterceptor('file',  {
-  storage: diskStorage({
-    destination: './uploads', // Le répertoire où les fichiers seront stockés
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      // Utilisation de la fonction de rappel pour générer un nom de fichier unique
-      cb(null, file.originalname + '-' + uniqueSuffix);
-    },
-  }),
-}))
-async uploadProfilePicture(@Request() req,
-  @Param('userId') userId: string,
-  @UploadedFile() file: Express.Multer.File,
-): Promise<User> {
-  console.log(file);
-  const user = req.user;
-  console.log(user);
-  return this.userService.updateProfilePicture(user.id, { profilePicturePath: file.filename });
-  //return of({imagepath: file.filename});
-}
-
+  @UseGuards(AuthenticatedGuard)
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads', // Le répertoire où les fichiers seront stockés
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          // Utilisation de la fonction de rappel pour générer un nom de fichier unique
+          cb(null, file.originalname + '-' + uniqueSuffix);
+        },
+      }),
+    }),
+  )
+  async uploadProfilePicture(
+    @Request() req,
+    @Param('userId') userId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<User> {
+    console.log(file);
+    const user = req.user;
+    console.log(user);
+    return this.userService.updateProfilePicture(user.id, {
+      profilePicturePath: file.filename,
+    });
+    //return of({imagepath: file.filename});
+  }
 
 @Get('profile-picture/:profilePicture')
 FindProfilePicture(@Param('profilePicture') profilePicture, @Response() res): Promise<User> {
   return res.sendFile(join(process.cwd(), 'uploads/'+profilePicture));
 }
 
-@Put('update/:userId')
-async updateUserProfile(
-  @Param('userId') userId: string,
-  @Body() updateUserDto: UpdateUserDto, // Créez un DTO approprié pour les données de mise à jour du profil
-): Promise<{ message: string }> {
-  try {
-    await this.userService.updateUserProfile(userId, updateUserDto); // Appelez votre service pour mettre à jour le profil de l'utilisateur
-    return { message: 'Profil utilisateur mis à jour avec succès' };
-  } catch (error) {
-    console.error("Erreur lors de la mise à jour du profil de l'utilisateur:", error);
-    throw error;
-  }
-}
-
-@Get('validate-email')
-  async validateEmailWithToken(@Query('token') token: string, @Res() res: Response) {
-    console.log("entreée endpoint validate mail");
+  @Put('update/:userId')
+  async updateUserProfile(
+    @Param('userId') userId: string,
+    @Body() updateUserDto: UpdateUserDto, // Créez un DTO approprié pour les données de mise à jour du profil
+  ): Promise<{ message: string }> {
     try {
-      const response= await this.userService.updateFirstLoginStatusWithToken(token);
+      await this.userService.updateUserProfile(userId, updateUserDto); // Appelez votre service pour mettre à jour le profil de l'utilisateur
+      return { message: 'Profil utilisateur mis à jour avec succès' };
+    } catch (error) {
+      console.error(
+        "Erreur lors de la mise à jour du profil de l'utilisateur:",
+        error,
+      );
+      throw error;
+    }
+  }
+
+  @Get('validate-email')
+  async validateEmailWithToken(
+    @Query('token') token: string,
+    @Res() res: Response,
+  ) {
+    console.log('entreée endpoint validate mail');
+    try {
+      const response =
+        await this.userService.updateFirstLoginStatusWithToken(token);
       console.log(response);
       return { msg: 'email vérifié successful' };
     } catch (error) {
@@ -331,5 +362,4 @@ async updateUserProfile(
         'Un email vous a été envoyé pour initialiser votre mot de passe avant votre première connexion',
     };
   }
-
 }

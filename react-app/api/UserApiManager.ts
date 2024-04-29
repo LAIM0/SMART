@@ -82,3 +82,13 @@ export const fetchUserRanking = async () => {
     throw error;
   }
 };
+
+export const updateAllLevels = async () => {
+  try {
+    const response = await axios.get(`${baseURL}/users/update-all-levels`);
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour des niveaux:', error);
+    throw error;
+  }
+};
