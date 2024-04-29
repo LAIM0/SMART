@@ -28,6 +28,7 @@ import { diskStorage } from 'multer'
 import { Observable, of } from 'rxjs';
 import { join } from 'path';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
 
 @Controller('users')
 export class UserController {
@@ -173,6 +174,19 @@ export class UserController {
     return { isAdminLoggedIn: true };
   }
 
+  @Get('check/adminTeam')
+  @UseGuards(AdminTeamAuthGuard, AuthenticatedGuard)
+  checkAdminTeamAuthentication(@Request() req) {
+    // if(req.user.isAdminTeam){
+    //   return { isAdminTeamLoggedIn: true };
+    // }
+    // else{
+    //   throw new HttpException('Unauthorized AdminTeam access', HttpStatus.FORBIDDEN);
+    // }
+    return { isAdminTeamLoggedIn: true };
+  }
+
+  @UseGuards(AdminAuthGuard)
   @Delete('delete/:userId')
   async deleteUser(
     @Param('userId') userId: string,
@@ -181,14 +195,11 @@ export class UserController {
       // Récupérer l'administrateur par défaut
       const defaultAdmin = await this.userService.findDefaultAdmin();
       const user = await this.userService.findById(userId);
-      // Vérifier si l'utilisateur à supprimer est l'administrateur par défaut
       if (user.email === defaultAdmin.email) {
         throw new Error(
           "Vous ne pouvez pas supprimer l'administrateur par défaut.",
         );
       }
-
-      // Supprimer l'utilisateur avec l'ID fourni
       await this.userService.deleteUser(userId);
       return { message: "L'utilisateur a été supprimé avec succès" };
     } catch (error) {
