@@ -1,10 +1,15 @@
+/* eslint-disable no-underscore-dangle */
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
 import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
-import { handleAuthRouting, resetPassword } from '../../api/AuthApiManager';
+import {
+  handleAuthRouting,
+  logout,
+  resetPassword,
+} from '../../api/AuthApiManager';
 import User from '../../interfaces/userAdminInterface';
 import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
 import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
@@ -15,6 +20,7 @@ import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
 import { getScoreByCat } from '../../api/UserApiManager';
 import CategoryList from '../../components/Profile/CategoryList';
+import LogoutConfirmationModal from '../../components/Profile/logoutModal';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -25,6 +31,7 @@ function Profile() {
   const [initialLastName, setInitialLastName] = useState('');
   const [teams, setTeams] = useState<TeamData[]>([]);
   const [categoriesScore, setCategoriesScore] = useState<ScoreByCatData[]>([]);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const toast = useToast();
   const router = useRouter();
   useEffect(() => {
@@ -141,6 +148,27 @@ function Profile() {
     }
   };
 
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    try {
+      logout();
+
+      router.push('/auth/login');
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion :', error);
+    } finally {
+      setIsLogoutModalOpen(false);
+    }
+  };
+
+  // Fonction pour fermer la modal de confirmation
+  const handleCloseLogoutModal = () => {
+    setIsLogoutModalOpen(false);
+  };
+
   console.log(initialFirstName, initialLastName);
   console.log('profile', profilePicture);
 
@@ -176,9 +204,23 @@ function Profile() {
             Mon profil
           </Text>
         </Flex>
-        <Button bg="primary.300" color="white" onClick={handleEditProfileClick}>
-          Modifier
-        </Button>
+        <Flex>
+          <Button
+            bg="primary.300"
+            color="white"
+            onClick={handleEditProfileClick}
+          >
+            Modifier
+          </Button>
+          <Button
+            bg="primary.300"
+            color="white"
+            marginLeft="4px"
+            onClick={handleLogoutClick}
+          >
+            Se déconnecter
+          </Button>
+        </Flex>
       </Flex>
       <Flex flexDirection="row" alignItems="center" gap="16px">
         <ChangeProfilePictureModal
@@ -244,7 +286,11 @@ function Profile() {
             <Text as="p">Aucun challenge relevé récemment</Text>
           )}
         </Flex>
-        ;
+        <LogoutConfirmationModal
+          isOpen={isLogoutModalOpen}
+          onClose={handleCloseLogoutModal}
+          onConfirm={handleConfirmLogout}
+        />
       </Flex>
     </Flex>
   );

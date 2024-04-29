@@ -134,4 +134,16 @@ export const checkAdminAuthentication = async () => {
       );
     }
   };
+
+  export const logout = async () =>{
+    try {
+      const response = await axios.get('http://localhost:3001/users/logout', {
+        withCredentials: true,
+      });
+      return response.data; // Si vous souhaitez renvoyer quelque chose en cas de succès
+    } catch (error) {
+      throw error; // Si vous souhaitez gérer les erreurs ailleurs
+    }
+  }
+
   
