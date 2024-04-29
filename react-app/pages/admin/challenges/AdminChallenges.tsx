@@ -19,12 +19,16 @@ import dateGap from '../../../utils/mathFunctions';
 import FormUpdateChallenge from '../../../components/Challenges/FormUpdateChallenge';
 import { Filter } from '../../../utils/constants';
 import FormCreateChallengeIA from '../../../components/Challenges/FormCreateChallengeIA';
+import CategoryData from '../../../interfaces/categoryInterface';
+import CategoryApiManager from '../../../api/CategoryApiManager';
 
 function AdminChallenges() {
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
   const [currentChallenges, setCurrentChallenges] = useState<ChallengeData[]>(
     []
   );
+  const [categories, setCategories] = useState<CategoryData[]>([]);
+
   const [formerChallenges, setFormerChallenges] = useState<ChallengeData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -49,6 +53,15 @@ function AdminChallenges() {
     };
     fetchData();
   }, [loading]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await CategoryApiManager.getAll();
+      setCategories(response);
+    };
+
+    fetchCategories();
+  }, []);
 
   const filterCurrent = (challenge: ChallengeData): boolean => {
     return new Date(challenge.endDate).getTime() > Date.now();
@@ -323,7 +336,12 @@ function AdminChallenges() {
             {currentChallenges.map((challenge) => (
               <Tr key={challenge.id}>
                 <Td width="30%">{challenge.title}</Td>
-                <Td width="30%">{challenge.category}</Td>
+                <Td width="30%">
+                  {
+                    categories.find((item) => item.id === challenge.category)
+                      ?.categoryName
+                  }
+                </Td>
                 <Td width="20%">{challenge.points}</Td>
                 <Td width="20%">
                   {dateGap(challenge.endDate) === 1
