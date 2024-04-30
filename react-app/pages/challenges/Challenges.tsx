@@ -3,7 +3,9 @@ import axios from 'axios';
 import { Flex, Text, Box } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import CompletedChallengeData from '../../interfaces/completedInterface';
-import CategoryData from '../../interfaces/categoryInterface';
+import CategoryData, {
+  CategoryDataWithDate,
+} from '../../interfaces/categoryInterface';
 import ChallengeData from '../../interfaces/challengeInterface';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import dateGap from '../../utils/mathFunctions';
@@ -13,17 +15,38 @@ import { UserData } from '../../interfaces/userInterface';
 
 function Challenges() {
   const router = useRouter();
-  const Tous: CategoryData = { categoryName: 'Tous', id: '' };
+  const Tous: CategoryData = {
+    categoryName: 'Tous',
+    id: 'Tous',
+  };
   const [currentCategory, setCurrentCategory] = useState<CategoryData>(Tous);
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
   const [completedChallenges, setCompletedChallenges] = useState<
     CompletedChallengeData[]
   >([]);
-  const [categories, setCategories] = useState<CategoryData[]>([]);
+  const [categories, setCategories] = useState<CategoryDataWithDate[]>([]);
+  const [orderedCategories, setOrderedCategories] = useState<
+    CategoryDataWithDate[]
+  >([]);
   const [completedChallengesIds, setCompletedChallengesIds] = useState<
     string[]
   >([]);
   const today = new Date();
+
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    handleResize(); // Appel initial pour définir la largeur de la fenêtre
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,12 +94,30 @@ function Challenges() {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await CategoryApiManager.getAll();
-      setCategories(response);
+      try {
+        const response = await CategoryApiManager.getAllWithDate();
+        setCategories(response);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des catégories: ', error);
+      }
     };
-
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const temp = categories.sort((a, b) => {
+      const timeA = a.creationDate;
+      const timeB = b.creationDate;
+      if (timeA > timeB) {
+        return -1;
+      } else if (timeA < timeB) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    setOrderedCategories(temp);
+  }, [categories]);
 
   challenges.sort((a, b) => (a.points > b.points ? 1 : -1));
   challenges.sort((a, b) => (dateGap(a.endDate) > dateGap(b.endDate) ? 1 : -1));
@@ -88,7 +129,7 @@ function Challenges() {
   const challengesToShow = challenges.filter(
     (challenge) =>
       (currentCategory.categoryName === 'Tous' ||
-        currentCategory.categoryName === challenge.category) &&
+        currentCategory.id === challenge.category) &&
       dateGap(challenge.endDate) >= 0 &&
       !completedChallengesIds.includes(challenge.id)
   );
@@ -109,8 +150,8 @@ function Challenges() {
         borderRadius="16px"
         boxShadow="sm"
         overflowX="scroll"
-        w="fit-content"
         mb="24px"
+        w={windowWidth < 500 ? 'auto' : 'fit-content'}
       >
         <Box
           bg={currentCategory.categoryName === 'Tous' ? 'primary.300' : 'white'}
@@ -141,7 +182,7 @@ function Challenges() {
             Tous
           </Text>
         </Box>
-        {categories.map((category) => (
+        {orderedCategories.map((category) => (
           <Box
             bg={
               category.categoryName === currentCategory.categoryName

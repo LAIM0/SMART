@@ -63,12 +63,12 @@ export class CategoryService {
 
   async seedCategories(): Promise<void> {
 
-    const existingCategory = await this.categoryModel.findOne({ categoryName: 'Autre' });
+    const existingCategory = await this.categoryModel.findOne({ categoryName: 'Autre'});
 
     if (!existingCategory) {
 
       // Créer une instance par défaut
-      const defaultCategory = new this.categoryModel({ categoryName: 'Autre' });
+      const defaultCategory = new this.categoryModel({ categoryName: 'Autre' , creationDate: new Date});
 
       // Insérer dans la base de données
       await defaultCategory.save();

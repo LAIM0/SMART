@@ -28,6 +28,7 @@ function FormCreateModifyCategory({
         id: ``,
         categoryName,
       };
+      console.log(newCategory);
 
       const fetchData = async () => {
         try {
@@ -81,7 +82,6 @@ function FormCreateModifyCategory({
             Enregistrer les modifications
           </Button>
         )}
-
       </Flex>
     </FormControl>
   );
