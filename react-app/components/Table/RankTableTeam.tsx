@@ -29,7 +29,7 @@ function RankTableTeam() {
           align="center"
           justify="space-between"
           backgroundColor="white"
-          boxShadow="md"
+          boxShadow="sm"
         >
           <Flex direction="row" gap={10}>
             <Box fontSize="36px" fontWeight="extraBold">
