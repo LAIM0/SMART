@@ -10,3 +10,4 @@ export interface CategoryDataWithDate {
 }
 
 export default CategoryData;
+
