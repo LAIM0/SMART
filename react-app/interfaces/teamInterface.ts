@@ -1,7 +1,7 @@
 interface TeamData {
   id: string;
   name: string;
-  icon: string;
+  picturePath: string;
 }
 
 export default TeamData;

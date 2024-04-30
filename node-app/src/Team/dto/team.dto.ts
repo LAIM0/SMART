@@ -13,12 +13,12 @@ export class CreateTeamDto {
     name: string;
     
     @IsOptional()
-    icon?: string;
+    picturePath?: string;
   }
   
   export class TeamDto {
     readonly id: string;
     readonly name: string;
-    readonly icon: string;
+    readonly picturePath: string;
   }
   

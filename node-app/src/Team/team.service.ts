@@ -31,8 +31,8 @@ export class TeamService {
   }
 
   private mapTeamToDto(team: TeamDocument): TeamDto {
-    const { _id, name, icon } = team;
-    return { id: _id.toString(), name, icon };
+    const { _id, name, picturePath } = team;
+    return { id: _id.toString(), name, picturePath};
   }
 
   async getUsers(

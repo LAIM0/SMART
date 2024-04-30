@@ -52,11 +52,11 @@ function RankTableTeam() {
             borderRadius="lg"
             size="100px"
           >
-            {teamUnit.team.icon ? (
+            {teamUnit.team.picturePath ? (
               <Image
                 boxSize="80%"
                 objectFit="cover"
-                src={teamUnit.team.icon}
+                src={`http://localhost:3001/users/profile-picture/${teamUnit.team.picturePath}`}
                 alt={`${teamUnit.team.name} icon`}
                 borderRadius="lg"
               />
