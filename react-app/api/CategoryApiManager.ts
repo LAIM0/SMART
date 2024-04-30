@@ -1,7 +1,19 @@
 import axios from 'axios';
 import ENDPOINTS from './apiUtils/endpoints';
 import ApiMethods from './apiUtils/apiMethods';
-import CategoryData from '../interfaces/categoryInterface';
+import CategoryData, {
+  CategoryDataWithDate,
+} from '../interfaces/categoryInterface';
+
+interface NewCategory {
+  categoryName: string;
+  creationDate: Date;
+}
+
+let newCategory = {
+  categoryName: 'string',
+  creationDate: new Date(),
+};
 
 class CategoryApiManager {
   static async get_by_id(id: string): Promise<CategoryData> {
@@ -32,13 +44,26 @@ class CategoryApiManager {
     }
   }
 
-  static async create(categoryData: CategoryData): Promise<void> {
-    const { id, ...dataWithoutId } = categoryData;
+  static async getAllWithDate(): Promise<CategoryDataWithDate[]> {
     try {
-      await ApiMethods.post(
-        ENDPOINTS.CATEGORY.CATEGORY_CREATE(),
-        dataWithoutId
+      const response = await ApiMethods.get(
+        ENDPOINTS.CATEGORY.CATEGORY_GET_ALL()
       );
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        `Erreur lors de la récupération des categories: ${error}`
+      );
+    }
+  }
+
+  static async create(categoryData: CategoryData): Promise<void> {
+    console.log(newCategory);
+    newCategory.categoryName = categoryData.categoryName;
+    newCategory.creationDate = new Date();
+    try {
+      await ApiMethods.post(ENDPOINTS.CATEGORY.CATEGORY_CREATE(), newCategory);
     } catch (error) {
       throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
     }

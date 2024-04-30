@@ -28,6 +28,7 @@ function FormCreateModifyCategory({
         id: ``,
         categoryName,
       };
+      console.log(newCategory);
 
       const fetchData = async () => {
         try {
