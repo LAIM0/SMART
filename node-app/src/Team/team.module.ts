@@ -10,6 +10,8 @@ import { ChallengeService } from 'src/Challenge/challenge.service';
 import { Challenge, ChallengeSchema } from 'src/Challenge/challenge.schema';
 import { UserService } from 'src/User/user.service';
 import { MailService } from 'src/mail/mail.service';
+import { CategoryService } from 'src/Category/category.service';
+import { Category, CategorySchema } from 'src/Category/category.schema';
 
 @Module({
   imports: [
@@ -18,9 +20,17 @@ import { MailService } from 'src/mail/mail.service';
       { name: User.name, schema: UserSchema },
       { name: Completed.name, schema: CompletedSchema },
       { name: Challenge.name, schema: ChallengeSchema },
+      { name: Category.name, schema: CategorySchema },
     ]),
   ],
   controllers: [TeamController],
-  providers: [TeamService, CompletedService, ChallengeService, UserService, MailService],
+  providers: [
+    TeamService,
+    CompletedService,
+    ChallengeService,
+    UserService,
+    MailService,
+    CategoryService,
+  ],
 })
 export class TeamModule {}

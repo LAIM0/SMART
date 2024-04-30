@@ -1,10 +1,9 @@
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text, Button, Image, Icon ,useToast} from '@chakra-ui/react';
-import { FaUser } from 'react-icons/fa';
+import { Box, Flex, Text, Button, useToast, VStack } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { UserData } from '../../interfaces/userInterface';
+import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
 import { handleAuthRouting, resetPassword } from '../../api/AuthApiManager';
 import User from '../../interfaces/userAdminInterface';
 import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
@@ -14,7 +13,9 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
-
+import CategoryCard from '../../components/Profile/CategoryCard';
+import { getScoreByCat } from '../../api/UserApiManager';
+import CategoryList from '../../components/Profile/CategoryList';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -24,6 +25,7 @@ function Profile() {
   const [initialFirstName, setInitialFirstName] = useState('');
   const [initialLastName, setInitialLastName] = useState('');
   const [teams, setTeams] = useState<TeamData[]>([]);
+  const [categoriesScore, setCategoriesScore] = useState<ScoreByCatData[]>([]);
   const toast = useToast();
   const router = useRouter();
   useEffect(() => {
@@ -45,6 +47,8 @@ function Profile() {
         `http://localhost:3001/teams/byId/${teamId}`
       );
       const fetchedTeams = await fetchTeams();
+      const fetchedCatScore = await getScoreByCat(userId);
+      setCategoriesScore(fetchedCatScore);
       setTeams(fetchedTeams);
       setUser(userResponse.data);
       setTeamName(teamname.data);
@@ -164,7 +168,6 @@ function Profile() {
 
     fetchCompletedChallenges();
   }, [user]);
-        
 
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
@@ -173,10 +176,6 @@ function Profile() {
           <Text as="h1" ml="8px" gap="10px">
             Mon profil
           </Text>
-          <FaUser
-            fontSize="24px"
-            style={{ marginTop: '-15px', marginLeft: '10px' }}
-          />
         </Flex>
         <Button bg="primary.300" color="white" onClick={handleEditProfileClick}>
           Modifier
@@ -189,36 +188,40 @@ function Profile() {
         />
         <Box flex="2">
           {user && (
-            <>
-              <Flex flexDirection="column" gap="6px">
-                <Text as="h2">
-                  {user.firstName} {user.lastName}
-                </Text>
-                <Text as="h3">{teamName.name}</Text>
-                <Text>{user.email}</Text>
-                <Text
-                  color="primary.300"
-                  textDecoration="underline"
-                  cursor="pointer"
-                  onClick={handlePasswordReset}
-                >
-                  Mot de passe oublié
-                </Text>
-              </Flex>
-            </>
+            <Flex flexDirection="column" gap="6px">
+              <Text as="h2">
+                {user.firstName} {user.lastName}
+              </Text>
+              <Text as="h3">{teamName.name}</Text>
+              <Text>{user.email}</Text>
+              <Text
+                color="primary.300"
+                textDecoration="underline"
+                cursor="pointer"
+                onClick={handlePasswordReset}
+              >
+                Mot de passe oublié
+              </Text>
+            </Flex>
           )}
         </Box>
       </Flex>
       {user && (
-      <UserProfileUpdateModal
-        isOpen={isUpdateModalOpen}
-        onClose={() => setIsUpdateModalOpen(false)}
-        onSubmit={handleUpdateSubmit}
-        initialFirstName={initialFirstName}
-        initialLastName={initialLastName}
-        user={user}
-        teams={teams}
-      />)}
+        <UserProfileUpdateModal
+          isOpen={isUpdateModalOpen}
+          onClose={() => setIsUpdateModalOpen(false)}
+          onSubmit={handleUpdateSubmit}
+          initialFirstName={initialFirstName}
+          initialLastName={initialLastName}
+          user={user}
+          teams={teams}
+        />
+      )}
+      <Flex flexDirection="column">
+        <Text as="h1">Ma Progression</Text>
+        <CategoryList listScore={categoriesScore} />
+      </Flex>
+
       <Flex flexDirection="column">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">

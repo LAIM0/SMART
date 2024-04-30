@@ -16,14 +16,18 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as multer from 'multer';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Category, CategoryDocument } from 'src/Category/category.schema';
+import { CategoryService } from 'src/Category/category.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
     private completedService: CompletedService,
     private mailService: MailService,
     private teamService: TeamService,
+    private categoryService: CategoryService,
   ) {}
 
   async createUser(
@@ -33,7 +37,7 @@ export class UserService {
     firstName: string,
     isAdmin: boolean,
     teamId: string,
-    firstLogin:boolean,
+    firstLogin: boolean,
   ): Promise<User> {
     console.log('createUser');
     const newUser = new this.userModel({
@@ -124,15 +128,15 @@ export class UserService {
   }
 
   async sendResetPasswordEmail(email: string, token: string) {
-    await this.mailService.sendResetPasswordEmail(email, token); 
+    await this.mailService.sendResetPasswordEmail(email, token);
   }
 
   async sendvalidationEmail(email: string, token: string) {
-    await this.mailService.sendValidationEmail(email, token); 
+    await this.mailService.sendValidationEmail(email, token);
   }
 
   async sendInitializePasswordEmail(email: string, token: string) {
-    await this.mailService.sendInitializePassword(email, token); 
+    await this.mailService.sendInitializePassword(email, token);
   }
 
   // Methode pour mettre à jour le mot de passe de l'utilisateur en utilisant le token
@@ -151,7 +155,7 @@ export class UserService {
     user.passwordHash = bcrypt.hashSync(newPassword, salt);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
-    user.passWordInitialized=true;
+    user.passWordInitialized = true;
     await user.save();
   }
 
@@ -169,7 +173,6 @@ export class UserService {
     user.resetPasswordExpires = undefined;
     await user.save();
   }
-  
 
   async getRanking(): Promise<
     { user: User; score: number; teamName: string }[]
@@ -255,36 +258,40 @@ export class UserService {
         lastName: 'Admin',
         firstName: 'Admin',
         isAdmin: true,
-        teamId: '', 
+        teamId: '',
         firstLogin: false,
       });
       await newUser.save();
     }
   }
 
-
-  async updateProfilePicture(userId: string, data: { profilePicturePath: string }): Promise<User> {
+  async updateProfilePicture(
+    userId: string,
+    data: { profilePicturePath: string },
+  ): Promise<User> {
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
       throw new NotFoundException('User not found');
     }
-  
+
     user.profilePicturePath = data.profilePicturePath;
     return user.save();
-    
   }
 
-  async updateUserProfile(userId: string, updateUserDto: UpdateUserDto): Promise<void> {
+  async updateUserProfile(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<void> {
     const user = await this.userModel.findById(userId); // Utilisez votre modèle Mongoose pour trouver l'utilisateur par ID
     if (!user) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-  
+
     // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO
     user.firstName = updateUserDto.firstName;
     user.lastName = updateUserDto.lastName;
     user.teamId = updateUserDto.teamId;
-  
+
     // Enregistrez les modifications dans la base de données
     await user.save();
   }
@@ -301,6 +308,33 @@ export class UserService {
       throw new Error('Failed to update first login status');
     }
   }
-  
-  
+
+  async getScoreByCategory(
+    userId: Types.ObjectId,
+  ): Promise<{ category: Category; score: number }[]> {
+    let categories: Category[] = await this.categoryService.findAll();
+
+    const scoresByCategory = {};
+
+    categories.forEach((cat) => {
+      scoresByCategory[cat.id] = { category: cat, score: 0 };
+      console.log('categorie id :', cat.id);
+    });
+
+    // Récupère les challenges complétés par l'utilisateur
+    const completedChallenges =
+      await this.completedService.getUserCompleteds(userId);
+
+    // Parcourir chaque challenge complété et accumuler les points par catégorie
+    completedChallenges.forEach((completed) => {
+      const categoryId = completed.challenge.category.toString();
+      if (scoresByCategory[categoryId]) {
+        scoresByCategory[categoryId].score += completed.challenge.points;
+      }
+    });
+    return Object.values(scoresByCategory);
+
+    // Filtrez les catégories avec un score de 0 si nécessaire
+    // const nonZeroScores = scoresByCategory.filter(sc => sc.score > 0);
+  }
 }
