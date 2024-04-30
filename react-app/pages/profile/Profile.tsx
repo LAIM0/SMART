@@ -2,6 +2,7 @@
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
@@ -14,6 +15,9 @@ import {
 } from '../../api/AuthApiManager';
 =======
 import { Box, Flex, Text, Button, useToast, VStack } from '@chakra-ui/react';
+=======
+import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
+>>>>>>> a825e835 (feat: little fix)
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
@@ -28,10 +32,13 @@ import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { updateAllLevels } from '../../api/UserApiManager';
 import LogoutConfirmationModal from '../../components/Profile/logoutModal';
 =======
 import CategoryCard from '../../components/Profile/CategoryCard';
+=======
+>>>>>>> a825e835 (feat: little fix)
 import { getScoreByCat } from '../../api/UserApiManager';
 import CategoryList from '../../components/Profile/CategoryList';
 >>>>>>> a5b025a6 (feat: profil - score by category)
