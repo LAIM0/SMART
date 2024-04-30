@@ -1,17 +1,23 @@
 {
   "overrides": [
     {
-      "files": ["pages/index.js"],
-      "rules": {
-      }
+      "files": ["./components/Sidebar/Sidebar.tsx", "./components/App.tsx"],
+      "rules": {}
     }
   ],
-  "extends": ["airbnb", "airbnb-typescript"],
+  "extends": ["airbnb", "airbnb-typescript", "plugin:prettier/recommended"],
+  "plugins": ["prettier"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "./react-app/tsconfig.json"
   },
   "rules": {
-    // Personnalisez vos règles ici
+    "prettier/prettier": "error",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", "tsx"] }],
+    "react/react-in-jsx-scope": "off"
+  },
+  "env": {
+    "browser": true,
+    "node": true
   }
 }

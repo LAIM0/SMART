@@ -1,7 +1,16 @@
+const path = require('path');
+
 module.exports = {
-  reactStrictMode: true, // Active le mode strict React pour détecter les problèmes potentiels dans l'application
+  reactStrictMode: true,
   images: {
-    domains: ['example.com'], // Autorise les images de ces domaines à être optimisées et servies par Next.js
+    domains: ['example.com'],
   },
-  // Ajoutez d'autres configurations personnalisées ici
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:path*', // Définit le chemin pour accéder aux fichiers dans le répertoire d'uploads
+        destination: `${process.cwd()}/uploads/:path*`, // Spécifie le chemin absolu vers le répertoire d'uploads sur le serveur
+      },
+    ];
+  },
 };

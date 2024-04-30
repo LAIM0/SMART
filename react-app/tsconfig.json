@@ -3,11 +3,7 @@
     "target": "es5",
     "module": "commonjs",
     "strict": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -23,9 +19,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js" // Ajoutez cette ligne pour inclure les fichiers JS
+    "**/*.js", // Ajoutez cette ligne pour inclure les fichiers JS
+    "components/Challenges/Challenges.tsx"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
