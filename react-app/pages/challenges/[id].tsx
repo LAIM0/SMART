@@ -121,7 +121,7 @@ function Challenge() {
           <Flex
             flexDirection="column"
             h="25vh"
-            bg="darkgray"
+            bg="primary.100"
             pr="32px"
             pl="32px"
             justifyContent="flex-end"
@@ -131,6 +131,7 @@ function Challenge() {
             <IconButton
               isRound
               variant="solid"
+              bg="white"
               aria-label="Done"
               fontSize="20px"
               icon={<ArrowBackIcon />}
@@ -183,7 +184,6 @@ function Challenge() {
             pr="32px"
             pl="32px"
             py="16px"
-            boxShadow="0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
             position="relative"
           >
             <Text as="h2">Description</Text>
