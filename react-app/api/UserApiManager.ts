@@ -105,3 +105,16 @@ export const updateAllLevels = async () => {
     throw error;
   }
 };
+
+export const getFromTeam = async (teamId: string) => {
+  try {
+    const response = await axios.get(`${baseURL}/users/getByTeam/${teamId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Erreur lors de la récupération des utilisateurs à partir de l équipe :',
+      error
+    );
+    throw error;
+  }
+};
