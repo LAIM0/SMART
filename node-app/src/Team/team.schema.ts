@@ -8,11 +8,11 @@ export class Team {
   @Prop({ unique: true })
   name: string;
 
-  @Prop({ unique: true })
-  icon: string;
-
   @Prop({ type: Types.ObjectId, ref: 'User' })
   leader?: Types.ObjectId;
+
+  @Prop({ default: "team_default.png-1714465892341-126362164" })
+  picturePath:string;
 }
 
 export const TeamSchema = SchemaFactory.createForClass(Team);

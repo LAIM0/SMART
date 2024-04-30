@@ -27,7 +27,7 @@ export class ModifyTeamDto {
   name: string;
 
   @IsOptional()
-  icon?: string;
+    picturePath?: string;
 
   @IsOptional()
   leader?: Types.ObjectId;
@@ -37,5 +37,6 @@ export class ModifyTeamDto {
 export class TeamDto {
   readonly id: string;
   readonly name: string;
-  readonly icon: string;
+  readonly picturePath: string;
 }
+    
