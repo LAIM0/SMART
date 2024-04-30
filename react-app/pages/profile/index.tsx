@@ -1,7 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import Layout from '../../components/Layout/Layout';
 import theme from '../../styles/theme';
-import Profile from './Profile';
+import Profile from '../../components/Profile/Profile';
 
 const index: React.FC = () => {
   return (

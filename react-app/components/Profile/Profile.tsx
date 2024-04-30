@@ -1,76 +1,26 @@
 /* eslint-disable no-underscore-dangle */
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
-import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-<<<<<<< HEAD
-import { UserData } from '../../interfaces/userInterface';
-=======
->>>>>>> 3f32ad8f (feat: profil - score by category)
 import {
   handleAuthRouting,
   logout,
   resetPassword,
 } from '../../api/AuthApiManager';
-<<<<<<< HEAD
-=======
-import { Box, Flex, Text, Button, useToast, VStack } from '@chakra-ui/react';
-=======
-import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
->>>>>>> a825e835 (feat: little fix)
-import axios from 'axios';
-import { useRouter } from 'next/router';
 import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
-<<<<<<< HEAD
-import { handleAuthRouting, resetPassword } from '../../api/AuthApiManager';
->>>>>>> a5b025a6 (feat: profil - score by category)
-=======
-import {
-  handleAuthRouting,
-  logout,
-  resetPassword,
-} from '../../api/AuthApiManager';
->>>>>>> 3d674be1 (feat Deconnexion)
-=======
-import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
->>>>>>> 3f32ad8f (feat: profil - score by category)
 import User from '../../interfaces/userAdminInterface';
-import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
-import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
-import ChallengeCard from '../../components/Challenges/ChallengeCard';
+import ChangeProfilePictureModal from './ChangeProfilPictureModal';
+import UserProfileUpdateModal from './ModalUpdateuser';
+import ChallengeCard from '../Challenges/ChallengeCard';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { updateAllLevels } from '../../api/UserApiManager';
-import LogoutConfirmationModal from '../../components/Profile/logoutModal';
-=======
-import CategoryCard from '../../components/Profile/CategoryCard';
-=======
->>>>>>> a825e835 (feat: little fix)
-import { getScoreByCat } from '../../api/UserApiManager';
-=======
 import { getScoreByCat, updateAllLevels } from '../../api/UserApiManager';
->>>>>>> c1a50e1f (add calcul niveau)
-import CategoryList from '../../components/Profile/CategoryList';
-<<<<<<< HEAD
->>>>>>> a5b025a6 (feat: profil - score by category)
-=======
-import LogoutConfirmationModal from '../../components/Profile/logoutModal';
->>>>>>> 3d674be1 (feat Deconnexion)
-=======
-import { updateAllLevels, getScoreByCat } from '../../api/UserApiManager';
-import LogoutConfirmationModal from '../../components/Profile/logoutModal';
-import CategoryList from '../../components/Profile/CategoryList';
->>>>>>> 3f32ad8f (feat: profil - score by category)
+import LogoutConfirmationModal from './logoutModal';
+import CategoryList from './CategoryList';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -80,15 +30,9 @@ function Profile() {
   const [initialFirstName, setInitialFirstName] = useState('');
   const [initialLastName, setInitialLastName] = useState('');
   const [teams, setTeams] = useState<TeamData[]>([]);
-<<<<<<< HEAD
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-=======
   const [categoriesScore, setCategoriesScore] = useState<ScoreByCatData[]>([]);
-<<<<<<< HEAD
->>>>>>> a5b025a6 (feat: profil - score by category)
-=======
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
->>>>>>> 3d674be1 (feat Deconnexion)
+
   const toast = useToast();
   const router = useRouter();
   useEffect(() => {
@@ -316,14 +260,10 @@ function Profile() {
           teams={teams}
         />
       )}
-<<<<<<< HEAD
-=======
       <Flex flexDirection="column">
         <Text as="h1">Ma Progression</Text>
         <CategoryList listScore={categoriesScore} />
       </Flex>
-
->>>>>>> a5b025a6 (feat: profil - score by category)
       <Flex flexDirection="column">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">
