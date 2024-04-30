@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import logoApp from './Ecoexya.png';
-import { PodiumIcon, StarIcon, UserIcon } from './icons';
+import { PodiumIcon, StarIcon, UserIcon } from '../../styles/icons';
 
 interface Page {
   name: string;
