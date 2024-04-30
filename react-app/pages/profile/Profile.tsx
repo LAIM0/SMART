@@ -1,6 +1,6 @@
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text, Button, useToast, VStack } from '@chakra-ui/react';
+import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
@@ -13,7 +13,6 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
-import CategoryCard from '../../components/Profile/CategoryCard';
 import { getScoreByCat } from '../../api/UserApiManager';
 import CategoryList from '../../components/Profile/CategoryList';
 
