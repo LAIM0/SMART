@@ -18,17 +18,20 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import FormCreateModifyCategory from './FormCreateModifyCategory';
-import ConfirmationDeleteForm from './ConfirmationDeleteForm';
+import FormConfirmationDeleteCategory from './FormConfirmationDeleteCategory';
 import CategoryData from '../../../interfaces/categoryInterface';
 import CategoryApiManager from '../../../api/CategoryApiManager';
 
 function AdminCategories() {
   const [categories, setCategories] = useState<CategoryData[]>([]);
-  const [currentCategory, setCurrentCategory] = useState<CategoryData | null>(null);
+  const [currentCategory, setCurrentCategory] = useState<CategoryData | null>(
+    null
+  );
   const [categoryToDelete, setCategoryToDelete] = useState<CategoryData>({
     id: '',
     categoryName: '',
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +44,7 @@ function AdminCategories() {
     };
 
     fetchData();
-  }, [categories]);
+  }, [loading]);
 
   const {
     isOpen: isOpenFormModal,
@@ -68,11 +71,13 @@ function AdminCategories() {
   const handleCloseConfirmationDeleteModal = () => {
     setCurrentCategory(null);
     onCloseConfirmationDeleteModal();
+    setLoading(!loading);
   };
 
   const handleCloseCreateModifyModal = () => {
     setCurrentCategory(null);
     onCloseFormModal();
+    setLoading(!loading);
   };
 
   return (
@@ -83,38 +88,38 @@ function AdminCategories() {
         width="fit-content"
         onClick={onOpenFormModal}
       >
-        Ajouter une catégorie {currentCategory?.categoryName}
+        Ajouter une catégorie
       </Button>
       <TableContainer bg="white" borderRadius={16}>
         <Table variant="simple">
           <Thead>
-            <Tr>
-              <Th width="80%">Nom de la catégorie</Th>
-              <Th width="20%" isNumeric>
-                Actions
+            <Tr bg="secondary.100">
+              <Th width="60%">Nom de la catégorie</Th>
+              <Th width="20%" textAlign="left">
+                Nombre de défis
               </Th>
+              <Th width="20%" />
             </Tr>
           </Thead>
           {categories.map((category) => (
-            <Tr
-              key={category.id}
-              _hover={{ bg: 'lightgray', cursor: 'pointer' }}
-            >
-              <Td width="80%">{category.categoryName}</Td>
+            <Tr key={category.id}>
+              <Td width="60%">{category.categoryName}</Td>
+              <Td width="20%" textAlign="left">
+                XX
+              </Td>
 
               <Td width="20%" textAlign="right" paddingRight="24px">
                 {category.categoryName !== 'Autre' && (
                   <Flex>
                     <Button
-                      variant="outline"
-                      colorScheme="blue"
+                      color="#718096"
+                      mr={4}
                       onClick={() => handleOpenreateModifyModal(category)}
                     >
                       Modifier
                     </Button>
                     <Button
                       marginLeft="16px"
-                      variant="outline"
                       colorScheme="red"
                       onClick={() =>
                         handleOpenConfirmationDeleteModal(category)
@@ -158,7 +163,7 @@ function AdminCategories() {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <ConfirmationDeleteForm
+            <FormConfirmationDeleteCategory
               onCloseModal={handleCloseConfirmationDeleteModal}
               categoryToDelete={categoryToDelete}
             />

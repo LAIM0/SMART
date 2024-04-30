@@ -3,7 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Team, TeamDocument } from './team.schema';
 import { Model, Types } from 'mongoose';
-import { CreateTeamDto, TeamDto } from '../Team/dto/team.dto';
+import { ModifyTeamDto, CreateTeamDto, TeamDto } from '../Team/dto/team.dto';
 import { User, UserDocument } from 'src/User/user.schema';
 import { TeamIdDto } from './dto/teamId.dto';
 import { CompletedService } from 'src/Completed/completed.service';
@@ -17,7 +17,7 @@ export class TeamService {
     private completedService: CompletedService,
     @Inject(forwardRef(() => UserService))
     private userService: UserService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<TeamDto[]> {
     const teams = await this.teamModel.find().exec();
@@ -108,6 +108,40 @@ export class TeamService {
     teamsScores.sort((a, b) => b.score - a.score);
 
     return teamsScores;
+  }
+
+  async modify(TeamId: Types.ObjectId, modifyTeamDto: ModifyTeamDto): Promise<Team> {
+
+    try {
+      const categoryToUpdate = await this.teamModel.findById(TeamId);
+
+      if (!categoryToUpdate) {
+        throw new Error("La catégorie à mettre à jour n'existe pas.");
+      }
+
+      Object.assign(categoryToUpdate, modifyTeamDto);
+
+      return await categoryToUpdate.save();
+
+    } catch (error) {
+      throw new Error('Erreur lors de la modification de la catégorie : ' + error.message);
+    }
+  }
+
+  async delete(TeamId: Types.ObjectId): Promise<void> {
+
+    const teamToDelete = await this.teamModel.findById(TeamId)
+
+    if (teamToDelete.name === 'Équipe par défaut') {
+      throw new Error("Vous n'êtes pas autorisé à supprimer cette entité.");
+    }
+    try {
+      await this.teamModel.deleteOne({ _id: TeamId });
+      console.log('Données supprimées avec succès');
+    } catch (error) {
+      console.error('Erreur lors de la suppression des données :', error);
+      throw error;
+    }
   }
 
   // Other CRUD methods

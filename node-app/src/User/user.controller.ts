@@ -10,10 +10,9 @@ import {
   Put,
   Delete,
   Param,
+  UploadedFile, UseInterceptors, Response,
   Query,
   Res,
-  UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
@@ -30,6 +29,7 @@ import { LevelCheckDto } from './dto/level-check.dto';
 import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
+import { diskStorage } from 'multer'
 import { Observable, of } from 'rxjs';
 import { Category } from 'src/Category/category.schema';
 import { Types } from 'mongoose';
@@ -75,6 +75,7 @@ export class UserController {
         createUserDto.teamId,
         createUserDto.firstLogin,
       );
+
 
       return {
         msg: 'User successfully registered',
@@ -284,6 +285,7 @@ export class UserController {
 
   @Get('byId/:userId')
   async findById(@Param('userId') userId: string): Promise<User> {
+
     return this.userService.findById(userId);
   }
 
@@ -333,10 +335,7 @@ export class UserController {
       await this.userService.updateUserProfile(userId, updateUserDto); // Appelez votre service pour mettre à jour le profil de l'utilisateur
       return { message: 'Profil utilisateur mis à jour avec succès' };
     } catch (error) {
-      console.error(
-        "Erreur lors de la mise à jour du profil de l'utilisateur:",
-        error,
-      );
+      console.error("Erreur lors de la mise à jour du profil de l'utilisateur:", error);
       throw error;
     }
   }
@@ -376,4 +375,11 @@ export class UserController {
         'Un email vous a été envoyé pour initialiser votre mot de passe avant votre première connexion',
     };
   }
+
+  @Get('getByTeam/:teamId')
+  async findByTeamId(@Param('teamId') teamId: string): Promise<User[]> {
+
+    return this.userService.findByTeamId(teamId);
+  }
+
 }

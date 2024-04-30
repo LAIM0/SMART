@@ -34,7 +34,11 @@ const ENDPOINTS = {
       `/${ENTITIES.COMPLETED}/delete?userId=${userId}&challengeId=${challengeId}`,
   },
   USER: {},
-  TEAM: {},
+  TEAM: {
+    TEAM_CREATE: () => `/${ENTITIES.TEAM}/create`,
+    TEAM_DELETE: (teamId: string) => `/${ENTITIES.TEAM}/delete/${teamId}`,
+    TEAM_MODIFY: (teamId: string) => `/${ENTITIES.TEAM}/modify/${teamId}`,
+  },
   CATEGORY: {
     CATEGORY_GET_BY_ID: (categoryId: string) => `/${ENTITIES.CATEGORY}/byId/${categoryId}`,
     CATEGORY_GET_ALL: () => `/${ENTITIES.CATEGORY}/all`,

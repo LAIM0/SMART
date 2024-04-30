@@ -20,3 +20,9 @@ export interface ScoreByCatData {
   category: CategoryData;
   score: number;
 }
+
+export interface UserDataLeaderAttribution {
+  id: string;
+  lastName: string;
+  firstName: string;
+}

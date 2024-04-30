@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Flex, Box, Text, Stack, Icon, Square, Image } from '@chakra-ui/react';
 import { MoonIcon } from '@chakra-ui/icons';
-import { fetchTeamsRanking } from '../../api/TeamApiManager';
+import TeamApiManager from '../../api/TeamApiManager';
 import TeamData from '../../interfaces/teamInterface';
 
 function RankTableTeam() {
@@ -9,7 +9,7 @@ function RankTableTeam() {
 
   useEffect(() => {
     const fetchRanking = async () => {
-      const response = await fetchTeamsRanking();
+      const response = await TeamApiManager.fetchTeamsRanking();
       setPlayers(response);
     };
 

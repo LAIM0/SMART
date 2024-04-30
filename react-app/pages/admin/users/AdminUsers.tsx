@@ -31,7 +31,7 @@ import {
   updateUserAdminStatus,
 } from '../../../api/UserApiManager';
 
-import { fetchTeams } from '../../../api/TeamApiManager';
+import TeamApiManager from '../../../api/TeamApiManager';
 import TeamData from '../../../interfaces/teamInterface';
 import { Filter } from '../../../utils/constants';
 import User from '../../../interfaces/userAdminInterface';
@@ -81,7 +81,7 @@ function AdminUsers() {
       try {
         const userData = await fetchUsers();
         setUsers(userData);
-        const response = await fetchTeams();
+        const response = await TeamApiManager.fetchTeams();
         setTeams(response);
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);

@@ -17,7 +17,7 @@ import ChallengeCard from '../Challenges/ChallengeCard';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
-import { fetchTeams } from '../../api/TeamApiManager';
+import TeamApiManager from '../../api/TeamApiManager';
 import { getScoreByCat, updateAllLevels } from '../../api/UserApiManager';
 import LogoutConfirmationModal from './logoutModal';
 import CategoryList from './CategoryList';
@@ -58,9 +58,10 @@ function Profile() {
       await updateAllLevels();
       console.log('User levels updated successfully.');
 
-      const fetchedTeams = await fetchTeams();
+      const fetchedTeams = await TeamApiManager.fetchTeams();
       const fetchedCatScore = await getScoreByCat(userId);
       setCategoriesScore(fetchedCatScore);
+
       setTeams(fetchedTeams);
       setUser(userResponse.data);
       setTeamName(teamname.data);
