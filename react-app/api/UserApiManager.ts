@@ -107,3 +107,18 @@ export const updateAllLevels = async () => {
     throw error;
   }
 };
+
+export const getScoreByCat = async (userId: string) => {
+  try {
+    const response = await axios.get(
+      `${baseURL}/users/scoreByCategory/${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Erreur lors de la récupération du classement des utilisateurs:',
+      error
+    );
+    throw error;
+  }
+};

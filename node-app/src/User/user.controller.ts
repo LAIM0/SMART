@@ -34,6 +34,11 @@ import { join } from 'path';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LevelCheckDto } from './dto/level-check.dto';
 import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
+import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import { Observable, of } from 'rxjs';
+import { Category } from 'src/Category/category.schema';
+import { Types } from 'mongoose';
 
 @Controller('users')
 export class UserController {
