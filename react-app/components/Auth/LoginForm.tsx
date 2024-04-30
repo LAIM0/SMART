@@ -8,11 +8,12 @@ import {
   Button,
   CircularProgress,
   InputRightElement,
-  Icon,
   InputGroup,
   Image,
+  IconButton,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { ViewIcon } from '@chakra-ui/icons';
 import logoApp from '../Sidebar/Ecoexya.png';
 import ForgotPasswordForm from './ForgotPasswordForm';
 
@@ -116,17 +117,13 @@ export default function LoginForm() {
                     onChange={(event) => setPassword(event.currentTarget.value)}
                   />
                   <InputRightElement width="3rem">
-                    <Button
+                    <IconButton
                       h="1.5rem"
                       size="sm"
                       onClick={handlePasswordVisibility}
-                    >
-                      {showPassword ? (
-                        <Icon name="view-off" />
-                      ) : (
-                        <Icon name="view" />
-                      )}
-                    </Button>
+                      icon={<ViewIcon />}
+                      aria-label="show pasword"
+                    />
                   </InputRightElement>
                 </InputGroup>
               </FormControl>

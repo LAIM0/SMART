@@ -9,13 +9,14 @@ import {
   Button,
   CircularProgress,
   InputRightElement,
-  Icon,
   InputGroup,
   Select,
   Image,
+  IconButton,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { ViewIcon } from '@chakra-ui/icons';
 import logoApp from '../Sidebar/Ecoexya.png';
 import { sendValitaionEmail } from '../../api/AuthApiManager';
 
@@ -28,8 +29,8 @@ export default function SignupForm() {
   const [teams, setTeams] = useState<{ id: string; name: string }[]>([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<string>('');
+  const [showPassword, setShowPassword] = useState(false);
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
   const router = useRouter();
 
@@ -150,23 +151,24 @@ export default function SignupForm() {
               <FormLabel>Mot de passe</FormLabel>
               <InputGroup>
                 <Input
-                  type={showPassword ? 'text' : 'passwordHash'}
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="*******"
                   size="lg"
                   onChange={(event) => setPassword(event.currentTarget.value)}
                 />
-                <InputRightElement width="3rem">
-                  <Button
+                <InputRightElement
+                  width="4.5rem"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <IconButton
                     h="1.5rem"
                     size="sm"
                     onClick={handlePasswordVisibility}
-                  >
-                    {showPassword ? (
-                      <Icon name="view-off" />
-                    ) : (
-                      <Icon name="view" />
-                    )}
-                  </Button>
+                    icon={<ViewIcon />}
+                    aria-label="show password"
+                  />
                 </InputRightElement>
               </InputGroup>
             </FormControl>
@@ -174,25 +176,26 @@ export default function SignupForm() {
               <FormLabel>Confirmation du mot de passe </FormLabel>
               <InputGroup>
                 <Input
-                  type={showPassword ? 'text' : 'passwordHash'}
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="*******"
                   size="lg"
                   onChange={(event) =>
                     setConfirmPassword(event.currentTarget.value)
                   }
                 />
-                <InputRightElement width="3rem">
-                  <Button
+                <InputRightElement
+                  width="4.5rem"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <IconButton
                     h="1.5rem"
                     size="sm"
                     onClick={handlePasswordVisibility}
-                  >
-                    {showPassword ? (
-                      <Icon name="view-off" />
-                    ) : (
-                      <Icon name="view" />
-                    )}
-                  </Button>
+                    icon={<ViewIcon />}
+                    aria-label="show password"
+                  />
                 </InputRightElement>
               </InputGroup>
             </FormControl>
