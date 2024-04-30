@@ -1,14 +1,14 @@
-import { Controller, Get, Post, Body, Query,Param,HttpException,HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Query, Param, HttpException, HttpStatus } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { Team } from './team.schema';
-import { CreateTeamDto } from './dto/team.dto';
-import { TeamDto } from './dto/team.dto';
+import { TeamDto, CreateTeamDto, ModifyTeamDto } from './dto/team.dto';
 import { Types } from 'mongoose';
 import { TeamIdDto } from './dto/teamId.dto';
+import { TeamUpdateDto } from './dto/teamUpdate.dto';
 
 @Controller('teams')
 export class TeamController {
-  constructor(private readonly teamService: TeamService) {}
+  constructor(private readonly teamService: TeamService) { }
 
   @Get()
   async findAll(): Promise<TeamDto[]> {
@@ -52,12 +52,36 @@ export class TeamController {
   }
   @Get('byId/:teamId')
   async findById(@Param('teamId') teamId: string): Promise<Team> {
-  try {
-    const team = await this.teamService.findById(teamId);
-    return team;
-  } catch (error) {
-    throw new HttpException('Team not found', HttpStatus.NOT_FOUND);
+    try {
+      const team = await this.teamService.findById(teamId);
+      return team;
+    } catch (error) {
+      throw new HttpException('Team not found', HttpStatus.NOT_FOUND);
+    }
   }
-}
 
+
+  @Post('/create')
+  async createTeam(@Body() teamData: CreateTeamDto) {
+    return this.teamService.create(teamData);
+  }
+
+  @Put('update/:teamId')
+  async updateUserProfile(
+    @Param('teamId') teamId: string,
+    @Body() teamUpdateDto: TeamUpdateDto, 
+  ): Promise<{ message: string }> {
+    try {
+      await this.teamService.updateTeam(teamId, teamUpdateDto); 
+      return { message: 'Profil utilisateur mis à jour avec succès' };
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du profil de l'utilisateur:", error);
+      throw error;
+    }
+  }
+
+  @Delete('delete/:id')
+  async delete(@Param('id') TeamId: Types.ObjectId): Promise<void> {
+    return this.teamService.delete(TeamId);
+  }
 }

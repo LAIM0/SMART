@@ -3,11 +3,12 @@ import { NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Team, TeamDocument } from './team.schema';
 import { Model, Types } from 'mongoose';
-import { CreateTeamDto, TeamDto } from '../Team/dto/team.dto';
+import { ModifyTeamDto, CreateTeamDto, TeamDto } from '../Team/dto/team.dto';
 import { User, UserDocument } from 'src/User/user.schema';
 import { TeamIdDto } from './dto/teamId.dto';
 import { CompletedService } from 'src/Completed/completed.service';
 import { UserService } from 'src/User/user.service';
+import { TeamUpdateDto } from './dto/teamUpdate.dto';
 
 @Injectable()
 export class TeamService {
@@ -17,7 +18,7 @@ export class TeamService {
     private completedService: CompletedService,
     @Inject(forwardRef(() => UserService))
     private userService: UserService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<TeamDto[]> {
     const teams = await this.teamModel.find().exec();
@@ -31,8 +32,8 @@ export class TeamService {
   }
 
   private mapTeamToDto(team: TeamDocument): TeamDto {
-    const { _id, name, icon } = team;
-    return { id: _id.toString(), name, icon };
+    const { _id, name, picturePath, leaderId } = team;
+    return { id: _id.toString(), name, picturePath, leaderId };
   }
 
   async getUsers(
@@ -108,6 +109,39 @@ export class TeamService {
     teamsScores.sort((a, b) => b.score - a.score);
 
     return teamsScores;
+  }
+
+  async updateTeam(
+    teamId: string,
+    updateTeamDto: TeamUpdateDto,
+  ): Promise<void> {
+    const team = await this.teamModel.findById(teamId); // Utilisez votre modèle Mongoose pour trouver l'utilisateur par ID
+    if (!team) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+    // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO
+    team.name = updateTeamDto.name;
+    team.picturePath = updateTeamDto.picturePath;
+    team.leaderId = updateTeamDto.leaderId;
+
+    // Enregistrez les modifications dans la base de données
+    await team.save();
+  }
+
+  async delete(TeamId: Types.ObjectId): Promise<void> {
+
+    const teamToDelete = await this.teamModel.findById(TeamId)
+
+    if (teamToDelete.name === 'Équipe par défaut') {
+      throw new Error("Vous n'êtes pas autorisé à supprimer cette entité.");
+    }
+    try {
+      await this.teamModel.deleteOne({ _id: TeamId });
+      console.log('Données supprimées avec succès');
+    } catch (error) {
+      console.error('Erreur lors de la suppression des données :', error);
+      throw error;
+    }
   }
 
   // Other CRUD methods

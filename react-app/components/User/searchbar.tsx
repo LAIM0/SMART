@@ -27,7 +27,7 @@ function UserSearch(props: UserSearchProps) {
         <InputGroup>
           <Input
             type="text"
-            placeholder="Rechercher user"
+            placeholder="Rechercher"
             value={searchTerm}
             onChange={handleChange}
           />

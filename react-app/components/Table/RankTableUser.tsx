@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Box, Text, Flex, Image } from '@chakra-ui/react';
-import { fetchUserRanking } from '../../api/UserApiManager';
 import { UserDataRanking } from '../../interfaces/userInterface';
-import { updateAllLevels } from '../../api/UserApiManager';
+import { updateAllLevels, fetchUserRanking } from '../../api/UserApiManager';
 
 function RankTableUser() {
   const [players, setPlayers] = useState<

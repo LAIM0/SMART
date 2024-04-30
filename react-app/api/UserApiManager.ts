@@ -5,7 +5,6 @@ const baseURL = 'http://localhost:3001';
 export const fetchUsers = async () => {
   try {
     const response = await axios.get(`${baseURL}/users`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Erreur lors de la récupération des utilisateurs:', error);
@@ -46,6 +45,7 @@ export const deleteUser = async (userId: string) => {
 export const updateUserTeam = async (userId: string, teamId: string) => {
   try {
     await axios.put(`${baseURL}/users/${userId}/team`, { teamId });
+    console.log('Team Id changed : ', teamId);
   } catch (error) {
     console.error(
       "Erreur lors de la mise à jour de l'équipe de l'utilisateur:",
@@ -104,6 +104,30 @@ export const getScoreByCat = async (userId: string) => {
       'Erreur lors de la récupération du classement des utilisateurs:',
       error
     );
+    throw error;
+  }
+};
+
+export const getFromTeam = async (teamId: string) => {
+  try {
+    const response = await axios.get(`${baseURL}/users/getByTeam/${teamId}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Erreur lors de la récupération des utilisateurs à partir de l équipe :',
+      error
+    );
+    throw error;
+  }
+};
+
+export const getUserById = async (userId: string) => {
+  try {
+    const response = await axios.get(`${baseURL}/users/byId/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l utilisateur:', error);
     throw error;
   }
 };
