@@ -8,6 +8,9 @@ export class Category {
   [x: string]: any;
   @Prop({ unique: true })
   categoryName: string;
+
+  @Prop()
+  creationDate: Date;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

@@ -26,12 +26,12 @@ function Layout({ children }: LayoutProps): JSX.Element {
     <Flex>
       <SidebarAdmin />
       <Flex
+        height="100vh"
         marginLeft={windowWidth < 500 ? '0px' : '250px'}
         p="32px"
         flexDirection="column"
         justifyContent="left"
         w="100%"
-        h="auto"
         bg="#F8F8F8"
         display="inline"
       >
