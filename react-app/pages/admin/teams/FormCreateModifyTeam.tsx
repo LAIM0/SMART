@@ -17,12 +17,10 @@ function FormCreateModifyTeam({
   onCloseModal,
   teamToModify,
 }: FormCreateModifyTeamProps) {
-  // const [icon, setIcon] = useState<string>(''); -> Assuming icon is a string representing icon name or URL
-
   const [teamName, setTeamName] = useState<string>(
     teamToModify ? teamToModify.name : ''
   );
-  const [leader, setLeader] = useState('');
+  const [selectedLeaderId, setSelectedLeaderId] = useState<string>('');
   const [usersOfTeam, setUsersOfTeam] = useState<UserDataLeaderAttribution[]>(
     []
   );
@@ -41,15 +39,9 @@ function FormCreateModifyTeam({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (teamToModify === null) {
-      const newTeam = {
-        id: ``,
-        name: teamName,
-        icon: ``,
-      };
-
       const fetchData = async () => {
         try {
-          await TeamApiManager.create(newTeam);
+          await TeamApiManager.create(teamName, '', '');
           onCloseModal();
         } catch (error) {
           console.error('Erreur lors de la création des données :', error);
@@ -61,7 +53,8 @@ function FormCreateModifyTeam({
       const newTeam = {
         id: `${teamToModify.id}`,
         name: teamName,
-        icon: ``,
+        picturePath: '',
+        leaderId: selectedLeaderId, // Utilisez selectedLeaderId ici
       };
 
       const fetchData = async () => {
@@ -94,9 +87,9 @@ function FormCreateModifyTeam({
           <FormControl>
             <Select
               placeholder="Chef d'équipe"
-              value={leader}
+              value={selectedLeaderId}
               onChange={(e) => {
-                setLeader(e.target.value);
+                setSelectedLeaderId(e.target.value);
               }}
               focusBorderColor="primary.300"
               bg="white"

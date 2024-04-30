@@ -29,7 +29,6 @@ import { LevelCheckDto } from './dto/level-check.dto';
 import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
-import { diskStorage } from 'multer'
 import { Observable, of } from 'rxjs';
 import { Category } from 'src/Category/category.schema';
 import { Types } from 'mongoose';
@@ -329,10 +328,10 @@ export class UserController {
   @Put('update/:userId')
   async updateUserProfile(
     @Param('userId') userId: string,
-    @Body() updateUserDto: UpdateUserDto, // Créez un DTO approprié pour les données de mise à jour du profil
+    @Body() updateUserDto: UpdateUserDto, 
   ): Promise<{ message: string }> {
     try {
-      await this.userService.updateUserProfile(userId, updateUserDto); // Appelez votre service pour mettre à jour le profil de l'utilisateur
+      await this.userService.updateUserProfile(userId, updateUserDto); 
       return { message: 'Profil utilisateur mis à jour avec succès' };
     } catch (error) {
       console.error("Erreur lors de la mise à jour du profil de l'utilisateur:", error);

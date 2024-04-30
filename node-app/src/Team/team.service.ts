@@ -8,6 +8,7 @@ import { User, UserDocument } from 'src/User/user.schema';
 import { TeamIdDto } from './dto/teamId.dto';
 import { CompletedService } from 'src/Completed/completed.service';
 import { UserService } from 'src/User/user.service';
+import { TeamUpdateDto } from './dto/teamUpdate.dto';
 
 @Injectable()
 export class TeamService {
@@ -31,8 +32,8 @@ export class TeamService {
   }
 
   private mapTeamToDto(team: TeamDocument): TeamDto {
-    const { _id, name, picturePath } = team;
-    return { id: _id.toString(), name, picturePath};
+    const { _id, name, picturePath, leaderId } = team;
+    return { id: _id.toString(), name, picturePath, leaderId };
   }
 
   async getUsers(
@@ -110,22 +111,21 @@ export class TeamService {
     return teamsScores;
   }
 
-  async modify(TeamId: Types.ObjectId, modifyTeamDto: ModifyTeamDto): Promise<Team> {
-
-    try {
-      const categoryToUpdate = await this.teamModel.findById(TeamId);
-
-      if (!categoryToUpdate) {
-        throw new Error("La catégorie à mettre à jour n'existe pas.");
-      }
-
-      Object.assign(categoryToUpdate, modifyTeamDto);
-
-      return await categoryToUpdate.save();
-
-    } catch (error) {
-      throw new Error('Erreur lors de la modification de la catégorie : ' + error.message);
+  async updateTeam(
+    teamId: string,
+    updateTeamDto: TeamUpdateDto,
+  ): Promise<void> {
+    const team = await this.teamModel.findById(teamId); // Utilisez votre modèle Mongoose pour trouver l'utilisateur par ID
+    if (!team) {
+      throw new NotFoundException('Utilisateur non trouvé');
     }
+    // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO
+    team.name = updateTeamDto.name;
+    team.picturePath = updateTeamDto.picturePath;
+    team.leaderId = updateTeamDto.leaderId;
+
+    // Enregistrez les modifications dans la base de données
+    await team.save();
   }
 
   async delete(TeamId: Types.ObjectId): Promise<void> {

@@ -15,10 +15,10 @@ export class CreateTeamDto {
   name: string;
 
   @IsOptional()
-  icon?: string;
+  picturePath?: string;
 
   @IsOptional()
-  leader?: Types.ObjectId;
+  leaderId?: string;
 }
 
 export class ModifyTeamDto {
@@ -30,7 +30,7 @@ export class ModifyTeamDto {
     picturePath?: string;
 
   @IsOptional()
-  leader?: Types.ObjectId;
+  leaderId?: string;
 }
 
 
@@ -38,5 +38,6 @@ export class TeamDto {
   readonly id: string;
   readonly name: string;
   readonly picturePath: string;
+  readonly leaderId: string;
 }
     

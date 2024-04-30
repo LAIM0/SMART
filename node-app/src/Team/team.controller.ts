@@ -4,6 +4,7 @@ import { Team } from './team.schema';
 import { TeamDto, CreateTeamDto, ModifyTeamDto } from './dto/team.dto';
 import { Types } from 'mongoose';
 import { TeamIdDto } from './dto/teamId.dto';
+import { TeamUpdateDto } from './dto/teamUpdate.dto';
 
 @Controller('teams')
 export class TeamController {
@@ -65,9 +66,18 @@ export class TeamController {
     return this.teamService.create(teamData);
   }
 
-  @Put('/modify/:id')
-  async modifyCategory(@Param('id') TeamId: Types.ObjectId, @Body() teamData: ModifyTeamDto) {
-    return this.teamService.modify(TeamId, teamData);
+  @Put('update/:teamId')
+  async updateUserProfile(
+    @Param('teamId') teamId: string,
+    @Body() teamUpdateDto: TeamUpdateDto, 
+  ): Promise<{ message: string }> {
+    try {
+      await this.teamService.updateTeam(teamId, teamUpdateDto); 
+      return { message: 'Profil utilisateur mis à jour avec succès' };
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du profil de l'utilisateur:", error);
+      throw error;
+    }
   }
 
   @Delete('delete/:id')

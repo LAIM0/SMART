@@ -120,3 +120,13 @@ export const getFromTeam = async (teamId: string) => {
     throw error;
   }
 };
+
+export const getUserById = async (userId: string) => {
+  try {
+    const response = await axios.get(`${baseURL}/users/byId/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l utilisateur:', error);
+    throw error;
+  }
+};

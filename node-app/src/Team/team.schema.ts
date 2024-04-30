@@ -8,8 +8,8 @@ export class Team {
   @Prop({ unique: true })
   name: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
-  leader?: Types.ObjectId;
+  @Prop({default:''})
+  leaderId?: string 
 
   @Prop({ default: "team_default.png-1714465892341-126362164" })
   picturePath:string;

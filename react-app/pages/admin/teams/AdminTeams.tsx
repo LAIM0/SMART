@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import React, { useState, useEffect } from 'react';
 import {
   Flex,
@@ -17,11 +16,13 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  Text,
 } from '@chakra-ui/react';
 import TeamData from '../../../interfaces/teamInterface';
 import FormCreateModifyTeam from './FormCreateModifyTeam';
 import FormConfirmationDeleteTeam from './FormConfirmationDeleteTeam';
 import TeamApiManager from '../../../api/TeamApiManager';
+import { getUserById } from '../../../api/UserApiManager';
 
 function AdminTeams() {
   const [teams, setTeams] = useState<TeamData[]>([]);
@@ -29,23 +30,40 @@ function AdminTeams() {
   const [teamToDelete, setTeamToDelete] = useState<TeamData>({
     id: '',
     name: '',
-    icon: '',
+    picturePath: '',
+    leaderId: '',
   });
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const allTeams = await TeamApiManager.fetchTeams();
-        setTeams(allTeams);
-      } catch (error) {
-        console.error('Erreur lors de la récupération des données:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const allTeams = await TeamApiManager.fetchTeams();
+      // Récupérer les détails de l'utilisateur chef d'équipe pour chaque équipe
+      const teamsWithLeaders = await Promise.all(
+        allTeams.map(async (team: TeamData) => {
+          if (team.leaderId) {
+            const leader = await getUserById(team.leaderId);
+            console.log('leader', leader);
+            return {
+              ...team,
+              leaderName: `${leader.firstName} ${leader.lastName}`,
+            };
+          }
+          // Si l'équipe n'a pas de leader, retournez simplement l'équipe sans les détails du leader
+          return team;
+        })
+      );
+      setTeams(teamsWithLeaders);
+      console.log(teams);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
-  }, [loading]);
+  }, []);
 
   const {
     isOpen: isOpenFormModal,
@@ -83,30 +101,32 @@ function AdminTeams() {
 
   return (
     <Flex flexDirection="column" gap="16px">
-      <Button
-        bg="primary.300"
-        color="white"
-        width="fit-content"
-        onClick={onOpenFormModal}
-      >
-        Ajouter une équipe
-      </Button>
+      <Flex gap="16px">
+        <Text as="h1">Gestion des utilisateurs </Text>
+        <Button
+          bg="primary.300"
+          color="white"
+          width="fit-content"
+          onClick={onOpenFormModal}
+        >
+          Ajouter une équipe
+        </Button>
+      </Flex>
       <TableContainer bg="white" borderRadius={16}>
         <Table variant="simple">
           <Thead bg="secondary.100">
             <Tr>
-              <Th>Photo</Th>
-              <Th>Nom d&apos;équipe</Th>
-              <Th>Score</Th>
+              <Th>Nom d&apos; équipe</Th>
+              <Th>Chef d&apos;équipe</Th>
               <Th />
+              <Th> </Th>
             </Tr>
           </Thead>
           <Tbody>
             {teams.map((team) => (
               <Tr key={team.id}>
-                {/* Supposant que `team.icon` est un composant d'icône */}
                 <Td>{team.name}</Td>
-                <Td>10</Td>
+                <Td>{team.leaderName ? team.leaderName : 'Aucun'}</Td>
                 <Td textAlign="right" />
                 <Td width="20%" textAlign="right" paddingRight="24px">
                   {team.name !== 'Équipe par défaut' && (
@@ -145,7 +165,10 @@ function AdminTeams() {
           <ModalCloseButton />
           <ModalBody>
             <FormCreateModifyTeam
-              onCloseModal={handleCloseCreateModifyModal}
+              onCloseModal={() => {
+                handleCloseCreateModifyModal();
+                fetchData(); // Mettre à jour la liste après la fermeture du modal
+              }}
               teamToModify={currentTeam}
             />
           </ModalBody>

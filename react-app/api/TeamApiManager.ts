@@ -1,6 +1,4 @@
 import axios from 'axios';
-import ENDPOINTS from './apiUtils/endpoints';
-import ApiMethods from './apiUtils/apiMethods';
 import TeamData from '../interfaces/teamInterface';
 
 const baseURL = 'http://localhost:3001';
@@ -29,19 +27,21 @@ class TeamApiManager {
     }
   };
 
-  static async create(teamData: TeamData): Promise<void> {
-    const { id, ...dataWithoutId } = teamData;
+  static async create(
+    name: string,
+    picturePath: string,
+    leaderId: string
+  ): Promise<void> {
     try {
-      await ApiMethods.post(ENDPOINTS.TEAM.TEAM_CREATE(), dataWithoutId);
+      await axios.post(`${baseURL}/teams`, { name, picturePath, leaderId });
     } catch (error) {
-      throw new Error(`Erreur lors de la création de l'équipe': ${error}`);
+      throw new Error(`Erreur lors de la création de l'équipe: ${error}`);
     }
   }
 
   static async modify(teamData: TeamData): Promise<void> {
-    const { id, ...dataWithoutId } = teamData;
     try {
-      await ApiMethods.put(ENDPOINTS.TEAM.TEAM_MODIFY(id), dataWithoutId);
+      await axios.put(`${baseURL}/teams/${teamData.id}`);
     } catch (error) {
       throw new Error(`Erreur lors de la modification de l'équipe: ${error}`);
     }
