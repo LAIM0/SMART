@@ -11,16 +11,16 @@ import {
 } from '../../api/AuthApiManager';
 import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
 import User from '../../interfaces/userAdminInterface';
-import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
-import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
-import ChallengeCard from '../../components/Challenges/ChallengeCard';
+import ChangeProfilePictureModal from './ChangeProfilPictureModal';
+import UserProfileUpdateModal from './ModalUpdateuser';
+import ChallengeCard from '../Challenges/ChallengeCard';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
 import { updateAllLevels, getScoreByCat } from '../../api/UserApiManager';
-import LogoutConfirmationModal from '../../components/Profile/logoutModal';
-import CategoryList from '../../components/Profile/CategoryList';
+import LogoutConfirmationModal from './logoutModal';
+import CategoryList from './CategoryList';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
