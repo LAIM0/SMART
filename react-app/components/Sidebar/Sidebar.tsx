@@ -52,8 +52,6 @@ function Sidebar() {
 
   const router = useRouter();
 
-  // const { globalState, setGlobalState } = useGlobalState();
-
   return (
     <Flex
       zIndex={10}
@@ -100,14 +98,16 @@ function Sidebar() {
             width="26"
             height="26"
             viewBox="-2 -2 30 30"
-            stroke="#166879"
+            stroke="none"
             strokeWidth="1.5"
             color={
-              router.pathname.includes(page.url) ? 'primary.300' : 'transparent'
+              router.pathname.includes(page.url) ? 'primary.300' : 'primary.200'
             }
           />
           <Text
-            color="primary.300"
+            color={
+              router.pathname.includes(page.url) ? 'primary.300' : 'primary.200'
+            }
             fontWeight={router.pathname.includes(page.url) ? 'bold' : 'light'}
             lineHeight={1}
             fontSize={windowWidth < 500 ? '12px' : '16px'}
