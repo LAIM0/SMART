@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
-import { Box, Image, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
+import {
+  Box,
+  Image,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from '@chakra-ui/react';
 
 interface ChangeProfilePictureModalProps {
   profilePicture: string | null;
   onSubmit: (file: File) => void;
 }
 
-const ChangeProfilePictureModal: React.FC<ChangeProfilePictureModalProps> = ({ profilePicture, onSubmit }) => {
-  console.log("dans modal",profilePicture);
+function ChangeProfilePictureModal(props: ChangeProfilePictureModalProps) {
+  const { profilePicture, onSubmit } = props;
+
+  console.log('dans modal', profilePicture);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -37,7 +50,12 @@ const ChangeProfilePictureModal: React.FC<ChangeProfilePictureModalProps> = ({ p
     <>
       <Box onClick={handleOpenModal} cursor="pointer">
         {profilePicture ? (
-          <Image src={`http://localhost:3001/users/profile-picture/${profilePicture}`} alt="Profile Picture" boxSize="150px" borderRadius="xl" />
+          <Image
+            src={`http://localhost:3001/users/profile-picture/${profilePicture}`}
+            alt="Profile Picture"
+            boxSize="150px"
+            borderRadius="xl"
+          />
         ) : (
           <Box boxSize="150px" bg="gray.200" borderRadius="full" />
         )}
@@ -51,7 +69,12 @@ const ChangeProfilePictureModal: React.FC<ChangeProfilePictureModalProps> = ({ p
             <input type="file" accept="image/*" onChange={handleFileChange} />
           </ModalBody>
           <ModalFooter>
-            <Button bg="primary.300" color="white" mr={3} onClick={handleConfirm}>
+            <Button
+              bg="primary.300"
+              color="white"
+              mr={3}
+              onClick={handleConfirm}
+            >
               Confirmer
             </Button>
             <Button onClick={handleCloseModal}>Annuler</Button>
@@ -60,6 +83,6 @@ const ChangeProfilePictureModal: React.FC<ChangeProfilePictureModalProps> = ({ p
       </Modal>
     </>
   );
-};
+}
 
 export default ChangeProfilePictureModal;

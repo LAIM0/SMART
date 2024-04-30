@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Stack, Box, Text, Flex, Image } from '@chakra-ui/react';
 import { fetchUserRanking } from '../../api/UserApiManager';
 import { UserDataRanking } from '../../interfaces/userInterface';
+import { updateAllLevels } from '../../api/UserApiManager';
 
 function RankTableUser() {
   const [players, setPlayers] = useState<
@@ -10,8 +11,16 @@ function RankTableUser() {
 
   useEffect(() => {
     const fetchRanking = async () => {
-      const response = await fetchUserRanking();
-      setPlayers(response);
+      // Attendre que la mise à jour des niveaux soit terminée avant de charger le classement
+      try {
+        console.log('Try to update all users levels...');
+        await updateAllLevels();
+        console.log('User levels updated successfully.');
+        const response = await fetchUserRanking();
+        setPlayers(response);
+      } catch (error) {
+        console.error('Failed to update user levels or fetch ranking:', error);
+      }
     };
 
     fetchRanking();
@@ -56,8 +65,8 @@ function RankTableUser() {
           <Image
             boxSize="100px"
             objectFit="cover"
-            src="https://bit.ly/dan-abramov"
-            alt="Dan Abramov"
+            src={`http://localhost:3001/users/profile-picture/${player.user.profilePicturePath}`}
+            alt="Pas de photo de profil"
             borderRadius="lg"
           />
         </Stack>
