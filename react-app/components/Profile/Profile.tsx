@@ -2,25 +2,25 @@
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
 import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
-import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { UserData } from '../../interfaces/userInterface';
 import {
   handleAuthRouting,
   logout,
   resetPassword,
 } from '../../api/AuthApiManager';
+import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
 import User from '../../interfaces/userAdminInterface';
-import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
-import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
-import ChallengeCard from '../../components/Challenges/ChallengeCard';
+import ChangeProfilePictureModal from './ChangeProfilPictureModal';
+import UserProfileUpdateModal from './ModalUpdateuser';
+import ChallengeCard from '../Challenges/ChallengeCard';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
-import { updateAllLevels } from '../../api/UserApiManager';
-import LogoutConfirmationModal from '../../components/Profile/logoutModal';
+import { getScoreByCat, updateAllLevels } from '../../api/UserApiManager';
+import LogoutConfirmationModal from './logoutModal';
+import CategoryList from './CategoryList';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -31,6 +31,8 @@ function Profile() {
   const [initialLastName, setInitialLastName] = useState('');
   const [teams, setTeams] = useState<TeamData[]>([]);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [categoriesScore, setCategoriesScore] = useState<ScoreByCatData[]>([]);
+
   const toast = useToast();
   const router = useRouter();
   useEffect(() => {
@@ -57,6 +59,8 @@ function Profile() {
       console.log('User levels updated successfully.');
 
       const fetchedTeams = await fetchTeams();
+      const fetchedCatScore = await getScoreByCat(userId);
+      setCategoriesScore(fetchedCatScore);
       setTeams(fetchedTeams);
       setUser(userResponse.data);
       setTeamName(teamname.data);
@@ -201,10 +205,6 @@ function Profile() {
           <Text as="h1" ml="8px" gap="10px">
             Mon profil
           </Text>
-          <FaUser
-            fontSize="24px"
-            style={{ marginTop: '-15px', marginLeft: '10px' }}
-          />
         </Flex>
         <Flex>
           <Button
@@ -260,6 +260,10 @@ function Profile() {
           teams={teams}
         />
       )}
+      <Flex flexDirection="column">
+        <Text as="h1">Ma Progression</Text>
+        <CategoryList listScore={categoriesScore} />
+      </Flex>
       <Flex flexDirection="column">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">

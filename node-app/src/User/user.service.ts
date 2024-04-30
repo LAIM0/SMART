@@ -16,14 +16,18 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as multer from 'multer';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Category, CategoryDocument } from 'src/Category/category.schema';
+import { CategoryService } from 'src/Category/category.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
     private completedService: CompletedService,
     private mailService: MailService,
     private teamService: TeamService,
+    private categoryService: CategoryService,
   ) {}
 
   async createUser(
@@ -62,7 +66,8 @@ export class UserService {
     if (existingUser) {
       return existingUser;
     }
-    const defaultProfilePicture = '/profile-picture-default.png-1713451127942-613847853'; 
+    const defaultProfilePicture =
+      '/profile-picture-default.png-1713451127942-613847853';
     const newUser = new this.userModel({
       email: userName,
       passwordHash: password,
@@ -73,7 +78,6 @@ export class UserService {
     });
     return newUser.save();
   }
-  
 
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
@@ -357,5 +361,34 @@ export class UserService {
     } catch (error) {
       throw new Error('Failed to update first login status');
     }
+  }
+
+  async getScoreByCategory(
+    userId: Types.ObjectId,
+  ): Promise<{ category: Category; score: number }[]> {
+    let categories: Category[] = await this.categoryService.findAll();
+
+    const scoresByCategory = {};
+
+    categories.forEach((cat) => {
+      scoresByCategory[cat.id] = { category: cat, score: 0 };
+      console.log('categorie id :', cat.id);
+    });
+
+    // Récupère les challenges complétés par l'utilisateur
+    const completedChallenges =
+      await this.completedService.getUserCompleteds(userId);
+
+    // Parcourir chaque challenge complété et accumuler les points par catégorie
+    completedChallenges.forEach((completed) => {
+      const categoryId = completed.challenge.category.toString();
+      if (scoresByCategory[categoryId]) {
+        scoresByCategory[categoryId].score += completed.challenge.points;
+      }
+    });
+    return Object.values(scoresByCategory);
+
+    // Filtrez les catégories avec un score de 0 si nécessaire
+    // const nonZeroScores = scoresByCategory.filter(sc => sc.score > 0);
   }
 }
