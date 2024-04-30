@@ -13,3 +13,9 @@ export interface UserDataRanking {
   level: number;
   firstLogin: boolean;
 }
+
+export interface UserDataLeaderAttribution {
+  id: string;
+  lastName: string;
+  firstName: string;
+}

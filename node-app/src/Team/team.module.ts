@@ -23,4 +23,4 @@ import { MailService } from 'src/mail/mail.service';
   controllers: [TeamController],
   providers: [TeamService, CompletedService, ChallengeService, UserService, MailService],
 })
-export class TeamModule {}
+export class TeamModule { }

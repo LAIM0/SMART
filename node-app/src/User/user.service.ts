@@ -24,7 +24,7 @@ export class UserService {
     private completedService: CompletedService,
     private mailService: MailService,
     private teamService: TeamService,
-  ) {}
+  ) { }
 
   async createUser(
     email: string,
@@ -33,7 +33,7 @@ export class UserService {
     firstName: string,
     isAdmin: boolean,
     teamId: string,
-    firstLogin:boolean,
+    firstLogin: boolean,
   ): Promise<User> {
     console.log('createUser');
     const newUser = new this.userModel({
@@ -124,15 +124,15 @@ export class UserService {
   }
 
   async sendResetPasswordEmail(email: string, token: string) {
-    await this.mailService.sendResetPasswordEmail(email, token); 
+    await this.mailService.sendResetPasswordEmail(email, token);
   }
 
   async sendvalidationEmail(email: string, token: string) {
-    await this.mailService.sendValidationEmail(email, token); 
+    await this.mailService.sendValidationEmail(email, token);
   }
 
   async sendInitializePasswordEmail(email: string, token: string) {
-    await this.mailService.sendInitializePassword(email, token); 
+    await this.mailService.sendInitializePassword(email, token);
   }
 
   // Methode pour mettre à jour le mot de passe de l'utilisateur en utilisant le token
@@ -151,7 +151,7 @@ export class UserService {
     user.passwordHash = bcrypt.hashSync(newPassword, salt);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
-    user.passWordInitialized=true;
+    user.passWordInitialized = true;
     await user.save();
   }
 
@@ -169,7 +169,7 @@ export class UserService {
     user.resetPasswordExpires = undefined;
     await user.save();
   }
-  
+
 
   async getRanking(): Promise<
     { user: User; score: number; teamName: string }[]
@@ -255,7 +255,7 @@ export class UserService {
         lastName: 'Admin',
         firstName: 'Admin',
         isAdmin: true,
-        teamId: '', 
+        teamId: '',
         firstLogin: false,
       });
       await newUser.save();
@@ -268,10 +268,10 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-  
+
     user.profilePicturePath = data.profilePicturePath;
     return user.save();
-    
+
   }
 
   async updateUserProfile(userId: string, updateUserDto: UpdateUserDto): Promise<void> {
@@ -279,12 +279,12 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-  
+
     // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO
     user.firstName = updateUserDto.firstName;
     user.lastName = updateUserDto.lastName;
     user.teamId = updateUserDto.teamId;
-  
+
     // Enregistrez les modifications dans la base de données
     await user.save();
   }
@@ -301,6 +301,20 @@ export class UserService {
       throw new Error('Failed to update first login status');
     }
   }
-  
-  
+
+  async findByTeamId(teamId: string): Promise<User[]> {
+    try {
+
+      const users = await this.userModel.find({ teamId: teamId }).select('id firstName lastName').exec();
+
+      if (!users || users.length === 0) {
+        throw new Error('No users found for the given team ID');
+      }
+
+      return users;
+    } catch (error) {
+      throw new Error(`Error finding users for team ID ${teamId}: ${error.message}`);
+    }
+  }
+
 }

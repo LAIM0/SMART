@@ -81,7 +81,6 @@ function FormCreateModifyCategory({
             Enregistrer les modifications
           </Button>
         )}
-
       </Flex>
     </FormControl>
   );

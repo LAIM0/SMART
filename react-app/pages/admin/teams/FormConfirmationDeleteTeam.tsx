@@ -3,23 +3,23 @@
 import PropTypes from 'prop-types';
 
 import { FormControl, Flex, Button } from '@chakra-ui/react';
-import CategoryData from '../../../interfaces/categoryInterface';
-import CategoryApiManager from '../../../api/CategoryApiManager';
+import TeamData from '../../../interfaces/teamInterface';
+import TeamApiManager from '../../../api/TeamApiManager';
 
-interface ConfirmationDeleteFormProps {
+interface FormConfirmationDeleteTeamProps {
   onCloseModal: () => void;
-  categoryToDelete: CategoryData;
+  teamToDelete: TeamData;
 }
 
-function ConfirmationDeleteForm({
+function FormConfirmationDeleteTeam({
   onCloseModal,
-  categoryToDelete,
-}: ConfirmationDeleteFormProps) {
+  teamToDelete,
+}: FormConfirmationDeleteTeamProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(categoryToDelete.id);
+    console.log(teamToDelete.id);
     try {
-      await CategoryApiManager.delete(categoryToDelete.id);
+      await TeamApiManager.delete(teamToDelete.id);
       onCloseModal();
     } catch (error) {
       console.error('Erreur lors de la suppression des données:', error);
@@ -30,8 +30,8 @@ function ConfirmationDeleteForm({
     <FormControl>
       <Flex flexDirection="column" gap={4} borderRadius={8}>
         <Flex>
-          L&apos;ensemble des défis {categoryToDelete?.categoryName} vont passer
-          dans Autre.
+          L&apos;ensemble des membres de {teamToDelete?.name} vont passer
+          l&apos;équipe par défaut.
         </Flex>
         <Button colorScheme="red" color="white" onClick={handleSubmit}>
           Confirmer la supression
@@ -41,12 +41,12 @@ function ConfirmationDeleteForm({
   );
 }
 
-ConfirmationDeleteForm.propTypes = {
+FormConfirmationDeleteTeam.propTypes = {
   onCloseModal: PropTypes.func.isRequired,
-  categoryToDelete: PropTypes.shape({
+  teamToDelete: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    categoryName: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
   }).isRequired,
 };
 
-export default ConfirmationDeleteForm;
+export default FormConfirmationDeleteTeam;

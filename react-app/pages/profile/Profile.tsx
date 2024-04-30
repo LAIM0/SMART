@@ -1,6 +1,6 @@
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text, Button, Image, Icon ,useToast} from '@chakra-ui/react';
+import { Box, Flex, Text, Button, Image, Icon, useToast } from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -13,7 +13,7 @@ import ChallengeCard from '../../components/Challenges/ChallengeCard';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
-import { fetchTeams } from '../../api/TeamApiManager';
+import TeamApiManager from '../../api/TeamApiManager';
 
 
 function Profile() {
@@ -44,7 +44,7 @@ function Profile() {
       const teamname = await axios.get(
         `http://localhost:3001/teams/byId/${teamId}`
       );
-      const fetchedTeams = await fetchTeams();
+      const fetchedTeams = await TeamApiManager.fetchTeams();
       setTeams(fetchedTeams);
       setUser(userResponse.data);
       setTeamName(teamname.data);
@@ -164,7 +164,7 @@ function Profile() {
 
     fetchCompletedChallenges();
   }, [user]);
-        
+
 
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
@@ -210,15 +210,15 @@ function Profile() {
         </Box>
       </Flex>
       {user && (
-      <UserProfileUpdateModal
-        isOpen={isUpdateModalOpen}
-        onClose={() => setIsUpdateModalOpen(false)}
-        onSubmit={handleUpdateSubmit}
-        initialFirstName={initialFirstName}
-        initialLastName={initialLastName}
-        user={user}
-        teams={teams}
-      />)}
+        <UserProfileUpdateModal
+          isOpen={isUpdateModalOpen}
+          onClose={() => setIsUpdateModalOpen(false)}
+          onSubmit={handleUpdateSubmit}
+          initialFirstName={initialFirstName}
+          initialLastName={initialLastName}
+          user={user}
+          teams={teams}
+        />)}
       <Flex flexDirection="column">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">
