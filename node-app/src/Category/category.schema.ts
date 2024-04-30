@@ -5,6 +5,7 @@ export type CategoryDocument = Category & Document;
 
 @Schema()
 export class Category {
+  [x: string]: any;
   @Prop({ unique: true })
   categoryName: string;
 

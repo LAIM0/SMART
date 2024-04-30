@@ -10,13 +10,11 @@ import {
   Put,
   Delete,
   Param,
-  UploadedFile,
-  UseInterceptors,
-  Response,
   Query,
   Res,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import * as bcrypt from 'bcryptjs';
 import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
 import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
@@ -24,11 +22,14 @@ import { UserService } from './user.service';
 import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
 import { AdminAuthGuard } from 'src/Auth/admin.guard';
-import { diskStorage } from 'multer';
 import { join } from 'path';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LevelCheckDto } from './dto/level-check.dto';
 import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
+import { Category } from 'src/Category/category.schema';
+import { Types } from 'mongoose';
+import { FileInterceptor } from '@nestjs/platform-express/multer';
+import { diskStorage } from 'multer';
 
 @Controller('users')
 export class UserController {
@@ -132,6 +133,13 @@ export class UserController {
   @Get('/ranking')
   async ranking(): Promise<{ user: User; score: number; teamName: string }[]> {
     return this.userService.getRanking();
+  }
+
+  @Get('/scoreByCategory/:userId')
+  async scoreByCategory(
+    @Param('userId') userId: Types.ObjectId,
+  ): Promise<{ category: Category; score: number }[]> {
+    return this.userService.getScoreByCategory(userId);
   }
 
   //Post / Login
@@ -305,10 +313,13 @@ export class UserController {
     //return of({imagepath: file.filename});
   }
 
-@Get('profile-picture/:profilePicture')
-FindProfilePicture(@Param('profilePicture') profilePicture, @Response() res): Promise<User> {
-  return res.sendFile(join(process.cwd(), 'uploads/'+profilePicture));
-}
+  @Get('profile-picture/:profilePicture')
+  FindProfilePicture(
+    @Param('profilePicture') profilePicture,
+    @Response() res,
+  ): Promise<User> {
+    return res.sendFile(join(process.cwd(), 'uploads/' + profilePicture));
+  }
 
   @Put('update/:userId')
   async updateUserProfile(
@@ -334,6 +345,8 @@ FindProfilePicture(@Param('profilePicture') profilePicture, @Response() res): Pr
   ) {
     console.log('entreée endpoint validate mail');
     try {
+      const response =
+        await this.userService.updateFirstLoginStatusWithToken(token);
       const response =
         await this.userService.updateFirstLoginStatusWithToken(token);
       console.log(response);

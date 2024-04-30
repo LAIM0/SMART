@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
+<<<<<<< HEAD
 import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
@@ -11,6 +12,13 @@ import {
   logout,
   resetPassword,
 } from '../../api/AuthApiManager';
+=======
+import { Box, Flex, Text, Button, useToast, VStack } from '@chakra-ui/react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
+import { handleAuthRouting, resetPassword } from '../../api/AuthApiManager';
+>>>>>>> a5b025a6 (feat: profil - score by category)
 import User from '../../interfaces/userAdminInterface';
 import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
 import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
@@ -19,8 +27,14 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
+<<<<<<< HEAD
 import { updateAllLevels } from '../../api/UserApiManager';
 import LogoutConfirmationModal from '../../components/Profile/logoutModal';
+=======
+import CategoryCard from '../../components/Profile/CategoryCard';
+import { getScoreByCat } from '../../api/UserApiManager';
+import CategoryList from '../../components/Profile/CategoryList';
+>>>>>>> a5b025a6 (feat: profil - score by category)
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -30,7 +44,11 @@ function Profile() {
   const [initialFirstName, setInitialFirstName] = useState('');
   const [initialLastName, setInitialLastName] = useState('');
   const [teams, setTeams] = useState<TeamData[]>([]);
+<<<<<<< HEAD
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+=======
+  const [categoriesScore, setCategoriesScore] = useState<ScoreByCatData[]>([]);
+>>>>>>> a5b025a6 (feat: profil - score by category)
   const toast = useToast();
   const router = useRouter();
   useEffect(() => {
@@ -57,6 +75,8 @@ function Profile() {
       console.log('User levels updated successfully.');
 
       const fetchedTeams = await fetchTeams();
+      const fetchedCatScore = await getScoreByCat(userId);
+      setCategoriesScore(fetchedCatScore);
       setTeams(fetchedTeams);
       setUser(userResponse.data);
       setTeamName(teamname.data);
@@ -201,10 +221,6 @@ function Profile() {
           <Text as="h1" ml="8px" gap="10px">
             Mon profil
           </Text>
-          <FaUser
-            fontSize="24px"
-            style={{ marginTop: '-15px', marginLeft: '10px' }}
-          />
         </Flex>
         <Flex>
           <Button
@@ -260,6 +276,14 @@ function Profile() {
           teams={teams}
         />
       )}
+<<<<<<< HEAD
+=======
+      <Flex flexDirection="column">
+        <Text as="h1">Ma Progression</Text>
+        <CategoryList listScore={categoriesScore} />
+      </Flex>
+
+>>>>>>> a5b025a6 (feat: profil - score by category)
       <Flex flexDirection="column">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">
