@@ -16,6 +16,12 @@ export interface UserDataRanking {
   firstLogin: boolean;
 }
 
+export interface UserDataLeaderAttribution {
+  id: string;
+  lastName: string;
+  firstName: string;
+}
+
 export interface ScoreByCatData {
   category: CategoryData;
   score: number;

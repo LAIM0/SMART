@@ -10,6 +10,7 @@ import {
   Put,
   Delete,
   Param,
+  UploadedFile, UseInterceptors, Response,
   Query,
   Res,
   UseInterceptors,
@@ -30,6 +31,7 @@ import { LevelCheckDto } from './dto/level-check.dto';
 import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
+import { diskStorage } from 'multer'
 import { Observable, of } from 'rxjs';
 import { Category } from 'src/Category/category.schema';
 import { Types } from 'mongoose';
@@ -75,6 +77,7 @@ export class UserController {
         createUserDto.teamId,
         createUserDto.firstLogin,
       );
+
 
       return {
         msg: 'User successfully registered',
@@ -376,4 +379,11 @@ export class UserController {
         'Un email vous a été envoyé pour initialiser votre mot de passe avant votre première connexion',
     };
   }
+
+  @Get('getByTeam/:teamId')
+  async findByTeamId(@Param('teamId') teamId: string): Promise<User[]> {
+
+    return this.userService.findByTeamId(teamId);
+  }
+
 }

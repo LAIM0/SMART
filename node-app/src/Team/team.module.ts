@@ -33,4 +33,4 @@ import { Category, CategorySchema } from 'src/Category/category.schema';
     CategoryService,
   ],
 })
-export class TeamModule {}
+export class TeamModule { }

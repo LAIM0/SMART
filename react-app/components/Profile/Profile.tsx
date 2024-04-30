@@ -1,7 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
+import { Box, Flex, Text, Button, Image, Icon, useToast } from '@chakra-ui/react';
+import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import {
@@ -17,6 +18,8 @@ import ChallengeCard from '../Challenges/ChallengeCard';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
+import TeamApiManager from '../../api/TeamApiManager';
+
 import { fetchTeams } from '../../api/TeamApiManager';
 import { getScoreByCat, updateAllLevels } from '../../api/UserApiManager';
 import LogoutConfirmationModal from './logoutModal';
@@ -57,8 +60,7 @@ function Profile() {
       console.log('Try to update all users levels...');
       await updateAllLevels();
       console.log('User levels updated successfully.');
-
-      const fetchedTeams = await fetchTeams();
+      const fetchedTeams = await TeamApiManager.fetchTeams();
       const fetchedCatScore = await getScoreByCat(userId);
       setCategoriesScore(fetchedCatScore);
       setTeams(fetchedTeams);
@@ -67,6 +69,10 @@ function Profile() {
 
       if (userResponse.data.profilePicturePath) {
         setProfilePicture(userResponse.data.profilePicturePath);
+      } else {
+        setProfilePicture(
+          '/profile-picture-default.png-1713451127942-613847853'
+        );
       }
       setInitialFirstName(userResponse.data.firstName);
       setInitialLastName(userResponse.data.lastName);
@@ -197,6 +203,7 @@ function Profile() {
 
     fetchCompletedChallenges();
   }, [user]);
+
 
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
