@@ -7,12 +7,16 @@ import { Box, Flex, Text, Button, useToast } from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+<<<<<<< HEAD
 import { UserData } from '../../interfaces/userInterface';
+=======
+>>>>>>> 3f32ad8f (feat: profil - score by category)
 import {
   handleAuthRouting,
   logout,
   resetPassword,
 } from '../../api/AuthApiManager';
+<<<<<<< HEAD
 =======
 import { Box, Flex, Text, Button, useToast, VStack } from '@chakra-ui/react';
 =======
@@ -31,6 +35,9 @@ import {
   resetPassword,
 } from '../../api/AuthApiManager';
 >>>>>>> 3d674be1 (feat Deconnexion)
+=======
+import { ScoreByCatData, UserData } from '../../interfaces/userInterface';
+>>>>>>> 3f32ad8f (feat: profil - score by category)
 import User from '../../interfaces/userAdminInterface';
 import ChangeProfilePictureModal from '../../components/Profile/ChangeProfilPictureModal';
 import UserProfileUpdateModal from '../../components/Profile/ModalUpdateuser';
@@ -39,6 +46,7 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import { fetchTeams } from '../../api/TeamApiManager';
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -58,6 +66,11 @@ import CategoryList from '../../components/Profile/CategoryList';
 =======
 import LogoutConfirmationModal from '../../components/Profile/logoutModal';
 >>>>>>> 3d674be1 (feat Deconnexion)
+=======
+import { updateAllLevels, getScoreByCat } from '../../api/UserApiManager';
+import LogoutConfirmationModal from '../../components/Profile/logoutModal';
+import CategoryList from '../../components/Profile/CategoryList';
+>>>>>>> 3f32ad8f (feat: profil - score by category)
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
