@@ -10,11 +10,11 @@ import {
   Put,
   Delete,
   Param,
-  UploadedFile, UseInterceptors, Response,
+  UploadedFile,
+  UseInterceptors,
+  Response,
   Query,
   Res,
-  UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
@@ -24,15 +24,11 @@ import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
 import { AdminAuthGuard } from 'src/Auth/admin.guard';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
-import { diskStorage } from 'multer';
 import { join } from 'path';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LevelCheckDto } from './dto/level-check.dto';
 import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
-import { HttpException } from '@nestjs/common';
-import { HttpStatus } from '@nestjs/common';
-import { diskStorage } from 'multer'
-import { Observable, of } from 'rxjs';
+import { diskStorage } from 'multer';
 import { Category } from 'src/Category/category.schema';
 import { Types } from 'mongoose';
 
@@ -77,7 +73,6 @@ export class UserController {
         createUserDto.teamId,
         createUserDto.firstLogin,
       );
-
 
       return {
         msg: 'User successfully registered',
@@ -382,8 +377,6 @@ export class UserController {
 
   @Get('getByTeam/:teamId')
   async findByTeamId(@Param('teamId') teamId: string): Promise<User[]> {
-
     return this.userService.findByTeamId(teamId);
   }
-
 }
