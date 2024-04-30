@@ -22,7 +22,7 @@ export interface ScoreByCatData {
 }
 
 export interface UserDataLeaderAttribution {
-  id: string;
+  _id: string;
   lastName: string;
   firstName: string;
 }

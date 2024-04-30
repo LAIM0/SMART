@@ -1,16 +1,15 @@
-
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsOptional, IsString } from "class-validator";
 
 export class TeamUpdateDto {
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-
-  @IsNotEmpty()
-  @IsString()
-  picturePath: string;
-
-  @IsNotEmpty()
-  @IsString()
-  leaderId: string;
-}
+    @IsOptional()
+    @IsString()
+    name?: string;
+  
+    @IsOptional()
+    @IsString()
+    picturePath?: string;
+  
+    @IsOptional()
+    @IsString()
+    leaderId?: string;
+  }

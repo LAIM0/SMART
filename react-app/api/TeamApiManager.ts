@@ -27,13 +27,9 @@ class TeamApiManager {
     }
   };
 
-  static async create(
-    name: string,
-    picturePath: string,
-    leaderId: string
-  ): Promise<void> {
+  static async create(name: string, leaderId: string): Promise<void> {
     try {
-      await axios.post(`${baseURL}/teams`, { name, picturePath, leaderId });
+      await axios.post(`${baseURL}/teams`, { name, leaderId });
     } catch (error) {
       throw new Error(`Erreur lors de la création de l'équipe: ${error}`);
     }
@@ -41,7 +37,15 @@ class TeamApiManager {
 
   static async modify(teamData: TeamData): Promise<void> {
     try {
-      await axios.put(`${baseURL}/teams/${teamData.id}`);
+      await axios.put(
+        `${baseURL}/teams/update/${teamData.id}`,
+        {
+          name: teamData.name,
+          picturePath: teamData.picturePath,
+          leaderId: teamData.leaderId,
+        },
+        { withCredentials: true }
+      );
     } catch (error) {
       throw new Error(`Erreur lors de la modification de l'équipe: ${error}`);
     }

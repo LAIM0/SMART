@@ -1,8 +1,16 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from 'prop-types';
 
-import { FormControl, Input, Flex, Button, Select } from '@chakra-ui/react';
+import {
+  FormControl,
+  Input,
+  Flex,
+  Button,
+  Select,
+  Text,
+} from '@chakra-ui/react';
 import TeamApiManager from '../../../api/TeamApiManager';
 import TeamData from '../../../interfaces/teamInterface';
 import { UserDataLeaderAttribution } from '../../../interfaces/userInterface';
@@ -20,6 +28,8 @@ function FormCreateModifyTeam({
   const [teamName, setTeamName] = useState<string>(
     teamToModify ? teamToModify.name : ''
   );
+  const [teamHasNoUsers, setTeamHasNoUsers] = useState(false);
+
   const [selectedLeaderId, setSelectedLeaderId] = useState<string>('');
   const [usersOfTeam, setUsersOfTeam] = useState<UserDataLeaderAttribution[]>(
     []
@@ -28,20 +38,35 @@ function FormCreateModifyTeam({
   useEffect(() => {
     if (teamToModify !== null) {
       const fetchData = async () => {
-        const users = await getFromTeam(teamToModify?.id);
-        setUsersOfTeam(users);
+        try {
+          const users = await getFromTeam(teamToModify?.id);
+          console.log('users', users);
+          if (users.length === 0) {
+            setTeamHasNoUsers(true);
+          } else {
+            setUsersOfTeam(users);
+            setTeamHasNoUsers(false);
+          }
+        } catch (error) {
+          console.error(
+            "Erreur lors de la récupération des utilisateurs de l'équipe :",
+            error
+          );
+          setUsersOfTeam([]);
+          setTeamHasNoUsers(true);
+        }
       };
 
       fetchData();
     }
-  }, []);
+  }, [teamToModify]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (teamToModify === null) {
       const fetchData = async () => {
         try {
-          await TeamApiManager.create(teamName, '', '');
+          await TeamApiManager.create(teamName, '');
           onCloseModal();
         } catch (error) {
           console.error('Erreur lors de la création des données :', error);
@@ -50,16 +75,17 @@ function FormCreateModifyTeam({
 
       fetchData();
     } else {
-      const newTeam = {
+      console.log(selectedLeaderId);
+      const updatedTeam = {
         id: `${teamToModify.id}`,
         name: teamName,
-        picturePath: '',
+        picturePath: teamToModify.picturePath, // Modifiez cette valeur si nécessaire
         leaderId: selectedLeaderId, // Utilisez selectedLeaderId ici
       };
 
       const fetchData = async () => {
         try {
-          await TeamApiManager.modify(newTeam);
+          await TeamApiManager.modify(updatedTeam);
           onCloseModal();
         } catch (error) {
           console.error('Erreur lors de la modification des données :', error);
@@ -87,15 +113,13 @@ function FormCreateModifyTeam({
           <FormControl>
             <Select
               placeholder="Chef d'équipe"
-              value={selectedLeaderId}
-              onChange={(e) => {
-                setSelectedLeaderId(e.target.value);
-              }}
+              value={teamToModify?.leaderId || ''}
+              onChange={(e) => setSelectedLeaderId(e.target.value)}
               focusBorderColor="primary.300"
               bg="white"
             >
               {usersOfTeam.map((user) => (
-                <option key={user.id + user.lastName} value={user.id}>
+                <option key={user._id} value={user._id}>
                   {user.firstName} {user.lastName}
                 </option>
               ))}
@@ -111,6 +135,11 @@ function FormCreateModifyTeam({
           <Button bg="#166879" color="white" onClick={handleSubmit}>
             Enregistrer les modifications
           </Button>
+        )}
+        {teamToModify !== null && teamHasNoUsers && (
+          <Text color="red">
+            Il n&apos;y a aucun utilisateur dans cette équipe.
+          </Text>
         )}
       </Flex>
     </FormControl>

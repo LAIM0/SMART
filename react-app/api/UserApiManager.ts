@@ -111,6 +111,7 @@ export const getScoreByCat = async (userId: string) => {
 export const getFromTeam = async (teamId: string) => {
   try {
     const response = await axios.get(`${baseURL}/users/getByTeam/${teamId}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(
