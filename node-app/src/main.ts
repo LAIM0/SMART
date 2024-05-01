@@ -3,14 +3,15 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common/pipes';
 import * as session from "express-session";
 import * as passport from "passport";
-import 'moment/locale/fr'; 
-import * as moment from 'moment'; 
+import 'moment/locale/fr';
+import * as moment from 'moment';
 import { CategoryService } from './Category/category.service';
+import { TeamService } from './Team/team.service';
 
 
 async function bootstrap() {
   // Initialise Moment.js avec la locale et les options nécessaires
-  moment.locale('fr'); 
+  moment.locale('fr');
 
   const app = await NestFactory.create(AppModule);
   // const userService = app.get<UserService>(UserService);
@@ -35,6 +36,7 @@ async function bootstrap() {
 
   // Exécution des seeds pour les données par défaut
   app.get(CategoryService).seedCategories();
+  app.get(TeamService).seedTeam();
 
 }
 bootstrap();

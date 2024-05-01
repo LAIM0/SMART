@@ -26,7 +26,7 @@ import TeamData from '../../../interfaces/teamInterface';
 import FormCreateModifyTeam from './FormCreateModifyTeam';
 import FormConfirmationDeleteTeam from './FormConfirmationDeleteTeam';
 import TeamApiManager from '../../../api/TeamApiManager';
-import { getUserById } from '../../../api/UserApiManager';
+import { getUserById, getFromTeam } from '../../../api/UserApiManager';
 import UserSearch from '../../../components/User/searchbar';
 import { Filter } from '../../../utils/constants';
 
@@ -53,21 +53,31 @@ function AdminTeams() {
     try {
       const allTeams = await TeamApiManager.fetchTeams();
       // Récupérer les détails de l'utilisateur chef d'équipe pour chaque équipe
-      const teamsWithLeaders = await Promise.all(
+      const teamsWithLeadersAndCount = await Promise.all(
+
         allTeams.map(async (team: TeamData) => {
+
+          const users = await getFromTeam(team.id);
+          console.log('count', users.length);
+
           if (team.leaderId) {
             const leader = await getUserById(team.leaderId);
             console.log('leader', leader);
+
             return {
               ...team,
               leaderName: `${leader.firstName} ${leader.lastName}`,
+              userCount: users.length,
             };
           }
           // Si l'équipe n'a pas de leader, retournez simplement l'équipe sans les détails du leader
-          return team;
+          return {
+            ...team,
+            userCount: users.length,
+          };
         })
       );
-      setTeams(teamsWithLeaders);
+      setTeams(teamsWithLeadersAndCount);
       console.log(teams);
     } catch (error) {
       console.error('Erreur lors de la récupération des données:', error);
@@ -76,7 +86,7 @@ function AdminTeams() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [loading]);
 
   const {
     isOpen: isOpenFormModal,
@@ -253,7 +263,32 @@ function AdminTeams() {
                   transition="transform 0.3s ease-in-out"
                 />
               </Th>
-              <Th />
+              <Th> Nombre d'utilsateurs<IconButton
+                ml="0px"
+                mt="-4px"
+                aria-label="filter"
+                icon={<TriangleDownIcon />}
+                bg="transparent"
+                onClick={() =>
+                  setFilterByTeamLeader((prevState) => (prevState + 1) % 3)
+                }
+                _hover={{ bg: 'transparent' }}
+                color={
+                  filterByTeamLeader === Filter.INACTIVE
+                    ? 'primary.300'
+                    : filterByTeamLeader === Filter.ASC
+                      ? 'secondary.300'
+                      : 'redCoexya'
+                }
+                transform={
+                  filterByTeamLeader === Filter.INACTIVE
+                    ? 'rotate(270deg)'
+                    : filterByTeamLeader === Filter.ASC
+                      ? 'rotate(180deg)'
+                      : 'auto'
+                }
+                transition="transform 0.3s ease-in-out"
+              /></Th>
               <Th> </Th>
             </Tr>
           </Thead>
@@ -266,10 +301,10 @@ function AdminTeams() {
                 <Td>
                   {team.leaderName
                     ? team.leaderName.charAt(0).toUpperCase() +
-                      team.leaderName.slice(1)
+                    team.leaderName.slice(1)
                     : 'Aucun'}
                 </Td>
-                <Td textAlign="right" />
+                <Td> {team.userCount ? team.userCount : '0'}</Td>
                 <Td width="20%" textAlign="right" paddingRight="24px">
                   {team.name !== 'Équipe par défaut' && (
                     <Flex>

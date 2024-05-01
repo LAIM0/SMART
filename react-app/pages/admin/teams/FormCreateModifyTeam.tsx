@@ -44,6 +44,7 @@ function FormCreateModifyTeam({
           if (users.length === 0) {
             setTeamHasNoUsers(true);
           } else {
+            setSelectedLeaderId(teamToModify?.leaderId);
             setUsersOfTeam(users);
             setTeamHasNoUsers(false);
           }
@@ -66,7 +67,13 @@ function FormCreateModifyTeam({
     if (teamToModify === null) {
       const fetchData = async () => {
         try {
-          await TeamApiManager.create(teamName, '');
+          const newTeam = {
+            id: ``,
+            name: teamName,
+            picturePath: ``, // Modifiez cette valeur si nécessaire
+            leaderId: ``, // Utilisez selectedLeaderId ici
+          };
+          await TeamApiManager.create(newTeam);
           onCloseModal();
         } catch (error) {
           console.error('Erreur lors de la création des données :', error);
@@ -113,7 +120,7 @@ function FormCreateModifyTeam({
           <FormControl>
             <Select
               placeholder="Chef d'équipe"
-              value={teamToModify?.leaderId || ''}
+              value={selectedLeaderId}
               onChange={(e) => setSelectedLeaderId(e.target.value)}
               focusBorderColor="primary.300"
               bg="white"

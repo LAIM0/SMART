@@ -396,11 +396,6 @@ export class UserService {
     try {
 
       const users = await this.userModel.find({ teamId: teamId }).select('id firstName lastName').exec();
-
-      if (!users || users.length === 0) {
-        throw new Error('No users found for the given team ID');
-      }
-
       return users;
     } catch (error) {
       throw new Error(`Error finding users for team ID ${teamId}: ${error.message}`);

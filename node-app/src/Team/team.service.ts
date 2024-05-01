@@ -144,5 +144,18 @@ export class TeamService {
     }
   }
 
+  async seedTeam(): Promise<void> {
+
+    const existingTeam = await this.teamModel.findOne({ name: 'Équipe par défaut' });
+
+    if (!existingTeam) {
+
+      // Créer une instance par défaut
+      const defaultTeam = new this.teamModel({ name: 'Équipe par défaut' });
+
+      // Insérer dans la base de données
+      await defaultTeam.save();
+    }
+  }
   // Other CRUD methods
 }

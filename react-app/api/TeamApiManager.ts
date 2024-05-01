@@ -27,9 +27,10 @@ class TeamApiManager {
     }
   };
 
-  static async create(name: string, leaderId: string): Promise<void> {
+  static async create(teamData: TeamData): Promise<void> {
+    const { id, ...dataWithoutId } = teamData;
     try {
-      await axios.post(`${baseURL}/teams`, { name, leaderId });
+      await axios.post(`${baseURL}/teams`, dataWithoutId);
     } catch (error) {
       throw new Error(`Erreur lors de la création de l'équipe: ${error}`);
     }
