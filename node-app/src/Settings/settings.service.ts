@@ -42,7 +42,7 @@ export class SettingsService {
     const existingSettings = await this.settingsModel.find().exec();
     if (existingSettings.length === 0) {
       // Créer une instance par défaut
-      const defaultSettings = new this.settingsModel({ color1: '#166879' , color2: "#FFFFFF"});
+      const defaultSettings = new this.settingsModel({ color1: 'primary.300' , color2: "#FFFFFF"});
       // Insérer dans la base de données
       await defaultSettings.save(); 
     }

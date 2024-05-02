@@ -8,7 +8,7 @@ import {
   Input,
   useToast,
   Flex,
-  Image
+  Image,
 } from '@chakra-ui/react';
 import logoApp from '../Sidebar/Ecoexya.png';
 
@@ -75,7 +75,6 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
 
   return (
     <Flex width="full" align="center" justifyContent="center" minHeight="100vh">
-       
       <Box
         p={8}
         maxWidth="500px"
@@ -108,13 +107,14 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
           />
         </FormControl>
         <Button
-              bg="#166879"
-              color="white"
-              variant="outline"
-              type="submit"
-              width="full"
-              mt={4}
-            onClick={handleResetPassword}>
+          bg="primary.300"
+          color="white"
+          variant="outline"
+          type="submit"
+          width="full"
+          mt={4}
+          onClick={handleResetPassword}
+        >
           Réinitialiser le mot de passe
         </Button>
       </Box>

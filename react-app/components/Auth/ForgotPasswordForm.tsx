@@ -62,7 +62,12 @@ function ForgotPasswordForm() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      <Button mt={4} bg="#166879" color="white" onClick={handleResetPassword}>
+      <Button
+        mt={4}
+        bg="primary.300"
+        color="white"
+        onClick={handleResetPassword}
+      >
         Envoyer la demande de réinitialisation
       </Button>
     </Box>
