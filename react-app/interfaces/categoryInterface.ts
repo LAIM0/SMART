@@ -1,6 +1,7 @@
 interface CategoryData {
   categoryName: string;
   id: string;
+  challengeCount?: number;
 }
 
 export interface CategoryDataWithDate {

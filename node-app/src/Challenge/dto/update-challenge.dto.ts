@@ -7,7 +7,7 @@ export class UpdateChallengeDto {
   id?: Types.ObjectId;
 
   @IsOptional()
-  category?: Types.ObjectId;
+  category?: string;
 
   @IsString()
   @IsNotEmpty()

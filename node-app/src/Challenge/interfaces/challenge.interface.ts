@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { Periodicity } from 'utils/constants';
 
 export interface ChallengeInterface {
-  category?: Types.ObjectId;
+  category?: string;
   title: string;
   points?: number;
   description?: string;
@@ -14,7 +14,7 @@ export interface ChallengeInterface {
 
 export interface ChallengeData {
   id?: Types.ObjectId;
-  category?: Types.ObjectId;
+  category?: string;
   title: string;
   points?: number;
   description?: string;
