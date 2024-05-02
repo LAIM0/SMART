@@ -81,7 +81,13 @@ export default function LoginForm() {
     }
   };
   return (
-    <Flex width="full" align="center" justifyContent="center" minHeight="100vh">
+    <Flex
+      align="center"
+      justify="center"
+      minHeight="100vh"
+      flexDirection="column"
+      p={4}
+    >
       <Box
         p={8}
         maxWidth="500px"
@@ -104,7 +110,8 @@ export default function LoginForm() {
                   type="email"
                   placeholder="test@test.com"
                   size="lg"
-                  onChange={(event) => setUsername(event.currentTarget.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </FormControl>
               <FormControl isRequired mt={6}>
@@ -114,7 +121,8 @@ export default function LoginForm() {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="*******"
                     size="lg"
-                    onChange={(event) => setPassword(event.currentTarget.value)}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <InputRightElement width="3rem">
                     <IconButton
@@ -130,11 +138,12 @@ export default function LoginForm() {
               <Button
                 bg="#166879"
                 color="white"
-                // variantColor="teal"
                 variant="outline"
                 type="submit"
                 width="full"
                 mt={4}
+                isLoading={isLoading}
+                loadingText="Chargement..."
               >
                 {isLoading ? (
                   <CircularProgress isIndeterminate size="24px" color="teal" />
@@ -160,7 +169,6 @@ export default function LoginForm() {
               S&apos;inscrire
             </Button>
           )}
-
           {loginResponse && loginResponse.status === 'error' && (
             <Box color="red.500">{loginResponse.message}</Box>
           )}

@@ -244,9 +244,13 @@ function Profile() {
           {user && (
             <Flex flexDirection="column" gap="6px">
               <Text as="h2">
-                {user.firstName} {user.lastName}
+                {user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}{' '}
+                {user.firstName.charAt(0).toUpperCase() +
+                  user.firstName.slice(1)}
               </Text>
-              <Text as="h3">{teamName.name}</Text>
+              <Text as="h3">
+                {teamName.name.charAt(0).toUpperCase() + teamName.name.slice(1)}
+              </Text>
               <Text>{user.email}</Text>
               <Text
                 color="primary.300"

@@ -45,14 +45,14 @@ function ForgotPasswordForm() {
   };
 
   return (
-    <Box width="400px">
+    <Box mx="auto" px={4}>
+      {' '}
       {error && (
         <Alert status="error" mb={4}>
           <AlertIcon />
           {error}
         </Alert>
       )}
-
       <FormControl isRequired>
         <FormLabel>Email</FormLabel>
         <Input

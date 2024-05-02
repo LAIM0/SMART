@@ -59,7 +59,7 @@ function UserProfileUpdateModal(props: UserProfileUpdateModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent maxW="80vw">
         <ModalHeader>Mettre à jour le profil</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
