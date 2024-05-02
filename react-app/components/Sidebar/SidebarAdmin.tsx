@@ -11,6 +11,7 @@ import logoApp from './Ecoexya.png';
 import {
   FolderIcon,
   PodiumIcon,
+  SettingsIcon,
   StarIcon,
   TeamIcon,
   UserIcon,
@@ -41,7 +42,7 @@ const Pages: Page[] = [
   {
     name: 'Équipes',
     url: '/teams',
-    icon: TeamIcon,
+    icon: SettingsIcon,
   },
 ];
 
