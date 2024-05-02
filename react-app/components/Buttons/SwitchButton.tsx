@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, HStack } from '@chakra-ui/react';
+import { Box, Button, Flex, useBreakpointValue } from '@chakra-ui/react';
 
 // Constantes pour représenter les modes de sélection
 export const SELECTION_MODES = {
@@ -13,18 +13,20 @@ interface Props {
 }
 
 function SwitchButton({ isSelectedIndividual, onSelectionChange }: Props) {
+  const buttonPadding = useBreakpointValue({ base: 8, md: 12 });
+
   return (
-    <Box bg="white" p={4} borderRadius="lg" boxShadow="sm">
-      <HStack spacing={2}>
+    <Box bg="white" p={4} borderRadius="lg" boxShadow="sm" width="full">
+      <Flex gap={2} direction="row" width="full">
         <Button
           onClick={() => onSelectionChange(SELECTION_MODES.INDIVIDUAL)}
           bgColor={isSelectedIndividual ? 'primary.300' : 'white'}
           color={isSelectedIndividual ? 'white' : 'primary.300'}
           _hover={{
-            bg: 'secondary.300',
-            color: 'white',
+            bg: isSelectedIndividual ? 'primary.300' : '#F1F1F1',
           }}
-          px={12}
+          px={buttonPadding}
+          flex="1"
         >
           Individuel
         </Button>
@@ -33,14 +35,14 @@ function SwitchButton({ isSelectedIndividual, onSelectionChange }: Props) {
           bgColor={!isSelectedIndividual ? 'primary.300' : 'white'}
           color={!isSelectedIndividual ? 'white' : 'primary.300'}
           _hover={{
-            bg: 'secondary.300',
-            color: 'white',
+            bg: !isSelectedIndividual ? 'primary.300' : '#F1F1F1',
           }}
-          px={12}
+          px={buttonPadding}
+          flex="1"
         >
           Par équipe
         </Button>
-      </HStack>
+      </Flex>
     </Box>
   );
 }

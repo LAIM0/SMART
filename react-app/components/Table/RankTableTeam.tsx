@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Box, Text, Stack, Icon, Square, Image } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Text,
+  Stack,
+  Icon,
+  Square,
+  Image,
+  useBreakpointValue,
+} from '@chakra-ui/react';
 import { MoonIcon } from '@chakra-ui/icons';
 import TeamApiManager from '../../api/TeamApiManager';
 import TeamData from '../../interfaces/teamInterface';
@@ -16,27 +25,35 @@ function RankTableTeam() {
     fetchRanking();
   }, []);
 
+  const fontSizeResponse = useBreakpointValue({ base: 'md', md: 'xl' });
+  const imageSize = useBreakpointValue({ base: '60px', md: '100px' });
+  const flexGap = useBreakpointValue({ base: '5', md: '10' });
+  const paddingLeft = useBreakpointValue({ base: '7', md: '10' });
+  const paddingRight = useBreakpointValue({ base: '3', md: '10' });
+  const paddingY = useBreakpointValue({ base: '3', md: '4' });
+
   return (
     <Stack spacing={4}>
       {teams.map((teamUnit, index) => (
-        <Stack
+        <Flex
           key={teamUnit.team.id}
-          direction="row"
-          spacing={10}
-          px={10}
-          py={4}
+          pl={paddingLeft}
+          pr={paddingRight}
+          py={paddingY}
           borderRadius="lg"
           align="center"
-          justify="space-between"
           backgroundColor="white"
           boxShadow="sm"
+          direction="row"
+          justify="space-between"
+          wrap="nowrap"
         >
-          <Flex direction="row" gap={10}>
+          <Flex direction="row" gap={flexGap}>
             <Box fontSize="36px" fontWeight="extraBold">
               {index + 1}
             </Box>
-            <Flex direction="column">
-              <Text fontSize="h2" fontWeight="semiBold">
+            <Flex direction="column" justify="center">
+              <Text fontSize={fontSizeResponse} fontWeight="semiBold">
                 {teamUnit.team.name}
               </Text>
               <Flex direction="row" gap={2}>
@@ -50,7 +67,7 @@ function RankTableTeam() {
             backgroundColor="primary.300"
             shadow="md"
             borderRadius="lg"
-            size="100px"
+            size={imageSize}
           >
             {teamUnit.team.picturePath ? (
               <Image
@@ -70,7 +87,7 @@ function RankTableTeam() {
               />
             )}
           </Square>
-        </Stack>
+        </Flex>
       ))}
     </Stack>
   );

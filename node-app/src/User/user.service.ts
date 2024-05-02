@@ -244,7 +244,7 @@ export class UserService {
       );
       let team = { name: "Pas d'équipe" };
       if (user.teamId) {
-        team = await this.teamService.getById(user.teamId);
+        team = await this.teamService.findById(user.teamId);
       }
 
       let totalScore = completedChallenges.reduce(

@@ -52,6 +52,7 @@ function ChangeProfilePictureModal(props: ChangeProfilePictureModalProps) {
         {profilePicture ? (
           <Image
             src={`http://localhost:3001/users/profile-picture/${profilePicture}`}
+            objectFit="cover"
             alt="Profile Picture"
             boxSize="150px"
             borderRadius="xl"
