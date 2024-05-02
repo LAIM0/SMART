@@ -127,6 +127,9 @@ function FormCreateChallenge({ refresh }: Props) {
       case Periodicity.MONTHLY:
         setEndDate(moment(new Date()).endOf('month').endOf('day').toDate());
         break;
+      case Periodicity.PUNCTUAL:
+        setEndDate(moment(new Date()).endOf('day').toDate());
+        break;
       default:
     }
   }, [periodicity]);
@@ -293,7 +296,7 @@ function FormCreateChallenge({ refresh }: Props) {
                     <FormLabel>Date de fin</FormLabel>
 
                     <SingleDatepicker
-                      date={endDate}
+                      date={new Date(endDate)}
                       onDateChange={(e) => {
                         setEndDate(moment(e).endOf('day').toDate());
                       }}

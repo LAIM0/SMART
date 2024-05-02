@@ -134,6 +134,9 @@ function FormUpdateChallenge({ currentChallenge, refresh }: Props) {
       case Periodicity.MONTHLY:
         setEndDate(moment(new Date()).endOf('month').endOf('day').toDate());
         break;
+      case Periodicity.PUNCTUAL:
+        setEndDate(moment(new Date()).endOf('day').toDate());
+        break;
       default:
     }
   }, [periodicity]);

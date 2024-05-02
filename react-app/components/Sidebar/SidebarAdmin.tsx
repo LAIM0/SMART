@@ -112,12 +112,12 @@ function Sidebar() {
             stroke="none"
             strokeWidth="1.5"
             color={
-              router.pathname.includes(page.url) ? 'primary.300' : 'primary.200'
+              router.pathname.includes(page.url) ? 'primary.300' : 'primary.300'
             }
           />
           <Text
             color={
-              router.pathname.includes(page.url) ? 'primary.300' : 'primary.200'
+              router.pathname.includes(page.url) ? 'primary.300' : 'primary.300'
             }
             fontWeight={router.pathname.includes(page.url) ? 'bold' : 'light'}
             lineHeight={1}
