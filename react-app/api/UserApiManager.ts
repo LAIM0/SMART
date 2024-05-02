@@ -134,13 +134,10 @@ export const getUserById = async (userId: string) => {
 
 export const getLevel = async (userId: string) => {
   try {
-    const response = await axios.get(`${baseURL}/users/getByTeam/${userId}`);
+    const response = await axios.get(`${baseURL}/users/level?userId=${userId}`);
     return response.data;
   } catch (error) {
-    console.error(
-      'Erreur lors de la récupération des utilisateurs à partir de l équipe :',
-      error
-    );
+    console.error('Erreur lors de la récupération du niveau du user :', error);
     throw error;
   }
 };

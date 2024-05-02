@@ -9,7 +9,7 @@
   "plugins": ["prettier"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "AGIR/react-app/tsconfig.json"
+    "project": "./react-app/tsconfig.json"
   },
   "rules": {
     "prettier/prettier": "error",
