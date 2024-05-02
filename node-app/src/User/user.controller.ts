@@ -75,6 +75,7 @@ export class UserController {
         createUserDto.isAdmin,
         createUserDto.teamId,
         createUserDto.firstLogin,
+        createUserDto.passwordInitialized,
       );
 
       return {

@@ -38,6 +38,7 @@ export class UserService {
     isAdmin: boolean,
     teamId: string,
     firstLogin: boolean,
+    passWordInitialized: boolean
   ): Promise<User> {
     console.log('createUser');
     const newUser = new this.userModel({
@@ -48,6 +49,7 @@ export class UserService {
       isAdmin: isAdmin,
       teamId: teamId,
       firstLogin: firstLogin,
+      passWordInitialized: passWordInitialized,
     });
     return newUser.save();
   }

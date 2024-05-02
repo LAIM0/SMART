@@ -41,7 +41,7 @@ export class User {
   @Prop({ default: "profile-picture-default.png-1713713349070-217063153" })
   profilePicturePath: string;
 
-  @Prop({default: false})
+  @Prop()
   passWordInitialized: boolean;
 
   @Prop()

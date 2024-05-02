@@ -133,6 +133,7 @@ function AdminUsers() {
         setUsers(updatedUsers);
         setIsOpenError(false);
         onClose();
+        console.log(newUser.email);
         await initializePassword(newUser.email);
       }
     } catch (error) {

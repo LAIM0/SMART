@@ -5,6 +5,7 @@ interface User {
   email: string;
   teamId: string;
   isAdmin: boolean;
+  passWordInitialized: boolean;
 }
 
 export default User;
