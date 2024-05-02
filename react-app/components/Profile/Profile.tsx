@@ -21,6 +21,7 @@ import TeamApiManager from '../../api/TeamApiManager';
 import { getScoreByCat, updateAllLevels } from '../../api/UserApiManager';
 import LogoutConfirmationModal from './logoutModal';
 import CategoryList from './CategoryList';
+import ProgressBar from './ProgressBar';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -263,9 +264,10 @@ function Profile() {
       )}
       <Flex flexDirection="column">
         <Text as="h1">Ma Progression</Text>
+        <ProgressBar level={10} percentage={62} />
         <CategoryList listScore={categoriesScore} />
       </Flex>
-      <Flex flexDirection="column">
+      <Flex flexDirection="column" bg="#F8F8F8">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">
           {completedChallenges.length > 0 ? (

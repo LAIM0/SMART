@@ -10,7 +10,9 @@ import {
   Put,
   Delete,
   Param,
-  UploadedFile, UseInterceptors, Response,
+  UploadedFile,
+  UseInterceptors,
+  Response,
   Query,
   Res,
 } from '@nestjs/common';
@@ -22,13 +24,13 @@ import { ScoreCheckDto } from './dto/score-check.dto';
 import { ResetPasswordDto } from './dto/ResetPasswordDto.dto';
 import { AdminAuthGuard } from 'src/Auth/admin.guard';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
-import { diskStorage } from 'multer';
 import { join } from 'path';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LevelCheckDto } from './dto/level-check.dto';
 import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
+import { diskStorage } from 'multer';
 import { Observable, of } from 'rxjs';
 import { Category } from 'src/Category/category.schema';
 import { Types } from 'mongoose';
@@ -74,7 +76,6 @@ export class UserController {
         createUserDto.teamId,
         createUserDto.firstLogin,
       );
-
 
       return {
         msg: 'User successfully registered',
@@ -284,7 +285,6 @@ export class UserController {
 
   @Get('byId/:userId')
   async findById(@Param('userId') userId: string): Promise<User> {
-
     return this.userService.findById(userId);
   }
 
@@ -328,13 +328,16 @@ export class UserController {
   @Put('update/:userId')
   async updateUserProfile(
     @Param('userId') userId: string,
-    @Body() updateUserDto: UpdateUserDto, 
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<{ message: string }> {
     try {
-      await this.userService.updateUserProfile(userId, updateUserDto); 
+      await this.userService.updateUserProfile(userId, updateUserDto);
       return { message: 'Profil utilisateur mis à jour avec succès' };
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du profil de l'utilisateur:", error);
+      console.error(
+        "Erreur lors de la mise à jour du profil de l'utilisateur:",
+        error,
+      );
       throw error;
     }
   }
@@ -377,8 +380,6 @@ export class UserController {
 
   @Get('getByTeam/:teamId')
   async findByTeamId(@Param('teamId') teamId: string): Promise<User[]> {
-
     return this.userService.findByTeamId(teamId);
   }
-
 }

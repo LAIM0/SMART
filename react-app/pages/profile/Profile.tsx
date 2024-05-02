@@ -10,7 +10,6 @@ import {
   Icon,
   useToast,
 } from '@chakra-ui/react';
-import { FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { UserData } from '../../interfaces/userInterface';
@@ -27,6 +26,8 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import TeamApiManager from '../../api/TeamApiManager';
+import { getScoreByCat, updateAllLevels } from '../../api/UserApiManager';
+import CategoryList from '../../components/Profile/CategoryList';
 import LogoutConfirmationModal from '../../components/Profile/logoutModal';
 
 function Profile() {
@@ -38,6 +39,7 @@ function Profile() {
   const [initialLastName, setInitialLastName] = useState('');
   const [teams, setTeams] = useState<TeamData[]>([]);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [categoriesScore, setCategoriesScore] = useState<ScoreByCatData[]>([]);
   const toast = useToast();
   const router = useRouter();
   useEffect(() => {
@@ -59,6 +61,13 @@ function Profile() {
         `http://localhost:3001/teams/byId/${teamId}`
       );
       const fetchedTeams = await TeamApiManager.fetchTeams();
+
+      console.log('Try to update all users levels...');
+      await updateAllLevels();
+      console.log('User levels updated successfully.');
+
+      const fetchedCatScore = await getScoreByCat(userId);
+      setCategoriesScore(fetchedCatScore);
       setTeams(fetchedTeams);
       setUser(userResponse.data);
       setTeamName(teamname.data);
@@ -207,10 +216,6 @@ function Profile() {
           <Text as="h1" ml="8px" gap="10px">
             Mon profil
           </Text>
-          <FaUser
-            fontSize="24px"
-            style={{ marginTop: '-15px', marginLeft: '10px' }}
-          />
         </Flex>
         <Flex>
           <Button
@@ -266,6 +271,12 @@ function Profile() {
           teams={teams}
         />
       )}
+
+      <Flex flexDirection="column">
+        <Text as="h1">Ma Progression</Text>
+        <CategoryList listScore={categoriesScore} />
+      </Flex>
+
       <Flex flexDirection="column">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">

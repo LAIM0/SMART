@@ -131,3 +131,16 @@ export const getUserById = async (userId: string) => {
     throw error;
   }
 };
+
+export const getLevel = async (userId: string) => {
+  try {
+    const response = await axios.get(`${baseURL}/users/getByTeam/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Erreur lors de la récupération des utilisateurs à partir de l équipe :',
+      error
+    );
+    throw error;
+  }
+};
