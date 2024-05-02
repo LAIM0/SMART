@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Flex, Text, Box, Input, Button } from '@chakra-ui/react';
-import SettingsApiManager from '../../api/SettingsApiManager';
+import SettingsApiManager from '../../../api/SettingsApiManager';
 function Settings() {
   const [color1, setColor1] = useState<string>();
   const [color2, setColor2] = useState<string>();

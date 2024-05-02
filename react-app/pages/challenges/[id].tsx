@@ -156,7 +156,7 @@ function Challenge() {
               </Box>
               <Box
                 width="auto"
-                bg="#4FD1C5"
+                bg="secondary.300"
                 color="white"
                 px="16px"
                 py="8px"

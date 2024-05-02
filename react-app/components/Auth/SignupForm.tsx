@@ -215,7 +215,7 @@ export default function SignupForm() {
               </Select>
             </FormControl>
             <Button
-              bg="#166879"
+              bg="primary.300"
               color="white"
               variant="outline"
               type="submit"
