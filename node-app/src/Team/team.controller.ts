@@ -1,10 +1,16 @@
-import { Controller, Get, Post, Put, Delete, Body, Query, Param, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller,Response, Get, Post, Put, Delete, Body, Query, Param, HttpException, HttpStatus, UploadedFile, UseInterceptors, NotFoundException, Request, UseGuards} from '@nestjs/common';
+
 import { TeamService } from './team.service';
 import { Team } from './team.schema';
 import { TeamDto, CreateTeamDto, ModifyTeamDto } from './dto/team.dto';
 import { Types } from 'mongoose';
 import { TeamIdDto } from './dto/teamId.dto';
 import { TeamUpdateDto } from './dto/teamUpdate.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { join } from 'path';
+import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
+import { User } from 'src/User/user.schema';
 
 @Controller('teams')
 export class TeamController {
@@ -84,4 +90,45 @@ export class TeamController {
   async delete(@Param('id') TeamId: Types.ObjectId): Promise<void> {
     return this.teamService.delete(TeamId);
   }
+
+  @UseGuards(AuthenticatedGuard)
+  @Post('upload/:teamId')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads', // Le répertoire où les fichiers seront stockés
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          // Utilisation de la fonction de rappel pour générer un nom de fichier unique
+          cb(null, file.originalname + '-' + uniqueSuffix);
+        },
+      }),
+    }),
+  )
+  async uploadTeamPicture(
+    @Request() req,
+    @Param('teamId') teamId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<Team> {
+    console.log (req.body);
+    console.log("teamId",teamId);
+    return this.teamService.updateTeamPicture(teamId, {picturePath: file.filename});
+  }
+
+
+@Get('picture/:picture')
+async FindPicture(
+  @Param('picture') picture: string,
+  @Response() res,
+): Promise<Team> {
+    return res.sendFile(join(process.cwd(), 'uploads/' + picture));
+ 
+}
+
+@Get(':teamId/users')
+  async getUsersByTeamId(@Param('teamId') teamId: string): Promise<User[]> {
+    return this.teamService.getUsersByTeamId(teamId);
+  }
+
 }

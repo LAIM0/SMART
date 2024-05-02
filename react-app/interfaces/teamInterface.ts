@@ -1,5 +1,5 @@
 interface TeamData {
-  id: string;
+  _id: string;
   name: string;
   picturePath: string;
   leaderId: string; // Nommez cette propriété leaderId pour stocker l'ID du chef d'équipe

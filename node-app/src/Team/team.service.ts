@@ -179,5 +179,17 @@ export class TeamService {
       await defaultTeam.save();
     }
   }
-  // Other CRUD methods
+
+  async updateTeamPicture(teamId: string, data:{ picturePath: string}): Promise<Team> {
+    const team = await this.teamModel.findById(teamId).exec();
+    if (!team) {
+      throw new NotFoundException('Team not found');
+    }
+    team.picturePath = data.picturePath;
+    return team.save();
+  }
+
+  async getUsersByTeamId(teamId: string): Promise<User[]> {
+    return this.userModel.find({ teamId }).exec();
+  }
 }
