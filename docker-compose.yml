@@ -1,6 +1,6 @@
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:7.0.9
     container_name: mongo
     ports:
       - "27017:27017"
@@ -29,8 +29,8 @@ services:
       - MONGO_DB=dbEcoexya
       - MAIL_HOST=sandbox.smtp.mailtrap.io
       - MAIL_PORT=2525
-      - MAIL_USER=ea01226af70dd1
-      - MAIL_PASSWORD=a69e5df1acc792
+      - MAIL_USER=212b96f3519993
+      - MAIL_PASSWORD=f7db70e15d24e7
     networks:
       - mynetwork
 

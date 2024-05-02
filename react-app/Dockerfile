@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Étape 2: Servir l'application
-FROM node:alpine as runner
+FROM node:18-alpine as runner
 
 WORKDIR /usr/src/app
 

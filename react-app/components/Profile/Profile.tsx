@@ -18,9 +18,14 @@ import CompletedApiManager from '../../api/CompletedApiManager';
 import CompletedChallengeData from '../../interfaces/completedInterface';
 import TeamData from '../../interfaces/teamInterface';
 import TeamApiManager from '../../api/TeamApiManager';
-import { getScoreByCat, updateAllLevels } from '../../api/UserApiManager';
+import {
+  getLevel,
+  getScoreByCat,
+  updateAllLevels,
+} from '../../api/UserApiManager';
 import LogoutConfirmationModal from './logoutModal';
 import CategoryList from './CategoryList';
+import ProgressBar from './ProgressBar';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -30,6 +35,7 @@ function Profile() {
   const [initialFirstName, setInitialFirstName] = useState('');
   const [initialLastName, setInitialLastName] = useState('');
   const [teams, setTeams] = useState<TeamData[]>([]);
+  const [level, setLevel] = useState<number>(0.0);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [categoriesScore, setCategoriesScore] = useState<ScoreByCatData[]>([]);
 
@@ -60,8 +66,9 @@ function Profile() {
 
       const fetchedTeams = await TeamApiManager.fetchTeams();
       const fetchedCatScore = await getScoreByCat(userId);
+      const fetchedLevel = await getLevel(userId);
+      setLevel(fetchedLevel.level);
       setCategoriesScore(fetchedCatScore);
-
       setTeams(fetchedTeams);
       setUser(userResponse.data);
       setTeamName(teamname.data);
@@ -263,9 +270,13 @@ function Profile() {
       )}
       <Flex flexDirection="column">
         <Text as="h1">Ma Progression</Text>
+        <ProgressBar
+          level={Math.floor(level)}
+          percentage={Math.round((level - Math.floor(level)) * 100)}
+        />
         <CategoryList listScore={categoriesScore} />
       </Flex>
-      <Flex flexDirection="column">
+      <Flex flexDirection="column" bg="#F8F8F8">
         <Text as="h1">Relevés récemment</Text>
         <Flex flexDirection="row" flexWrap="wrap" mb="24px">
           {completedChallenges.length > 0 ? (
