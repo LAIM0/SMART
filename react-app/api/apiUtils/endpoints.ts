@@ -49,13 +49,6 @@ const ENDPOINTS = {
       `/${ENTITIES.CATEGORY}/delete/${categoryId}`,
     CATEGORY_MODIFY: (categoryId: string) =>
       `/${ENTITIES.CATEGORY}/modify/${categoryId}`,
-    CATEGORY_COUNT: (categoryId: string) =>
-      `/${ENTITIES.CATEGORY}/countChallenge/${categoryId}`,
-  },
-  SETTINGS: {
-    SETTINGS_GET_ALL: () => `/${ENTITIES.SETTINGS}/all`,
-    SETTINGS_CREATE: () => `/${ENTITIES.SETTINGS}/create`,
-    SETTINGS_MODIFY: () => `/${ENTITIES.SETTINGS}/modify`,
   },
 };
 
