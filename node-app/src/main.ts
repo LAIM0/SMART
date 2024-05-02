@@ -7,6 +7,7 @@ import 'moment/locale/fr';
 import * as moment from 'moment';
 import { CategoryService } from './Category/category.service';
 import { TeamService } from './Team/team.service';
+import { SettingsService } from './Settings/settings.service';
 
 
 async function bootstrap() {
@@ -37,6 +38,7 @@ async function bootstrap() {
   // Exécution des seeds pour les données par défaut
   app.get(CategoryService).seedCategories();
   app.get(TeamService).seedTeam();
+  app.get(SettingsService).seedSettings();
 
 }
 bootstrap();
