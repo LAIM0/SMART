@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Flex,
   Button,
+  Text,
   Table,
   Thead,
   Tr,
@@ -82,14 +83,17 @@ function AdminCategories() {
 
   return (
     <Flex flexDirection="column" gap="16px">
-      <Button
-        bg="primary.300"
-        color="white"
-        width="fit-content"
-        onClick={onOpenFormModal}
-      >
-        Ajouter une catégorie
-      </Button>
+      <Flex gap="16px">
+        <Text as="h1">Gestion des catégories</Text>
+        <Button
+          bg="primary.300"
+          color="white"
+          width="fit-content"
+          onClick={onOpenFormModal}
+        >
+          Ajouter une catégorie
+        </Button>
+      </Flex>
       <TableContainer bg="white" borderRadius={16}>
         <Table variant="simple">
           <Thead>
