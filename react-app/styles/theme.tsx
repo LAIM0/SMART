@@ -8,7 +8,7 @@ import '@fontsource/poppins/800.css';
 const theme = extendTheme({
   colors: {
     primary: {
-      300: '#166879',
+      300: 'primary.300',
       200: '#78A6B0',
       100: '#D3E0E2',
       // Ajoutez d'autres nuances de couleur selon vos besoins

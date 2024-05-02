@@ -82,12 +82,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
   };
 
   return (
-    <Flex
-      width="full"
-      align="center"
-      justifyContent="center"
-      minHeight="100vh"
-    >
+    <Flex width="full" align="center" justifyContent="center" minHeight="100vh">
       <Box
         p={8}
         maxWidth="500px"
@@ -129,7 +124,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
           )}
         </FormControl>
         <Button
-          bg="#166879"
+          bg="primary.300"
           color="white"
           variant="outline"
           type="submit"

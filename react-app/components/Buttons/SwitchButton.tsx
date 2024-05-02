@@ -18,10 +18,10 @@ function SwitchButton({ isSelectedIndividual, onSelectionChange }: Props) {
       <HStack spacing={2}>
         <Button
           onClick={() => onSelectionChange(SELECTION_MODES.INDIVIDUAL)}
-          bgColor={isSelectedIndividual ? '#166879' : 'white'}
-          color={isSelectedIndividual ? 'white' : '#166879'}
+          bgColor={isSelectedIndividual ? 'primary.300' : 'white'}
+          color={isSelectedIndividual ? 'white' : 'primary.300'}
           _hover={{
-            bg: '#4FD1C5',
+            bg: 'secondary.300',
             color: 'white',
           }}
           px={12}
@@ -30,10 +30,10 @@ function SwitchButton({ isSelectedIndividual, onSelectionChange }: Props) {
         </Button>
         <Button
           onClick={() => onSelectionChange(SELECTION_MODES.TEAM)}
-          bgColor={!isSelectedIndividual ? '#166879' : 'white'}
-          color={!isSelectedIndividual ? 'white' : '#166879'}
+          bgColor={!isSelectedIndividual ? 'primary.300' : 'white'}
+          color={!isSelectedIndividual ? 'white' : 'primary.300'}
           _hover={{
-            bg: '#4FD1C5',
+            bg: 'secondary.300',
             color: 'white',
           }}
           px={12}

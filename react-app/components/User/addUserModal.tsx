@@ -65,7 +65,7 @@ function AddUserModal(props: AddUserModalProps) {
                   value={newUser.firstName}
                   onChange={handleInputChange}
                   placeholder="Prénom"
-                  focusBorderColor="#166879"
+                  focusBorderColor="primary.300"
                   isRequired
                   bg="white"
                 />
@@ -77,7 +77,7 @@ function AddUserModal(props: AddUserModalProps) {
                   value={newUser.lastName}
                   onChange={handleInputChange}
                   placeholder="Nom"
-                  focusBorderColor="#166879"
+                  focusBorderColor="primary.300"
                   isRequired
                   bg="white"
                 />
@@ -89,7 +89,7 @@ function AddUserModal(props: AddUserModalProps) {
                   value={newUser.email}
                   onChange={handleInputChange}
                   placeholder="Email"
-                  focusBorderColor="#166879"
+                  focusBorderColor="primary.300"
                   isRequired
                   bg="white"
                 />
@@ -97,7 +97,7 @@ function AddUserModal(props: AddUserModalProps) {
               <FormControl isRequired>
                 <Select
                   placeholder="Sélectionner une équipe"
-                  focusBorderColor="#166879"
+                  focusBorderColor="primary.300"
                   value={selectedTeam}
                   onChange={handleTeamSelectChange}
                   isRequired
@@ -124,7 +124,7 @@ function AddUserModal(props: AddUserModalProps) {
                   <Text ml={2}>Administrateur</Text>
                 </Flex>
               </FormControl>
-              <Button type="submit" bg="#166879" color="white">
+              <Button type="submit" bg="primary.300" color="white">
                 Ajouter
               </Button>
               {isOpenError && (

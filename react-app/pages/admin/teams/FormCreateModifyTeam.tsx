@@ -111,7 +111,7 @@ function FormCreateModifyTeam({
             placeholder="Nom de l'équipe"
             value={teamName}
             onChange={(e) => setTeamName(e.target.value)}
-            focusBorderColor="#166879"
+            focusBorderColor="primary.300"
             isRequired
             bg="white"
           />
@@ -134,12 +134,12 @@ function FormCreateModifyTeam({
           </FormControl>
         )}
         {teamToModify === null && (
-          <Button bg="#166879" color="white" onClick={handleSubmit}>
+          <Button bg="primary.300" color="white" onClick={handleSubmit}>
             Créer une équipe
           </Button>
         )}
         {teamToModify !== null && (
-          <Button bg="#166879" color="white" onClick={handleSubmit}>
+          <Button bg="primary.300" color="white" onClick={handleSubmit}>
             Enregistrer les modifications
           </Button>
         )}
