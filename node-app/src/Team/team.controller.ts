@@ -1,10 +1,14 @@
-import { Controller, Get, Post, Put, Delete, Body, Query, Param, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Query, Param, Request, Response, HttpException, HttpStatus, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { Team } from './team.schema';
 import { TeamDto, CreateTeamDto, ModifyTeamDto } from './dto/team.dto';
 import { Types } from 'mongoose';
 import { TeamIdDto } from './dto/teamId.dto';
 import { TeamUpdateDto } from './dto/teamUpdate.dto';
+import { join } from 'path';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
 
 @Controller('teams')
 export class TeamController {
@@ -69,10 +73,10 @@ export class TeamController {
   @Put('update/:teamId')
   async updateUserProfile(
     @Param('teamId') teamId: string,
-    @Body() teamUpdateDto: TeamUpdateDto, 
+    @Body() teamUpdateDto: TeamUpdateDto,
   ): Promise<{ message: string }> {
     try {
-      await this.teamService.updateTeam(teamId, teamUpdateDto); 
+      await this.teamService.updateTeam(teamId, teamUpdateDto);
       return { message: 'Profil utilisateur mis à jour avec succès' };
     } catch (error) {
       console.error("Erreur lors de la mise à jour du profil de l'utilisateur:", error);
@@ -83,5 +87,37 @@ export class TeamController {
   @Delete('delete/:id')
   async delete(@Param('id') TeamId: Types.ObjectId): Promise<void> {
     return this.teamService.delete(TeamId);
+  }
+
+  @Post('upload/:teamId')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads', // Le répertoire où les fichiers seront stockés
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          // Utilisation de la fonction de rappel pour générer un nom de fichier unique
+          cb(null, file.originalname + '-' + uniqueSuffix);
+        },
+      }),
+    }),
+  )
+  async uploadTeamPicture(
+    @Param('teamId') teamId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<Team> {
+    return this.teamService.updateTeamPicture(teamId, {
+      picturePath: file.filename,
+    });
+    //return of({imagepath: file.filename});
+  }
+
+  @Get('profile-picture/:teamPicture')
+  FindTeamPicture(
+    @Param('teamPicture') teamPicture,
+    @Response() res,
+  ): Promise<Team> {
+    return res.sendFile(join(process.cwd(), 'uploads/' + teamPicture));
   }
 }

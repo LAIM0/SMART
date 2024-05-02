@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import {
   FormControl,
+  FormLabel,
   Input,
   Flex,
   Button,
@@ -107,6 +108,7 @@ function FormCreateModifyTeam({
     <FormControl>
       <Flex flexDirection="column" gap={4} borderRadius={8}>
         <FormControl isRequired>
+          <FormLabel>Nom de l&apos;équipe</FormLabel>
           <Input
             placeholder="Nom de l'équipe"
             value={teamName}
@@ -118,8 +120,8 @@ function FormCreateModifyTeam({
         </FormControl>
         {teamToModify !== null && (
           <FormControl>
+            <FormLabel>Chef d&apos;équipe</FormLabel>
             <Select
-              placeholder="Chef d'équipe"
               value={selectedLeaderId}
               onChange={(e) => setSelectedLeaderId(e.target.value)}
               focusBorderColor="primary.300"

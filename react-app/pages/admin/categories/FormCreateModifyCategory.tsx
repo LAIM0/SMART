@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from 'prop-types';
 
-import { FormControl, Input, Flex, Button } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Flex, Button } from '@chakra-ui/react';
 import CategoryApiManager from '../../../api/CategoryApiManager';
 import CategoryData from '../../../interfaces/categoryInterface';
 
@@ -63,6 +63,7 @@ function FormCreateModifyCategory({
     <FormControl>
       <Flex flexDirection="column" gap={4} borderRadius={8}>
         <FormControl isRequired>
+          <FormLabel>Nom de la catégorie</FormLabel>
           <Input
             placeholder="Nom de la catégorie"
             value={categoryName}
