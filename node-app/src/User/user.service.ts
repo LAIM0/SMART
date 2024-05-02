@@ -28,7 +28,7 @@ export class UserService {
     private mailService: MailService,
     private teamService: TeamService,
     private categoryService: CategoryService,
-  ) { }
+  ) {}
 
   async createUser(
     email: string,
@@ -298,16 +298,21 @@ export class UserService {
   }
 
   async findDefaultAdmin(): Promise<User> {
-    return await this.userModel.findOne({ email: 'admin@coexya.com' }).exec();
+    return await this.userModel
+      .findOne({ email: process.env.DEFAULT_ADMIN_USERNAME })
+      .exec();
   }
 
   async createDefaultAdminIfNotExists(): Promise<void> {
     const defaultAdmin = await this.findDefaultAdmin();
     if (!defaultAdmin) {
       const saltOrRounds = 10;
-      const hashedPassword = await bcrypt.hash('root', saltOrRounds);
+      const hashedPassword = await bcrypt.hash(
+        process.env.DEFAULT_ADMIN_PASSWORD,
+        saltOrRounds,
+      );
       const newUser = new this.userModel({
-        email: 'admin@coexya.com',
+        email: process.env.DEFAULT_ADMIN_USERNAME,
         passwordHash: hashedPassword,
         lastName: 'Admin',
         firstName: 'Admin',
@@ -394,12 +399,15 @@ export class UserService {
 
   async findByTeamId(teamId: string): Promise<User[]> {
     try {
-
-      const users = await this.userModel.find({ teamId: teamId }).select('id firstName lastName').exec();
+      const users = await this.userModel
+        .find({ teamId: teamId })
+        .select('id firstName lastName')
+        .exec();
       return users;
     } catch (error) {
-      throw new Error(`Error finding users for team ID ${teamId}: ${error.message}`);
+      throw new Error(
+        `Error finding users for team ID ${teamId}: ${error.message}`,
+      );
     }
   }
-
 }
