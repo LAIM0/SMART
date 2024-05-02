@@ -12,6 +12,7 @@ import { AuthModule } from './Auth/auth.module';
 import { MailService } from './mail/mail.service';
 import { ScheduleModule } from './Scheduler/schedule.module';
 import { MailModule } from './mail/mail.module';
+import { SettingsModule } from './Settings/settings.module';
 
 const mongoUsername = process.env.MONGO_USERNAME;
 const mongoPassword = process.env.MONGO_PASSWORD;
@@ -32,6 +33,7 @@ const mongoDb = process.env.MONGO_DB;
     AuthModule,
     ScheduleModule,
     MailModule,
+    SettingsModule
   ],
   controllers: [AppController],
   providers: [AppService, MailModule],

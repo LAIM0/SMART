@@ -5,6 +5,7 @@ const ENTITIES = {
   TEAM: 'teams',
   COMPLETED: 'completed',
   CATEGORY: 'categories',
+  SETTINGS: 'settings',
 };
 
 // ensemble des ENDPOINTS
@@ -40,11 +41,19 @@ const ENDPOINTS = {
     TEAM_MODIFY: (teamId: string) => `/${ENTITIES.TEAM}/modify/${teamId}`,
   },
   CATEGORY: {
-    CATEGORY_GET_BY_ID: (categoryId: string) => `/${ENTITIES.CATEGORY}/byId/${categoryId}`,
+    CATEGORY_GET_BY_ID: (categoryId: string) =>
+      `/${ENTITIES.CATEGORY}/byId/${categoryId}`,
     CATEGORY_GET_ALL: () => `/${ENTITIES.CATEGORY}/all`,
     CATEGORY_CREATE: () => `/${ENTITIES.CATEGORY}/create`,
-    CATEGORY_DELETE: (categoryId: string) => `/${ENTITIES.CATEGORY}/delete/${categoryId}`,
-    CATEGORY_MODIFY: (categoryId: string) => `/${ENTITIES.CATEGORY}/modify/${categoryId}`,
+    CATEGORY_DELETE: (categoryId: string) =>
+      `/${ENTITIES.CATEGORY}/delete/${categoryId}`,
+    CATEGORY_MODIFY: (categoryId: string) =>
+      `/${ENTITIES.CATEGORY}/modify/${categoryId}`,
+  },
+  SETTINGS: {
+    SETTINGS_GET_ALL: () => `/${ENTITIES.SETTINGS}/all`,
+    SETTINGS_CREATE: () => `/${ENTITIES.SETTINGS}/create`,
+    SETTINGS_MODIFY: () => `/${ENTITIES.SETTINGS}/modify`,
   },
 };
 

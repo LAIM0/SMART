@@ -194,7 +194,7 @@ function Challenges() {
             _hover={{
               bg:
                 category.categoryName === currentCategory.categoryName
-                  ? '166879'
+                  ? '#166879'
                   : '#F1F1F1',
               cursor: 'pointer',
             }}
