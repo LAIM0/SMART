@@ -54,9 +54,7 @@ function AdminTeams() {
       const allTeams = await TeamApiManager.fetchTeams();
       // Récupérer les détails de l'utilisateur chef d'équipe pour chaque équipe
       const teamsWithLeadersAndCount = await Promise.all(
-
         allTeams.map(async (team: TeamData) => {
-
           const users = await getFromTeam(team.id);
           console.log('count', users.length);
 

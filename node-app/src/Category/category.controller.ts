@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
 import { CategoryService } from './category.service';
 import { Category } from './category.schema';
 import { Types } from 'mongoose';
+import { ChallengeCountResponse } from './interfaces/category.interface';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { ModifyCategoryDto } from './dto/modify-category.dto';
 
@@ -22,6 +23,11 @@ export class CategoryController {
   @Get('/byId/:id')
   async findByCategoryID(@Param('id') CategoryId: Types.ObjectId): Promise<Category> {
     return this.categoryService.findByCategoryID(CategoryId);
+  }
+
+  @Get('/countChallenge/:id')
+  async countChallenge(@Param('id') categoryId: Types.ObjectId): Promise<number> {
+    return this.categoryService.countChallenge(categoryId);
   }
 
   @Post('/create')

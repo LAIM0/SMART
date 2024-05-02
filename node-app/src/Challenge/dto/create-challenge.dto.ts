@@ -4,7 +4,7 @@ import { Periodicity } from 'utils/constants';
 
 export class CreateChallengeDto {
   @IsOptional()
-  category?: Types.ObjectId;
+  category?: string;
 
   @IsString()
   @IsNotEmpty()

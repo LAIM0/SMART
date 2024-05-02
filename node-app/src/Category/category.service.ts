@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Category, CategoryDocument } from './category.schema';
-import { CategoryInterface } from './interfaces/category.interface';
+import { CategoryInterface, ChallengeCountResponse } from './interfaces/category.interface';
 import { Challenge, ChallengeDocument } from 'src/Challenge/challenge.schema';
 
 @Injectable()
@@ -81,6 +81,15 @@ export class CategoryService {
     } catch (error) {
       console.error('Erreur lors de la suppression des données :', error);
       throw error;
+    }
+  }
+
+  async countChallenge(CategoryId: Types.ObjectId): Promise<number> {
+    try {
+      const count = (await this.challengeModel.find({ category: CategoryId }).exec()).length
+      return count;
+    } catch (error) {
+      throw new Error('Erreur lors du dénombrement de challenge dans la catégorie : ' + error.message);
     }
   }
 

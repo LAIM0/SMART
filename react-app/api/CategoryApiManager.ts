@@ -5,12 +5,7 @@ import CategoryData, {
   CategoryDataWithDate,
 } from '../interfaces/categoryInterface';
 
-interface NewCategory {
-  categoryName: string;
-  creationDate: Date;
-}
-
-let newCategory = {
+const newCategory = {
   categoryName: 'string',
   creationDate: new Date(),
 };
@@ -87,6 +82,20 @@ class CategoryApiManager {
     } catch (error) {
       throw new Error(
         `Erreur lors de la suppression de la catégorie: ${error}`
+      );
+    }
+  }
+
+  static async getChallengeCount(categoryId: string): Promise<number> {
+    try {
+      const response = await ApiMethods.get(
+        ENDPOINTS.CATEGORY.CATEGORY_COUNT(categoryId)
+      );
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        `Erreur lors de la récupération des categories: ${error}`
       );
     }
   }

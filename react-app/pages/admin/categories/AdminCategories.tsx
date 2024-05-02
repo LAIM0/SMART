@@ -38,7 +38,19 @@ function AdminCategories() {
     const fetchData = async () => {
       try {
         const allCategories = await CategoryApiManager.getAll();
-        setCategories(allCategories);
+        const categoriesWithCount = await Promise.all(
+          allCategories.map(async (category: CategoryData) => {
+            const count = await CategoryApiManager.getChallengeCount(
+              category.id
+            );
+            console.log('count', count);
+            return {
+              ...category,
+              challengeCount: count,
+            };
+          })
+        );
+        setCategories(categoriesWithCount);
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
       }
@@ -109,7 +121,7 @@ function AdminCategories() {
             <Tr key={category.id}>
               <Td width="60%">{category.categoryName}</Td>
               <Td width="20%" textAlign="left">
-                XX
+                {category.challengeCount ? category.challengeCount : '0'}
               </Td>
 
               <Td width="20%" textAlign="right" paddingRight="24px">

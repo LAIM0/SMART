@@ -7,8 +7,8 @@ export type ChallengeDocument = Challenge & Document;
 
 @Schema()
 export class Challenge {
-  @Prop({ type: Types.ObjectId, ref: 'Category' })
-  category?: Types.ObjectId;
+  @Prop()
+  category?: string;
 
   @Prop()
   title: string;
