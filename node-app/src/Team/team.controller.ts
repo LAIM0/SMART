@@ -8,6 +8,10 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  Query,
+  UseInterceptors,
+  UploadedFile,
+  Res,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -25,7 +29,7 @@ import { TeamUpdateDto } from './dto/teamUpdate.dto';
 import { join } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
+import { Response } from 'express'; // Make sure to import Response from 'express'
 
 @ApiTags('Teams')
 @Controller('teams')
@@ -106,7 +110,6 @@ export class TeamController {
     }
   }
 
-
   @Post('/create')
   async createTeam(@Body() teamData: CreateTeamDto) {
     return this.teamService.create(teamData);
@@ -156,6 +159,27 @@ export class TeamController {
     }
   }
 
+  @Get('profile-picture/:teamPicture')
+  @ApiOperation({ summary: 'Retrieve a team picture' })
+  @ApiParam({
+    name: 'teamPicture',
+    type: String,
+    required: true,
+    description: 'The filename of the team picture',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the team picture file',
+    content: { 'image/png': {}, 'image/jpeg': {} },
+  })
+  @ApiResponse({ status: 404, description: 'Picture not found' })
+  FindTeamPicture(
+    @Param('teamPicture') teamPicture,
+    @Res() res: Response,
+  ): any {
+    return res.sendFile(join(process.cwd(), 'uploads/' + teamPicture));
+  }
+
   @Post('upload/:teamId')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -178,13 +202,5 @@ export class TeamController {
       picturePath: file.filename,
     });
     //return of({imagepath: file.filename});
-  }
-
-  @Get('profile-picture/:teamPicture')
-  FindTeamPicture(
-    @Param('teamPicture') teamPicture,
-    @Response() res,
-  ): Promise<Team> {
-    return res.sendFile(join(process.cwd(), 'uploads/' + teamPicture));
   }
 }

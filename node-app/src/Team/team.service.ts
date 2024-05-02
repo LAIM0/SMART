@@ -3,7 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Team, TeamDocument } from './team.schema';
 import { Model, Types } from 'mongoose';
-import { ModifyTeamDto, CreateTeamDto, TeamDto } from '../Team/dto/team.dto';
+import { CreateTeamDto, TeamDto } from './dto/team.dto';
 import { User, UserDocument } from 'src/User/user.schema';
 import { TeamIdDto } from './dto/teamId.dto';
 import { CompletedService } from 'src/Completed/completed.service';
@@ -18,7 +18,7 @@ export class TeamService {
     private completedService: CompletedService,
     @Inject(forwardRef(() => UserService))
     private userService: UserService,
-  ) { }
+  ) {}
 
   async findAll(): Promise<TeamDto[]> {
     const teams = await this.teamModel.find().exec();
@@ -141,7 +141,9 @@ export class TeamService {
 
     try {
       // Rechercher l'équipe par son nom "Équipe par défaut"
-      const defaultTeam = await this.teamModel.findOne({ name: 'Équipe par défaut' });
+      const defaultTeam = await this.teamModel.findOne({
+        name: 'Équipe par défaut',
+      });
 
       if (!defaultTeam) {
         throw new Error("L'équipe par défaut n'existe pas.");
@@ -151,10 +153,12 @@ export class TeamService {
       const usersToUpdate = await this.userModel.find({ teamId: TeamId });
 
       // Réattribuer chaque utilisateur à l'équipe par défaut
-      await Promise.all(usersToUpdate.map(async (user) => {
-        user.teamId = defaultTeam._id; // Utilisation de l'ID de l'équipe par défaut
-        await user.save();
-      }));
+      await Promise.all(
+        usersToUpdate.map(async (user) => {
+          user.teamId = defaultTeam._id; // Utilisation de l'ID de l'équipe par défaut
+          await user.save();
+        }),
+      );
 
       // Supprimer l'équipe
       await this.teamModel.deleteOne({ _id: TeamId });
@@ -180,11 +184,11 @@ export class TeamService {
   }
 
   async seedTeam(): Promise<void> {
-
-    const existingTeam = await this.teamModel.findOne({ name: 'Équipe par défaut' });
+    const existingTeam = await this.teamModel.findOne({
+      name: 'Équipe par défaut',
+    });
 
     if (!existingTeam) {
-
       // Créer une instance par défaut
       const defaultTeam = new this.teamModel({ name: 'Équipe par défaut' });
 
