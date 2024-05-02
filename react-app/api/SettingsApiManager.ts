@@ -18,18 +18,19 @@ class SettingsApiManager {
 
   static async create(settingsData: SettingsData): Promise<void> {
     try {
-      await ApiMethods.post(
-        ENDPOINTS.SETTINGS.SETTINGS_CREATE(),
-        settingsData
-      );
+      await ApiMethods.post(ENDPOINTS.SETTINGS.SETTINGS_CREATE(), settingsData);
     } catch (error) {
       throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
     }
   }
 
-  static async modify(settingsData: SettingsData): Promise<void> {
+  static async modify(settingsData: SettingsData): Promise<SettingsData> {
     try {
-      await ApiMethods.put(ENDPOINTS.SETTINGS.SETTINGS_MODIFY(), settingsData);
+      const response = await ApiMethods.put(
+        ENDPOINTS.SETTINGS.SETTINGS_MODIFY(),
+        settingsData
+      );
+      return response.data;
     } catch (error) {
       throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
     }

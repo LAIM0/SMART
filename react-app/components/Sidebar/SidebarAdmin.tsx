@@ -42,12 +42,12 @@ const Pages: Page[] = [
   {
     name: 'Équipes',
     url: '/teams',
-    icon: SettingsIcon,
+    icon: TeamIcon,
   },
   {
     name: 'Paramètres',
     url: '/settings',
-    icon: TeamIcon,
+    icon: SettingsIcon,
   },
 ];
 
