@@ -3,13 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './User/user.module';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { ChallengeModule } from './Challenge/challenge.module';
 import { TeamModule } from './Team/team.module';
 import { CategoryModule } from './Category/category.module';
 import { CompletedModule } from './Completed/completed.module';
 import { AuthModule } from './Auth/auth.module';
-import { MailService } from './mail/mail.service';
 import { ScheduleModule } from './Scheduler/schedule.module';
 import { MailModule } from './mail/mail.module';
 
