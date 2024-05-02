@@ -208,31 +208,34 @@ function Profile() {
 
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
-      <Flex alignItems="center" justifyContent="space-between">
-        <Flex alignItems="center">
-          <Text as="h1" ml="8px" gap="10px">
+      <Flex alignItems="center" justifyContent="space-between" gap="16px">
+        <Flex alignItems="center" flex="1" maxWidth="200px">
+          <Text
+            as="h1"
+            ml="8px"
+            gap="10px"
+            overflow="hidden"
+            whiteSpace="nowrap"
+            textOverflow="ellipsis"
+          >
             Mon profil
           </Text>
         </Flex>
-        <Flex>
+        <Flex flexDirection={['column', 'row']} gap={['0', '4px']}>
           <Button
             bg="primary.300"
             color="white"
             onClick={handleEditProfileClick}
+            marginBottom={['8px', '0']}
           >
             Modifier
           </Button>
-          <Button
-            bg="primary.300"
-            color="white"
-            marginLeft="4px"
-            onClick={handleLogoutClick}
-          >
+          <Button bg="primary.300" color="white" onClick={handleLogoutClick}>
             Se déconnecter
           </Button>
         </Flex>
       </Flex>
-      <Flex flexDirection="row" alignItems="center" gap="16px">
+      <Flex flexDirection={['row', 'row']} alignItems="center" gap="16px">
         <ChangeProfilePictureModal
           profilePicture={profilePicture}
           onSubmit={(file) => handleUploadProfilePicture(file)}
@@ -257,6 +260,7 @@ function Profile() {
           )}
         </Box>
       </Flex>
+
       {user && (
         <UserProfileUpdateModal
           isOpen={isUpdateModalOpen}

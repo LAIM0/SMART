@@ -8,7 +8,8 @@ import {
   Input,
   useToast,
   Flex,
-  Image
+  Image,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import logoApp from '../Sidebar/Ecoexya.png';
 
@@ -19,10 +20,12 @@ interface ResetPasswordFormProps {
 const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [passwordsMatchError, setPasswordsMatchError] = useState(false);
   const toast = useToast();
 
   const handleResetPassword = async () => {
     if (newPassword !== confirmNewPassword) {
+      setPasswordsMatchError(true);
       toast({
         title: 'Erreur',
         description: 'Les mots de passe ne correspondent pas',
@@ -70,12 +73,21 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
         duration: 5000,
         isClosable: true,
       });
+
+      localStorage.setItem(
+        'resetErrorMessage',
+        'Les mots de passe sont differents'
+      );
     }
   };
 
   return (
-    <Flex width="full" align="center" justifyContent="center" minHeight="100vh">
-       
+    <Flex
+      width="full"
+      align="center"
+      justifyContent="center"
+      minHeight="100vh"
+    >
       <Box
         p={8}
         maxWidth="500px"
@@ -104,17 +116,27 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
             id="confirm-new-password"
             type="password"
             value={confirmNewPassword}
-            onChange={(e) => setConfirmNewPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmNewPassword(e.target.value);
+              setPasswordsMatchError(false); // Réinitialiser le message d'erreur lorsque l'utilisateur change la saisie
+            }}
+            isInvalid={passwordsMatchError}
           />
+          {passwordsMatchError && (
+            <FormErrorMessage>
+              Les mots de passe sont différents
+            </FormErrorMessage>
+          )}
         </FormControl>
         <Button
-              bg="#166879"
-              color="white"
-              variant="outline"
-              type="submit"
-              width="full"
-              mt={4}
-            onClick={handleResetPassword}>
+          bg="#166879"
+          color="white"
+          variant="outline"
+          type="submit"
+          width="full"
+          mt={4}
+          onClick={handleResetPassword}
+        >
           Réinitialiser le mot de passe
         </Button>
       </Box>
