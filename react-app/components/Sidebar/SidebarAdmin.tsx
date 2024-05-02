@@ -44,6 +44,11 @@ const Pages: Page[] = [
     url: '/teams',
     icon: SettingsIcon,
   },
+  {
+    name: 'Paramètres',
+    url: '/settings',
+    icon: TeamIcon,
+  },
 ];
 
 function Sidebar() {

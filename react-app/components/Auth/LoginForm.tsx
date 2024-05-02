@@ -136,7 +136,7 @@ export default function LoginForm() {
                 </InputGroup>
               </FormControl>
               <Button
-                bg="#166879"
+                bg="primary.300"
                 color="white"
                 variant="outline"
                 type="submit"

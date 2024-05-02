@@ -59,7 +59,7 @@ function ChallengeCard({
           </Box>
 
           <Box
-            bg={isRecentlyCompleted ? 'white' : '#4FD1C5'}
+            bg={isRecentlyCompleted ? 'white' : 'secondary.300'}
             py="8px"
             px="16px"
             borderRadius={8}
