@@ -129,14 +129,36 @@ export class TeamService {
   }
 
   async delete(TeamId: Types.ObjectId): Promise<void> {
+    const teamToDelete = await this.teamModel.findById(TeamId);
 
-    const teamToDelete = await this.teamModel.findById(TeamId)
+    if (!teamToDelete) {
+      throw new Error("L'équipe spécifiée n'existe pas.");
+    }
 
     if (teamToDelete.name === 'Équipe par défaut') {
       throw new Error("Vous n'êtes pas autorisé à supprimer cette entité.");
     }
+
     try {
+      // Rechercher l'équipe par son nom "Équipe par défaut"
+      const defaultTeam = await this.teamModel.findOne({ name: 'Équipe par défaut' });
+
+      if (!defaultTeam) {
+        throw new Error("L'équipe par défaut n'existe pas.");
+      }
+
+      // Récupérer les utilisateurs de l'équipe à supprimer
+      const usersToUpdate = await this.userModel.find({ teamId: TeamId });
+
+      // Réattribuer chaque utilisateur à l'équipe par défaut
+      await Promise.all(usersToUpdate.map(async (user) => {
+        user.teamId = defaultTeam._id; // Utilisation de l'ID de l'équipe par défaut
+        await user.save();
+      }));
+
+      // Supprimer l'équipe
       await this.teamModel.deleteOne({ _id: TeamId });
+
       console.log('Données supprimées avec succès');
     } catch (error) {
       console.error('Erreur lors de la suppression des données :', error);

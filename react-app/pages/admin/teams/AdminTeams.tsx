@@ -186,7 +186,7 @@ function AdminTeams() {
   return (
     <Flex flexDirection="column" gap="16px">
       <Flex gap="16px">
-        <Text as="h1">Gestion des utilisateurs </Text>
+        <Text as="h1">Gestion des équipes </Text>
         <Button
           bg="primary.300"
           color="white"

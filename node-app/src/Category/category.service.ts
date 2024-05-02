@@ -3,11 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Category, CategoryDocument } from './category.schema';
 import { CategoryInterface } from './interfaces/category.interface';
+import { Challenge, ChallengeDocument } from 'src/Challenge/challenge.schema';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
+    @InjectModel(Challenge.name) private challengeModel: Model<ChallengeDocument>,
   ) { }
 
   async findAll(): Promise<Category[]> {
@@ -45,14 +47,36 @@ export class CategoryService {
   }
 
   async delete(CategoryId: Types.ObjectId): Promise<void> {
+    const categoryToDelete = await this.categoryModel.findById(CategoryId);
 
-    const categoryToDelete = await this.categoryModel.findById(CategoryId)
+    if (!categoryToDelete) {
+      throw new Error("La catégorie spécifiée n'existe pas.");
+    }
 
     if (categoryToDelete.categoryName === 'Autre') {
       throw new Error("Vous n'êtes pas autorisé à supprimer cette entité.");
     }
+
     try {
+      // Rechercher la catégorie par son nom "Autre"
+      const otherCategory = await this.categoryModel.findOne({ categoryName: 'Autre' });
+
+      if (!otherCategory) {
+        throw new Error("La catégorie 'Autre' n'existe pas.");
+      }
+
+      // Récupérer les défis de la catégorie à supprimer
+      const challengesToUpdate = await this.challengeModel.find({ category: CategoryId });
+
+      // Réattribuer chaque défi à la catégorie "Autre"
+      await Promise.all(challengesToUpdate.map(async (challenge) => {
+        challenge.category = otherCategory._id; // Utilisation de l'ID de la catégorie "Autre"
+        await challenge.save();
+      }));
+
+      // Supprimer la catégorie
       await this.categoryModel.deleteOne({ _id: CategoryId });
+
       console.log('Données supprimées avec succès');
     } catch (error) {
       console.error('Erreur lors de la suppression des données :', error);
@@ -63,12 +87,12 @@ export class CategoryService {
 
   async seedCategories(): Promise<void> {
 
-    const existingCategory = await this.categoryModel.findOne({ categoryName: 'Autre'});
+    const existingCategory = await this.categoryModel.findOne({ categoryName: 'Autre' });
 
     if (!existingCategory) {
 
       // Créer une instance par défaut
-      const defaultCategory = new this.categoryModel({ categoryName: 'Autre' , creationDate: new Date});
+      const defaultCategory = new this.categoryModel({ categoryName: 'Autre', creationDate: new Date });
 
       // Insérer dans la base de données
       await defaultCategory.save();
