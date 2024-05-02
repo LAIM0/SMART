@@ -192,4 +192,28 @@ export class TeamService {
   async getUsersByTeamId(teamId: string): Promise<User[]> {
     return this.userModel.find({ teamId }).exec();
   }
+
+  async updateTeamName(teamId: string, newName: string): Promise<Team> {
+    try {
+      console.log('updateTeamName', newName);
+      const existingTeam = await this.teamModel.findOne({ name: newName });
+
+      if (existingTeam && existingTeam._id.toString() !== teamId) {
+        throw new Error('Un autre équipe a déjà ce nom');
+      }
+      const updatedTeam = await this.teamModel.findByIdAndUpdate(
+        teamId,
+        { name: newName },
+        { new: true },
+      );
+
+      if (!updatedTeam) {
+        throw new Error('Équipe non trouvée');
+      }
+
+      return updatedTeam;
+    } catch (error) {
+      throw new Error(`Échec de la mise à jour du nom de l'équipe: ${error}`);
+    }
+  }
 }

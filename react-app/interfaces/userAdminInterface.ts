@@ -6,6 +6,7 @@ interface User {
   teamId: string;
   isAdmin: boolean;
   passWordInitialized: boolean;
+  score?: number;
 }
 
 export default User;

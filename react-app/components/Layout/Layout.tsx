@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { ChakraProvider, Flex, extendTheme } from '@chakra-ui/react';
+import axios from 'axios';
 import Sidebar from '../Sidebar/Sidebar';
 import { SettingsData } from '../../interfaces/settingsInterface';
 import SettingsApiManager from '../../api/SettingsApiManager';
+import { UserData } from '../../interfaces/userInterface';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,6 +12,7 @@ interface LayoutProps {
 
 function Layout({ children }: LayoutProps): JSX.Element {
   const [windowWidth, setWindowWidth] = useState<number>(0);
+  const [isLeader, setIsLeader] = useState<boolean>(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -128,6 +131,30 @@ function Layout({ children }: LayoutProps): JSX.Element {
     });
     setTheme(customTheme);
   }, [settings]);
+
+  useEffect(() => {
+    const fetchTeamData = async () => {
+      try {
+        const response = await axios.get<UserData>(
+          'http://localhost:3001/users/me',
+          { withCredentials: true }
+        );
+
+        const userId = response.data.id;
+        const userResponse = await axios.get(
+          `http://localhost:3001/users/byId/${userId}`
+        );
+
+        if (userResponse.data.isLeader) {
+          setIsLeader(true);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+      }
+    };
+
+    fetchTeamData();
+  }, []);
 
   return (
     <ChakraProvider theme={theme}>

@@ -14,7 +14,7 @@ export class AdminTeamAuthGuard implements CanActivate {
 
     const user = await this.userService.findById(userId); 
 
-    if (user && user.isTeamAdmin) {
+    if (user && user.isLeader) {
       return true; 
     } else {
       throw new HttpException('Unauthorized access', HttpStatus.FORBIDDEN);

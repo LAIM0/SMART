@@ -210,7 +210,7 @@ export class UserController {
   @Get('check/adminTeam')
   @UseGuards(AdminTeamAuthGuard, AuthenticatedGuard)
   checkAdminTeamAuthentication(@Request() req) {
-    // if(req.user.isAdminTeam){
+    // if(req.user.isLeader){
     //   return { isAdminTeamLoggedIn: true };
     // }
     // else{

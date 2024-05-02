@@ -7,8 +7,10 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import logoApp from './Ecoexya.png';
 import { PodiumIcon, StarIcon, UserIcon } from '../../styles/icons';
+import { UserData } from '../../interfaces/userInterface';
 
 interface Page {
   name: string;
@@ -36,6 +38,7 @@ const Pages: Page[] = [
 
 function Sidebar() {
   const [windowWidth, setWindowWidth] = useState(0);
+  const [isLeader, setIsLeader] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -51,6 +54,28 @@ function Sidebar() {
   }, []);
 
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchTeamData = async () => {
+      try {
+        const response = await axios.get<UserData>(
+          'http://localhost:3001/users/me',
+          { withCredentials: true }
+        );
+
+        const userId = response.data.id;
+        const userResponse = await axios.get(
+          `http://localhost:3001/users/byId/${userId}`
+        );
+
+        setIsLeader(userResponse.data.isLeader);
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+      }
+    };
+
+    fetchTeamData();
+  }, []);
 
   return (
     <Flex

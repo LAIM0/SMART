@@ -131,4 +131,17 @@ async FindPicture(
     return this.teamService.getUsersByTeamId(teamId);
   }
 
+  @Put(':id')
+  async updateTeamName(
+    @Param('id') id: string,
+    @Body('name') newName: string,
+  ): Promise<any> {
+    try {
+      const updatedTeam = await this.teamService.updateTeamName(id, newName);
+      return { success: true, team: updatedTeam };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+
 }

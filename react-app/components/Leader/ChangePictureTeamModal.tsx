@@ -45,8 +45,6 @@ function ChangeTeamPictureModal(props: ChangeTeamPictureModalProps) {
     }
   };
 
-  console.log("picture dan smodal",picture);
-
   return (
     <>
       <Box onClick={handleOpenModal} cursor="pointer">

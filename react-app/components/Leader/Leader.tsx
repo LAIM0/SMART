@@ -20,6 +20,7 @@ import TeamData from '../../interfaces/teamInterface';
 import { UserData } from '../../interfaces/userInterface';
 import { handleAuthRouting } from '../../api/AuthApiManager';
 import User from '../../interfaces/userAdminInterface';
+import EditTeamNameModal from './EditTeamNameModal';
 
 function TeamLeader() {
   const router = useRouter();
@@ -29,6 +30,9 @@ function TeamLeader() {
   const [team, setTeam] = useState<TeamData | null>(null); // Correction du nom de la variable
   const [picture, setPicture] = useState<string | null>(null); // Correction du nom de la variable
   const [users, setUsers] = useState<User[]>([]);
+  const [isEditNameModalOpen, setIsEditNameModalOpen] = useState(false);
+  const [isOpenError, setIsOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchTeamData = async () => {
@@ -74,7 +78,16 @@ function TeamLeader() {
           const response = await axios.get(
             `http://localhost:3001/teams/${team?._id}/users`
           );
-          setUsers(response.data);
+          // Récupérer les scores des utilisateurs pour chaque utilisateur dans la liste
+          const usersWithScore = await Promise.all(
+            response.data.map(async (user: User) => {
+              const scoreResponse = await axios.get(
+                `http://localhost:3001/users/score?userId=${user._id}`
+              );
+              return { ...user, score: scoreResponse.data.score };
+            })
+          );
+          setUsers(usersWithScore);
         }
       } catch (error) {
         console.error('Failed to fetch team users:', error);
@@ -112,6 +125,31 @@ function TeamLeader() {
     }
   };
 
+  const handleEditTeamName = async (newName: string) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3001/teams/${team?._id}`,
+        { name: newName }
+      );
+
+      console.log('Team name updated:', response.data);
+      setTeam((prevTeam) => {
+        if (!prevTeam) return null;
+        return {
+          ...prevTeam,
+          name: newName,
+        };
+      });
+      setIsEditNameModalOpen(false);
+      setIsOpenError(false); // Réinitialiser l'état de l'erreur en cas de succès
+      setErrorMessage(''); // Effacer le message d'erreur en cas de succès
+    } catch (error) {
+      console.error('Failed to update team name:', error);
+      setIsOpenError(true);
+      setErrorMessage("Ce nom d'équipe existe déjà.");
+    }
+  };
+
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
       <Flex alignItems="center" justifyContent="space-between" gap="16px">
@@ -121,7 +159,11 @@ function TeamLeader() {
           </Text>
         </Flex>
         <Flex flexDirection={['column', 'row']} gap={['0', '4px']}>
-          <Button bg="primary.300" color="white">
+          <Button
+            bg="primary.300"
+            color="white"
+            onClick={() => setIsEditNameModalOpen(true)}
+          >
             Modifier
           </Button>
           {/* Autres boutons d'action si nécessaire */}
@@ -160,12 +202,21 @@ function TeamLeader() {
                 <Tr key={user._id}>
                   <Td>{user.lastName}</Td>
                   <Td>{user.firstName}</Td>
+                  <Td>{user.score}</Td>
                 </Tr>
               ))}
             </Tbody>
           </Table>
         </TableContainer>
       </Box>
+      <EditTeamNameModal
+        isOpen={isEditNameModalOpen}
+        onClose={() => setIsEditNameModalOpen(false)}
+        currentName={team?.name || ''}
+        onSubmit={handleEditTeamName}
+        isOpenError={isOpenError}
+        errorMessage={errorMessage}
+      />
     </Flex>
   );
 }
