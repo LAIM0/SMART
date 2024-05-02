@@ -162,7 +162,7 @@ function FormCreateChallenge({ refresh }: Props) {
     console.log('difficulty : ', difficulty);
 
     const requestBody = {
-      inputs: `[INST] Tu es responsable du département RSE d'une SSII ayant des bureaux en France. Chaque semaine tu inventes des défis en français qui peuvent être réalisés par les collaborateurs afin qu'ils aient un impact positif en transformant leurs habitudes. Cette semaine, créé un défi en français sur le thème "${themeChallenge}" de difficulté ${difficulty}/10. Réponds sous la forme : 'T: Titre amusant du défi (3 à 6 mots). D: Description (Action à faire, nombre de fois, durée) (1 phrase).\n[/INST]`,
+      inputs: `[INST] Tu es responsable du département RSE d'une SSII ayant des bureaux en France. Chaque semaine tu inventes des défis en français qui peuvent être réalisés par les collaborateurs afin qu'ils aient un impact positif en transformant leurs habitudes. Cette semaine, créé un défi en français sur le thème "${themeChallenge}" de difficulté ${difficulty}/10. Réponds sous la forme : 'T: Titre amusant du défi (3 à 6 mots). D: Description (Action à faire, nombre de fois, durée) (1 phrase). E: Explication pédagogique des bienfaits du défi\n[/INST]`,
       parameters: {
         return_full_text: false,
         max_new_tokens: 256,
@@ -197,8 +197,13 @@ function FormCreateChallenge({ refresh }: Props) {
 
   useEffect(() => {
     if (proposition) {
-      setTitle(proposition.split('T:')[1].split('D:')[0]);
-      setDescription(proposition.split('D:')[1]);
+      setTitle(
+        removeQuotes(removeSpaces(proposition.split('T: ')[1].split('D: ')[0]))
+      );
+      setDescription(
+        removeQuotes(removeSpaces(proposition.split('D: ')[1].split('E: ')[0]))
+      );
+      setPedagogicalExplanation(removeQuotes(proposition.split('E: ')[1]));
     }
   }, [proposition]);
 
@@ -209,6 +214,14 @@ function FormCreateChallenge({ refresh }: Props) {
     setIsLoading(false);
     setValidation(true);
   };
+
+  function removeQuotes(text: string) {
+    return text.replace(/^"+/, '').replace(/"+$/, '');
+  }
+
+  function removeSpaces(text: string) {
+    return text.replace(/\s+$/, '');
+  }
 
   return (
     <>
