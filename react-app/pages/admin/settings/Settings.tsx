@@ -45,16 +45,16 @@ function Settings() {
         await SettingsApiManager.modify(newSettings);
       toast.promise(Promise.resolve(updatedSettingsData), {
         success: {
-          title: 'Paramètres modifiées',
+          title: 'Couleurs modifiées',
           description: 'Rechargez la page pour mettre à jour',
         },
         error: {
           title: 'Erreur',
-          description: 'Les paramètres ne peuvent pas être modifiés',
+          description: 'Les couleurs ne peuvent pas être modifiés',
         },
         loading: {
           title: 'Chargement',
-          description: 'Mise à jour des paramètres en cours',
+          description: 'Mise à jour des couleurs en cours',
         },
       });
     }
@@ -80,8 +80,22 @@ function Settings() {
           headers: { 'Content-Type': 'multipart/form-data' },
         }
       );
+      toast.promise(Promise.resolve(response), {
+        success: {
+          title: 'Logo modifié',
+          description: 'Rechargez la page pour mettre à jour',
+        },
+        error: {
+          title: 'Erreur',
+          description: 'Le logo ne peut pas être modifié',
+        },
+        loading: {
+          title: 'Chargement',
+          description: 'Mise à jour du logo en cours',
+        },
+      });
       console.log('Upload successful:', response.data);
-      //setProfilePicture(response.data.profilePicturePath);
+      setLogo(response.data.logo);
     } catch (error) {
       /* empty */
     }
@@ -92,23 +106,44 @@ function Settings() {
       <Text as="h1">Paramètres</Text>
       {color1 &&
         color2 && ( // Vérifie si color1 et color2 sont définis
-          <>
-            <Text as="h2">Couleur 1</Text>
-            <ColorPicker
-              onColorChange={handleColorChange1}
-              initialColor={color1}
-            />
-            <Text as="h2">Couleur 2</Text>
-            <ColorPicker
-              onColorChange={handleColorChange2}
-              initialColor={color2}
-            />
-          </>
+          <Flex gap="48px" w="fit-content" mb="16px">
+            <Flex flexDirection="column" gap="4px" w="fit-content">
+              <Text as="h2">Couleur 1</Text>
+              <Text>Choisissez plutôt une couleur sombre</Text>
+              <ColorPicker
+                onColorChange={handleColorChange1}
+                initialColor={color1}
+              />
+            </Flex>
+            <Flex flexDirection="column" gap="4px" w="fit-content">
+              <Text as="h2">Couleur 2</Text>{' '}
+              <Text>Choisissez plutôt une couleur vive</Text>
+              <ColorPicker
+                onColorChange={handleColorChange2}
+                initialColor={color2}
+              />
+            </Flex>
+          </Flex>
         )}
-      <ChangeLogo onSubmit={handleUploadProfilePicture} profilePicture={logo} />
-      <Button bg="primary.300" onClick={handleClick} color="white">
-        Valider
+
+      <Button
+        bg="primary.300"
+        onClick={handleClick}
+        color="white"
+        w="fit-content"
+        px="48px"
+        mb="16px"
+      >
+        Valider les nouvelles couleurs
       </Button>
+      <Flex flexDirection="column" gap="4px">
+        <Text as="h2">Logo de l'app</Text>
+        <Text mb="4px">Cliquez ci-dessous pour modifier</Text>
+        <ChangeLogo
+          onSubmit={handleUploadProfilePicture}
+          profilePicture={logo}
+        />
+      </Flex>
     </Flex>
   );
 }
