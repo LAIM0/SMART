@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Flex, Text, Button, useToast } from '@chakra-ui/react';
 import SettingsApiManager from '../../../api/SettingsApiManager';
 import { SettingsData } from '../../../interfaces/settingsInterface';
-import ColorPicker from '../../../components/Buttons/Colorpicker';
+import ColorPicker from '../../../components/Buttons/ColorPicker';
 import ChangeLogo from './ChangeLogo';
 import axios from 'axios';
 
