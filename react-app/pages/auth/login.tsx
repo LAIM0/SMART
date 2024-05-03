@@ -9,6 +9,7 @@ import {
   AlertIcon,
 } from '@chakra-ui/react';
 import LoginForm from '../../components/Auth/LoginForm';
+import LayoutAuth from '../../components/Layout/LayouAuth';
 
 export default function LogIn() {
   const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(
@@ -26,7 +27,7 @@ export default function LogIn() {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
+    <LayoutAuth>
       <ColorModeProvider>
         <CSSReset />
         {resetSuccessMessage && (
@@ -39,6 +40,6 @@ export default function LogIn() {
         )}
         <LoginForm />
       </ColorModeProvider>
-    </ThemeProvider>
+    </LayoutAuth>
   );
 }

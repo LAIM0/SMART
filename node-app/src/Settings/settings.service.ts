@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Settings, SettingsDocument } from './settings.schema';
@@ -46,6 +46,19 @@ export class SettingsService {
       // Insérer dans la base de données
       await defaultSettings.save(); 
     }
+  }
+
+  async updateProfilePicture(
+    data: { logoPath: string },
+  ): Promise<Settings> {
+    const settings = await this.settingsModel.find().exec();
+      console.log(settings);
+      const settingsToUpdate = settings[0];
+      if (!settingsToUpdate) {
+        throw new Error("Le setting à mettre à jour n'existe pas.");
+      }
+    settingsToUpdate.logo = data.logoPath;
+    return settingsToUpdate.save();
   }
 }
 

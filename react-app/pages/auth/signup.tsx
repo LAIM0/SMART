@@ -6,14 +6,15 @@ import {
   CSSReset,
 } from '@chakra-ui/react';
 import SignupForm from '../../components/Auth/SignupForm';
+import LayoutAuth from '../../components/Layout/LayouAuth';
 
 export default function SignUp() {
   return (
-    <ThemeProvider theme={theme}>
+    <LayoutAuth>
       <ColorModeProvider>
         <CSSReset />
         <SignupForm />
       </ColorModeProvider>
-    </ThemeProvider>
+    </LayoutAuth>
   );
 }

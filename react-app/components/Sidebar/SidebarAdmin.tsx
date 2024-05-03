@@ -51,7 +51,11 @@ const Pages: Page[] = [
   },
 ];
 
-function Sidebar() {
+interface SidebarProps {
+  logoPath: string | undefined;
+}
+
+function Sidebar({ logoPath }: SidebarProps) {
   const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
@@ -85,8 +89,15 @@ function Sidebar() {
       boxShadow="xl"
       bottom={windowWidth < 500 ? '0' : 'auto'}
     >
-      {windowWidth > 500 && (
-        <Image src={logoApp.src} w="160px" alt="logo" m={4} />
+      {windowWidth > 500 && logoPath && (
+        <Image
+          w="100%"
+          p="8px"
+          objectFit="contain"
+          src={`http://localhost:3001/users/profile-picture/${logoPath}`}
+          alt={logoPath}
+          borderRadius="lg"
+        />
       )}
       {Pages.map((page) => (
         <Flex
