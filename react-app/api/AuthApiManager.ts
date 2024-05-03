@@ -139,7 +139,7 @@ export const initializePassword = async (email: string) => {
 };
 
 export const logout = async () => {
-  const response = await axios.get('http://localhost:3001/users/logout', {
+  const response = await axios.get(`${baseURL}/users/logout`, {
     withCredentials: true,
   });
   return response.data; // Si vous souhaitez renvoyer quelque chose en cas de succès

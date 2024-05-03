@@ -1,25 +1,32 @@
 import { Controller, Get, Post, Put, Delete, Body, Query, Param, Request, Response, HttpException, HttpStatus, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { Team } from './team.schema';
-import { TeamDto, CreateTeamDto, ModifyTeamDto } from './dto/team.dto';
+import { TeamDto, CreateTeamDto } from './dto/team.dto';
 import { Types } from 'mongoose';
 import { TeamIdDto } from './dto/teamId.dto';
 import { TeamUpdateDto } from './dto/teamUpdate.dto';
 import { join } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiConsumes } from '@nestjs/swagger';
 
+
+@ApiTags('Teams')
 @Controller('teams')
 export class TeamController {
   constructor(private readonly teamService: TeamService) { }
 
   @Get()
+  @ApiOperation({ summary: 'Retrieve all teams' })
+  @ApiResponse({ status: 200, description: 'Successfully retrieved all teams', type: [TeamDto] })
   async findAll(): Promise<TeamDto[]> {
     return this.teamService.findAll();
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new team' })
+  @ApiBody({ type: CreateTeamDto })
+  @ApiResponse({ status: 201, description: 'Team successfully created', type: TeamDto })
   async create(@Body() createTeamDto: CreateTeamDto): Promise<TeamDto> {
     return this.teamService.create(createTeamDto);
   }
@@ -54,7 +61,17 @@ export class TeamController {
       throw new Error('Unable to get users of team: ' + error.message);
     }
   }
+
+  @Post('/create')
+  async createTeam(@Body() teamData: CreateTeamDto) {
+    return this.teamService.create(teamData);
+  }
+
   @Get('byId/:teamId')
+  @ApiOperation({ summary: 'Find a team by its ID' })
+  @ApiParam({ name: 'teamId', type: String, required: true, description: 'The ID of the team' })
+  @ApiResponse({ status: 200, description: 'Team found', type: Team })
+  @ApiResponse({ status: 404, description: 'Team not found' })
   async findById(@Param('teamId') teamId: string): Promise<Team> {
     try {
       const team = await this.teamService.findById(teamId);
@@ -64,13 +81,12 @@ export class TeamController {
     }
   }
 
-
-  @Post('/create')
-  async createTeam(@Body() teamData: CreateTeamDto) {
-    return this.teamService.create(teamData);
-  }
-
   @Put('update/:teamId')
+  @ApiOperation({ summary: 'Update a team profile' })
+  @ApiParam({ name: 'teamId', type: String, required: true, description: 'ID of the team to update' })
+  @ApiBody({ type: TeamUpdateDto })
+  @ApiResponse({ status: 200, description: 'Team profile updated successfully' })
+  @ApiResponse({ status: 404, description: 'Team not found' })
   async updateUserProfile(
     @Param('teamId') teamId: string,
     @Body() teamUpdateDto: TeamUpdateDto,
@@ -85,6 +101,10 @@ export class TeamController {
   }
 
   @Delete('delete/:id')
+  @ApiOperation({ summary: 'Delete a team' })
+  @ApiParam({ name: 'id', type: String, required: true, description: 'ID of the team to delete' })
+  @ApiResponse({ status: 204, description: 'Team deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Team not found' })
   async delete(@Param('id') TeamId: Types.ObjectId): Promise<void> {
     return this.teamService.delete(TeamId);
   }
@@ -103,6 +123,10 @@ export class TeamController {
       }),
     }),
   )
+  @ApiOperation({ summary: 'Upload a team picture' })
+  @ApiParam({ name: 'teamId', type: String, required: true, description: 'ID of the team' })
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({ status: 200, description: 'Team picture uploaded successfully', type: Team })
   async uploadTeamPicture(
     @Param('teamId') teamId: string,
     @UploadedFile() file: Express.Multer.File,
@@ -114,6 +138,9 @@ export class TeamController {
   }
 
   @Get('profile-picture/:teamPicture')
+  @ApiOperation({ summary: 'Retrieve a team picture' })
+  @ApiParam({ name: 'teamPicture', type: String, required: true, description: 'The filename of the team picture' })
+  @ApiResponse({ status: 200, description: 'Returns the team picture file' })
   FindTeamPicture(
     @Param('teamPicture') teamPicture,
     @Response() res,
