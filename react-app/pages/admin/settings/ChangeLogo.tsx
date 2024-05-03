@@ -53,8 +53,9 @@ function ChangeLogo(props: ChangeProfilePictureModalProps) {
           <Image
             src={`http://localhost:3001/users/profile-picture/${profilePicture}`}
             alt="Profile Picture"
-            boxSize="150px"
+            w="150px"
             borderRadius="xl"
+            objectFit="contain"
           />
         ) : (
           <Box boxSize="150px" bg="gray.200" borderRadius="full" />
