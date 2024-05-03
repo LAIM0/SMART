@@ -10,6 +10,9 @@ export class Settings {
 
   @Prop()
   color2: string;
+
+  @Prop()
+  logo: string;
 }
 
 export const SettingsSchema = SchemaFactory.createForClass(Settings);
