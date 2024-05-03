@@ -45,9 +45,9 @@ async function bootstrap() {
   await app.listen(3001);
 
   // Exécution des seeds pour les données par défaut
-  app.get(CategoryService).seedCategories();
-  app.get(TeamService).seedTeam();
-  app.get(SettingsService).seedSettings();
+  await app.get(CategoryService).seedCategories();
+  await app.get(TeamService).seedTeam();
+  await app.get(SettingsService).seedSettings();
 
 }
 bootstrap();
