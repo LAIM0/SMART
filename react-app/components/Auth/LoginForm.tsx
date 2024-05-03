@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Flex,
   Box,
@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import { ViewIcon } from '@chakra-ui/icons';
 import logoApp from '../Sidebar/Ecoexya.png';
 import ForgotPasswordForm from './ForgotPasswordForm';
+import { LogoContext } from '../Layout/LayouAuth';
 
 interface LoginResponse {
   message: string;
@@ -99,7 +100,12 @@ export default function LoginForm() {
         alignItems="center"
       >
         <Box textAlign="center">
-          <Image src={logoApp.src} w="160px" alt="logo" m={4} />
+          <Image
+            src={`http://localhost:3001/users/profile-picture/${useContext(LogoContext)}`}
+            w="160px"
+            alt="logo"
+            m={4}
+          />
         </Box>
         <Box my={4} textAlign="left">
           {!showForgotPassword && (

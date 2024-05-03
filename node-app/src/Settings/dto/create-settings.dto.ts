@@ -5,6 +5,9 @@ export class CreateSettingsDto {
   @IsNotEmpty()
   color1: string;
 
+  @IsString()
   @IsNotEmpty()
   color2: string;
+
+  logo: string;
 }
