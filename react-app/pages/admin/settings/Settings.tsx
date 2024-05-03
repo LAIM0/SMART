@@ -3,6 +3,7 @@ import { Flex, Text, Button, useToast } from '@chakra-ui/react';
 import SettingsApiManager from '../../../api/SettingsApiManager';
 import { SettingsData } from '../../../interfaces/settingsInterface';
 import ColorPicker from '../../../components/Buttons/Colorpicker';
+import ChangeLogo from './ChangeLogo';
 
 function Settings() {
   const [color1, setColor1] = useState<string>();
@@ -81,6 +82,7 @@ function Settings() {
             />
           </>
         )}
+      <ChangeLogo/>
       <Button bg="primary.300" onClick={handleClick} color="white">
         Valider
       </Button>
