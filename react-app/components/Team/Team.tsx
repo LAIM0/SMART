@@ -1,20 +1,22 @@
 /* eslint-disable no-underscore-dangle */
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text, Button } from '@chakra-ui/react';
+import { Box, Flex, Text, Button, TableContainer, Table, Thead, Tr, Th, Tbody, Td } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { handleAuthRouting } from '../../api/AuthApiManager';
 import TeamApiManager from '../../api/TeamApiManager';
 import { UserData } from '../../interfaces/userInterface';
+import User from '../../interfaces/userAdminInterface';
 import ChangeTeamPictureModal from './ChangeTeamPictureModal';
-
+import { getFromTeam } from '../../api/UserApiManager';
 import ModalUpdateTeam from './ModalUpdateTeam';
 
 import TeamData from '../../interfaces/teamInterface';
 
 function Team() {
   const [teamId, setTeamId] = useState<any>(null);
+  const [users, setUsers] = useState<User[]>([]);
   const [teamPicture, setProfilePicture] = useState<string | null>(null);
   const [isUpdateTeamModalOpen, setIsUpdateTeamModalOpen] = useState(false);
   const [team, setTeam] = useState<TeamData>();
@@ -54,6 +56,32 @@ function Team() {
   useEffect(() => {
     fetchTeam();
   }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        if (team) {
+          console.log('Fetching users', teamId);
+          // Vérifiez si team est défini
+          const usersOfTeam = await getFromTeam(teamId);
+          // Récupérer les scores des utilisateurs pour chaque utilisateur dans la liste
+          const usersWithScore = await Promise.all(
+            usersOfTeam.map(async (user: User) => {
+              const scoreResponse = await axios.get(
+                `http://localhost:3001/users/score?userId=${user._id}`
+              );
+              return { ...user, score: scoreResponse.data.score };
+            })
+          );
+          setUsers(usersWithScore);
+        }
+      } catch (error) {
+        console.error('Failed to fetch team users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, [team]);
 
   const handleUploadTeamPicture = async (file: File) => {
     try {
@@ -138,6 +166,30 @@ function Team() {
           )}
         </Box>
       </Flex>
+      <Box>
+        <Text as="h3" marginBottom={['8px', '0']}>Membres de l&apos;équipe</Text>
+        {/* Tableau pour afficher la liste des utilisateurs de l'équipe */}
+        <TableContainer bg="white" borderRadius={16}>
+          <Table variant="simple">
+            <Thead bg="secondary.100">
+              <Tr>
+                <Th>Nom</Th>
+                <Th>Prénom</Th>
+                <Th>Score</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {users.map((user) => (
+                <Tr key={user._id}>
+                  <Td>{user.lastName}</Td>
+                  <Td>{user.firstName}</Td>
+                  <Td>{user.score}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Box>
       {team && (
         <ModalUpdateTeam
           isOpen={isUpdateTeamModalOpen}
