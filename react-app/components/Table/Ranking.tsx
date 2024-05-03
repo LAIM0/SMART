@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import SwitchButton, {
-  SELECTION_MODES,
-} from '../../components/Buttons/SwitchButton';
+import SwitchButton, { SELECTION_MODES } from '../Buttons/SwitchButton';
 import { handleAuthRouting } from '../../api/AuthApiManager';
-import RankTableUser from '../../components/Table/RankTableUser';
-import RankTableTeam from '../../components/Table/RankTableTeam';
+import RankTableUser from './RankTableUser';
+import RankTableTeam from './RankTableTeam';
 
 function Ranking() {
   const [isIndividual, setIsIndividual] = useState(SELECTION_MODES.INDIVIDUAL); // La valeur initiale peut être true ou false
