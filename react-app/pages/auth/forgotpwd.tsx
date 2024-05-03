@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 import ResetPasswordForm from '../../components/Auth/ResetPasswordForm';
 import { GetServerSidePropsContext } from 'next'; // Assurez-vous du chemin correct
+import LayoutAuth from '../../components/Layout/LayouAuth';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { query } = context;
@@ -33,12 +34,12 @@ const ForgotPasswordPage: React.FC<{ token: string }> = ({ token }) => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <LayoutAuth>
       <ColorModeProvider>
         <CSSReset />
         <ResetPasswordForm token={token} />
       </ColorModeProvider>
-    </ThemeProvider>
+    </LayoutAuth>
   );
 };
 

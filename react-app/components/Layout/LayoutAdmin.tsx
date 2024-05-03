@@ -10,6 +10,7 @@ interface LayoutProps {
 
 function Layout({ children }: LayoutProps): JSX.Element {
   const [windowWidth, setWindowWidth] = useState<number>(0);
+  const [logoPath, setLogoPath] = useState<string>();
 
   useEffect(() => {
     const handleResize = () => {
@@ -151,12 +152,13 @@ function Layout({ children }: LayoutProps): JSX.Element {
       });
       setTheme(customTheme);
     }
+    setLogoPath(settings?.logo);
   }, [settings]);
 
   return (
     <ChakraProvider theme={theme}>
       <Flex>
-        <SidebarAdmin />
+        <SidebarAdmin logoPath={logoPath} />
         <Flex
           height="100vh"
           marginLeft={windowWidth < 500 ? '0px' : '250px'}

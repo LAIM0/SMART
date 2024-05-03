@@ -50,19 +50,31 @@ export class SettingsController {
     return this.settingsService.modify(settingsData);
   }
 
-  // @UseGuards(AdminAuthGuard)
-  // @Post('/upload')
-  // @UseInterceptors(
-  //   FileInterceptor('file', {
-  //     storage: diskStorage({
-  //       destination: './uploads', // Le répertoire où les fichiers seront stockés
-  //       filename: (req, file, cb) => {
-  //         const uniqueSuffix =
-  //           Date.now() + '-' + Math.round(Math.random() * 1e9);
-  //         // Utilisation de la fonction de rappel pour générer un nom de fichier unique
-  //         cb(null, file.originalname + '-' + uniqueSuffix);
-  //       },
-  //     }),
-  //   }),
-  // )
+  //@UseGuards(AdminAuthGuard)
+  @Post('/upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads', // Le répertoire où les fichiers seront stockés
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          // Utilisation de la fonction de rappel pour générer un nom de fichier unique
+          cb(null, file.originalname + '-' + uniqueSuffix);
+        },
+      }),
+    }),
+  )
+  async uploadProfilePicture(
+    @Request() req,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<Settings> {
+    console.log(file);
+    const user = req.user;
+    console.log(user);
+    return this.settingsService.updateProfilePicture({
+      logoPath: file.filename,
+    });
+    //return of({imagepath: file.filename});
+  }
 }

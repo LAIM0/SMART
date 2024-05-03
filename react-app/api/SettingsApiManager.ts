@@ -35,25 +35,6 @@ class SettingsApiManager {
       throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
     }
   }
-
-  static async handleUploadProfilePicture(file: File): Promise<void> {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await axios.post(
-        `http://localhost:3001/users/upload`,
-        formData,
-        {
-          withCredentials: true,
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }
-      );
-      console.log('Upload successful:', response.data);
-    } catch (error) {
-      /* empty */
-    }
-  }
 }
 
 export default SettingsApiManager;

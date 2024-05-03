@@ -4,10 +4,13 @@ import SettingsApiManager from '../../../api/SettingsApiManager';
 import { SettingsData } from '../../../interfaces/settingsInterface';
 import ColorPicker from '../../../components/Buttons/Colorpicker';
 import ChangeLogo from './ChangeLogo';
+import axios from 'axios';
 
 function Settings() {
   const [color1, setColor1] = useState<string>();
   const [color2, setColor2] = useState<string>();
+  const [logo, setLogo] = useState<string | null>(null);
+
   const toast = useToast();
   const [settings, setSettings] = useState<SettingsData>();
 
@@ -27,6 +30,7 @@ function Settings() {
     if (settings) {
       setColor1(settings.color1 || '#000000');
       setColor2(settings.color2 || '#000000');
+      setLogo(settings.logo || null);
     }
   }, [settings]);
 
@@ -64,6 +68,25 @@ function Settings() {
     setColor2(color);
   };
 
+  const handleUploadProfilePicture = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await axios.post(
+        `http://localhost:3001/settings/upload`,
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
+      console.log('Upload successful:', response.data);
+      //setProfilePicture(response.data.profilePicturePath);
+    } catch (error) {
+      /* empty */
+    }
+  };
+
   return (
     <Flex p="32px" flexDirection="column" gap="16px">
       <Text as="h1">Paramètres</Text>
@@ -82,7 +105,7 @@ function Settings() {
             />
           </>
         )}
-      <ChangeLogo/>
+      <ChangeLogo onSubmit={handleUploadProfilePicture} profilePicture={logo} />
       <Button bg="primary.300" onClick={handleClick} color="white">
         Valider
       </Button>

@@ -25,6 +25,7 @@ function Layout({ children }: LayoutProps): JSX.Element {
   }, []);
 
   const [settings, setSettings] = useState<SettingsData>();
+  const [logoPath, setLogoPath] = useState<string>();
   const [theme, setTheme] = useState<string | any>();
 
   useEffect(() => {
@@ -151,12 +152,13 @@ function Layout({ children }: LayoutProps): JSX.Element {
       });
       setTheme(customTheme);
     }
+    setLogoPath(settings?.logo);
   }, [settings]);
 
   return (
     <ChakraProvider theme={theme}>
       <Flex>
-        <Sidebar />
+        <Sidebar logoPath={logoPath} />
         <Flex
           height="100vh"
           marginLeft={windowWidth < 500 ? '0px' : '250px'}
