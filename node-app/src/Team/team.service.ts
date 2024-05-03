@@ -166,18 +166,7 @@ export class TeamService {
     }
   }
 
-  async updateTeamPicture(
-    teamId: string,
-    data: { picturePath: string },
-  ): Promise<Team> {
-    const team = await this.teamModel.findById(teamId).exec();
-    if (!team) {
-      throw new NotFoundException('Team not found');
-    }
-
-    team.picturePath = data.picturePath;
-    return team.save();
-  }
+ 
 
   async seedTeam(): Promise<void> {
 

@@ -89,35 +89,5 @@ export class TeamController {
     return this.teamService.delete(TeamId);
   }
 
-  @Post('upload/:teamId')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads', // Le répertoire où les fichiers seront stockés
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          // Utilisation de la fonction de rappel pour générer un nom de fichier unique
-          cb(null, file.originalname + '-' + uniqueSuffix);
-        },
-      }),
-    }),
-  )
-  async uploadTeamPicture(
-    @Param('teamId') teamId: string,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<Team> {
-    return this.teamService.updateTeamPicture(teamId, {
-      picturePath: file.filename,
-    });
-    //return of({imagepath: file.filename});
-  }
-
-  @Get('profile-picture/:teamPicture')
-  FindTeamPicture(
-    @Param('teamPicture') teamPicture,
-    @Response() res,
-  ): Promise<Team> {
-    return res.sendFile(join(process.cwd(), 'uploads/' + teamPicture));
-  }
+  
 }
