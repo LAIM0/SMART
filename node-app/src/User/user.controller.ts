@@ -31,7 +31,9 @@ import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
 import { diskStorage } from 'multer';
 import { Category } from 'src/Category/category.schema';
 import { Types } from 'mongoose';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {
