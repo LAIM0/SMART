@@ -68,7 +68,7 @@ function Sidebar({ logoPath }: SidebarProps) {
       zIndex={10}
       bg="white"
       color="grey.800"
-      p={4}
+      p={6}
       gap={4}
       flexDirection={windowWidth < 500 ? 'row' : 'column'}
       w={windowWidth < 500 ? '100%' : '250px'}
@@ -82,7 +82,6 @@ function Sidebar({ logoPath }: SidebarProps) {
       {windowWidth > 500 && logoPath && (
         <Image
           w="100%"
-          p="8px"
           objectFit="contain"
           src={`http://localhost:3001/users/profile-picture/${logoPath}`}
           alt={logoPath}

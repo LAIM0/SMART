@@ -42,7 +42,7 @@ export class SettingsService {
     const existingSettings = await this.settingsModel.find().exec();
     if (existingSettings.length === 0) {
       // Créer une instance par défaut
-      const defaultSettings = new this.settingsModel({ color1: '#166879' , color2: '#4FD1C5', logo:'http://localhost:3001/users/profile-picture/logo-company-default.png'});
+      const defaultSettings = new this.settingsModel({ color1: '#166879' , color2: '#4FD1C5', logo:'logo-company-default.png'});
       // Insérer dans la base de données
       await defaultSettings.save(); 
     }
