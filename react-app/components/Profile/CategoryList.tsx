@@ -9,21 +9,11 @@ interface CategoryListProps {
 
 function CategoryList({ listScore }: CategoryListProps) {
   const gap = useBreakpointValue({ base: '20px', md: '30px' });
-  const justifyContent = useBreakpointValue({
-    base: 'center',
-    md: 'flex-start',
-  });
 
   const sortedList = [...listScore].sort((a, b) => b.score - a.score);
 
   return (
-    <Flex
-      flexDirection="row"
-      flexWrap="wrap"
-      gap={gap}
-      justifyContent={justifyContent}
-      mb="24px"
-    >
+    <Flex flexDirection="row" overflow="scroll" gap={gap} mb="24px">
       {sortedList.map((item) => (
         <CategoryCard
           key={item.category.id}

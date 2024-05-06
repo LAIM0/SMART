@@ -208,33 +208,17 @@ function Profile() {
 
   return (
     <Flex flexDirection="column" p="32px" gap="16px">
-      <Flex alignItems="center" justifyContent="space-between" gap="16px">
-        <Flex alignItems="center" flex="1" maxWidth="200px">
-          <Text
-            as="h1"
-            ml="8px"
-            gap="10px"
-            overflow="hidden"
-            whiteSpace="nowrap"
-            textOverflow="ellipsis"
-          >
-            Mon profil
-          </Text>
-        </Flex>
-        <Flex flexDirection={['column', 'row']} gap={['0', '4px']}>
-          <Button
-            bg="primary.300"
-            color="white"
-            onClick={handleEditProfileClick}
-            marginBottom={['8px', '0']}
-          >
-            Modifier
-          </Button>
-          <Button bg="primary.300" color="white" onClick={handleLogoutClick}>
-            Se déconnecter
-          </Button>
-        </Flex>
-      </Flex>
+      <Text
+        as="h1"
+        ml="8px"
+        gap="10px"
+        overflow="hidden"
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+        mb="-8px"
+      >
+        Mon profil
+      </Text>
       <Flex flexDirection={['row', 'row']} alignItems="center" gap="16px">
         <ChangeProfilePictureModal
           profilePicture={profilePicture}
@@ -276,8 +260,23 @@ function Profile() {
           teams={teams}
         />
       )}
+      <Flex flexDirection={['column', 'row']} gap={['0', '8px']} mb="8px">
+        <Button
+          bg="primary.300"
+          color="white"
+          onClick={handleEditProfileClick}
+          marginBottom={['8px', '0']}
+        >
+          Modifier
+        </Button>
+        <Button bg="#D9D9D9" color="grey.600" onClick={handleLogoutClick}>
+          Se déconnecter
+        </Button>
+      </Flex>
       <Flex flexDirection="column">
-        <Text as="h1">Ma Progression</Text>
+        <Text as="h1" mb="-8px">
+          Ma Progression
+        </Text>
         <ProgressBar
           level={Math.floor(level)}
           percentage={Math.round((level - Math.floor(level)) * 100)}

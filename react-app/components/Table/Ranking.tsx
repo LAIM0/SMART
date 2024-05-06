@@ -40,7 +40,6 @@ function Ranking() {
         w="full" // Utilisez 'full' pour utiliser toute la largeur disponible
         maxW={maxWidthButton} // Limite la largeur maximale pour les grands écrans
         overflowX="hidden" // Cache le débordement horizontal
-        mb="20px"
         mx={margin}
       >
         <SwitchButton

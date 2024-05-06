@@ -1,7 +1,19 @@
 /* eslint-disable no-underscore-dangle */
 // Profile.tsx
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text, Button, TableContainer, Table, Thead, Tr, Th, Tbody, Td } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Text,
+  Button,
+  TableContainer,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+} from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { handleAuthRouting } from '../../api/AuthApiManager';
@@ -22,7 +34,7 @@ function Team() {
   const [team, setTeam] = useState<TeamData>();
   const [isTeamLeader, setisTeamLeader] = useState(false);
   const router = useRouter();
-  
+
   useEffect(() => {
     handleAuthRouting(router);
   }, []);
@@ -136,6 +148,7 @@ function Team() {
             overflow="hidden"
             whiteSpace="nowrap"
             textOverflow="ellipsis"
+            mb="-4px"
           >
             Mon équipe
           </Text>
@@ -153,7 +166,12 @@ function Team() {
           </Flex>
         )}
       </Flex>
-      <Flex flexDirection={['row', 'row']} alignItems="center" gap="16px">
+      <Flex
+        flexDirection={['row', 'row']}
+        alignItems="center"
+        gap="16px"
+        mb="4px"
+      >
         <ChangeTeamPictureModal
           teamPicture={teamPicture}
           isTeamLeader={isTeamLeader}
@@ -168,7 +186,9 @@ function Team() {
         </Box>
       </Flex>
       <Box>
-        <Text as="h3" marginBottom={['8px', '0']}>Membres de l&apos;équipe</Text>
+        <Text as="h2" marginBottom={['8px', '16px']}>
+          Membres de l&apos;équipe
+        </Text>
         {/* Tableau pour afficher la liste des utilisateurs de l'équipe */}
         <TableContainer bg="white" borderRadius={16}>
           <Table variant="simple">

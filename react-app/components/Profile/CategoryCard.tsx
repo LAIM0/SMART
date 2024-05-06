@@ -12,8 +12,9 @@ function CategoryCard({ categoryName, score }: CategoryCardProps) {
       flexDirection="column"
       borderRadius="lg"
       overflow="hidden"
-      boxShadow="base"
+      boxShadow="sm"
       width="200px"
+      minWidth="140px"
       height="150px"
     >
       <Box
