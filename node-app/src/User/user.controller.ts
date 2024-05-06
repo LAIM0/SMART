@@ -47,7 +47,6 @@ import {
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {
-    this.userService.createDefaultAdminIfNotExists();
   }
 
   @Get()

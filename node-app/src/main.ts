@@ -10,6 +10,7 @@ import { CategoryService } from './Category/category.service';
 import { TeamService } from './Team/team.service';
 import { SettingsService } from './Settings/settings.service';
 import { SchedulerService } from './Scheduler/scheduler.service';
+import { UserService } from './User/user.service';
 
 
 async function bootstrap() {
@@ -49,6 +50,7 @@ async function bootstrap() {
   await app.get(CategoryService).seedCategories();
   await app.get(TeamService).seedTeam();
   await app.get(SettingsService).seedSettings();
+  await app.get(UserService).createDefaultAdminIfNotExists();
 
   //Lancement du CRON pour les défis périodiques
   await app.get(SchedulerService).scheduleDailyUpdates();
