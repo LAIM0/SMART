@@ -133,7 +133,7 @@ function Challenge() {
       >
         <Flex
           flexDirection="column"
-          h="25vh"
+          h={windowWidth < 500 ? '260px' : '220px'}
           bg="primary.100"
           pr="32px"
           pl="32px"
