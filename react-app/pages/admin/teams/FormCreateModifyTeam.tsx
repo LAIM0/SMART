@@ -45,9 +45,17 @@ function FormCreateModifyTeam({
           if (users.length === 0) {
             setTeamHasNoUsers(true);
           } else {
-            setSelectedLeaderId(teamToModify?.leaderId);
             setUsersOfTeam(users);
             setTeamHasNoUsers(false);
+            setSelectedLeaderId(
+              teamToModify.leaderId &&
+                users.some(
+                  (u: UserDataLeaderAttribution) =>
+                    u._id === teamToModify.leaderId
+                )
+                ? teamToModify.leaderId
+                : users[0]._id
+            );
           }
         } catch (error) {
           console.error(
@@ -135,16 +143,9 @@ function FormCreateModifyTeam({
             </Select>
           </FormControl>
         )}
-        {teamToModify === null && (
-          <Button bg="primary.300" color="white" onClick={handleSubmit}>
-            Créer une équipe
-          </Button>
-        )}
-        {teamToModify !== null && (
-          <Button bg="primary.300" color="white" onClick={handleSubmit}>
-            Enregistrer les modifications
-          </Button>
-        )}
+        <Button bg="primary.300" color="white" onClick={handleSubmit}>
+          {teamToModify ? 'Enregistrer les modifications' : 'Créer une équipe'}
+        </Button>
         {teamToModify !== null && teamHasNoUsers && (
           <Text color="redCoexya">
             Il n&apos;y a aucun utilisateur dans cette équipe.
