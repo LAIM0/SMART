@@ -57,26 +57,27 @@ function RankTableUser() {
           wrap="nowrap"
         >
           <Flex direction="row" gap={flexGap}>
-            <Box fontSize="36px" fontWeight="extraBold">
-              {index + 1}
-            </Box>
-            <Flex direction="column" justify="center">
-              <Text fontSize={fontSizeResponse} fontWeight="semiBold">
-                {`${player.user.firstName} ${player.user.lastName}`}
-              </Text>
-              <Flex direction="row" gap={2} whiteSpace="nowrap">
-                <Text color="#7E8998" fontWeight="semiBold" isTruncated>
-                  {player.score} pts
-                </Text>
-                <Text color="secondary.300" fontWeight="semiBold" isTruncated>
-                  Niveau {player.user.level}
-                </Text>
-                <Text color="primary.300" fontWeight="semiBold" isTruncated>
-                  {player.teamName}
-                </Text>
-              </Flex>
-            </Flex>
-          </Flex>
+  <Box fontSize="36px" fontWeight="extraBold">
+    {index + 1}
+  </Box>
+  <Flex direction="column" justify="center">
+    <Text fontSize={fontSizeResponse} fontWeight="semiBold">
+      {`${player.user.firstName} ${player.user.lastName}`}
+    </Text>
+    <Flex direction="row" gap={2}>
+      <Text color="#7E8998" fontWeight="semiBold" isTruncated>
+        {player.score} pts
+      </Text>
+      <Text color="secondary.300" fontWeight="semiBold" isTruncated>
+        Niveau {player.user.level}
+      </Text>
+    </Flex>
+    <Text color="primary.300" fontWeight="semiBold" isTruncated>
+      {player.teamName}
+    </Text>
+  </Flex>
+</Flex>
+
           <Image
             boxSize={imageSize}
             objectFit="cover"
