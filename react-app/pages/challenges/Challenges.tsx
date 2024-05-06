@@ -35,6 +35,11 @@ function Challenges() {
   const [completedChallengesIds, setCompletedChallengesIds] = useState<
     string[]
   >([]);
+  const [completedChallengesToShow, setCompletedChallengesToShow] = useState<
+    CompletedChallengeData[]
+  >([]);
+  const [challengesToShow, setChallengesToShow] = useState<ChallengeData[]>([]);
+
   const today = new Date();
 
   const [windowWidth, setWindowWidth] = useState(0);
@@ -130,19 +135,24 @@ function Challenges() {
     router.push(`/challenges/${challenge.id}`);
   };
 
-  const challengesToShow = challenges.filter(
-    (challenge) =>
-      (currentCategory.categoryName === 'Tous' ||
-        currentCategory.id === challenge.category) &&
-      dateGap(challenge.endDate) >= 0 &&
-      !completedChallengesIds.includes(challenge.id)
-  );
-
-  const completedChallengesToShow = completedChallenges.filter(
-    (completedChallenge) =>
-      currentCategory.categoryName === 'Tous' ||
-      currentCategory.categoryName === completedChallenge.challenge.category
-  );
+  useEffect(() => {
+    setChallengesToShow(
+      challenges.filter(
+        (challenge) =>
+          (currentCategory?.categoryName === 'Tous' ||
+            currentCategory?.id === challenge.category) &&
+          dateGap(challenge.endDate) >= 0 &&
+          !completedChallengesIds.includes(challenge.id)
+      )
+    );
+    setCompletedChallengesToShow(
+      completedChallenges.filter(
+        (completedChallenge) =>
+          currentCategory?.categoryName === 'Tous' ||
+          currentCategory?.id === completedChallenge.challenge.category
+      )
+    );
+  }, [currentCategory, challenges, completedChallenges]);
 
   return (
     <Flex p="32px" flexDirection="column">
@@ -158,11 +168,13 @@ function Challenges() {
         w={windowWidth < 500 ? 'auto' : 'fit-content'}
       >
         <Box
-          bg={currentCategory.categoryName === 'Tous' ? 'primary.300' : 'white'}
+          bg={
+            currentCategory?.categoryName === 'Tous' ? 'primary.300' : 'white'
+          }
           onClick={() => setCurrentCategory(Tous)}
           _hover={{
             bg:
-              currentCategory.categoryName === 'Tous'
+              currentCategory?.categoryName === 'Tous'
                 ? 'primary.300'
                 : '#F1F1F1',
             cursor: 'pointer',
@@ -173,14 +185,14 @@ function Challenges() {
           textAlign="center"
           fontSize={12}
           fontWeight={
-            currentCategory.categoryName === 'Tous' ? 'bold' : 'normal'
+            currentCategory?.categoryName === 'Tous' ? 'bold' : 'normal'
           }
           transition="background-color 0.3s ease"
         >
           <Text
             as="h4"
             color={
-              currentCategory.categoryName === 'Tous' ? 'white' : 'primary.300'
+              currentCategory?.categoryName === 'Tous' ? 'white' : 'primary.300'
             }
           >
             Tous
@@ -189,7 +201,7 @@ function Challenges() {
         {orderedCategories.map((category) => (
           <Box
             bg={
-              category.categoryName === currentCategory.categoryName
+              category.categoryName === currentCategory?.categoryName
                 ? 'primary.300'
                 : 'white'
             }
@@ -197,7 +209,7 @@ function Challenges() {
             onClick={() => setCurrentCategory(category)}
             _hover={{
               bg:
-                category.categoryName === currentCategory.categoryName
+                category.categoryName === currentCategory?.categoryName
                   ? 'primary.300'
                   : '#F1F1F1',
               cursor: 'pointer',
@@ -207,7 +219,7 @@ function Challenges() {
             py={2}
             textAlign="center"
             fontWeight={
-              category.categoryName === currentCategory.categoryName
+              category.categoryName === currentCategory?.categoryName
                 ? 'bold'
                 : 'normal'
             }
@@ -215,7 +227,7 @@ function Challenges() {
           >
             <Text
               color={
-                category.categoryName === currentCategory.categoryName
+                category.categoryName === currentCategory?.categoryName
                   ? 'white'
                   : 'primary.300'
               }

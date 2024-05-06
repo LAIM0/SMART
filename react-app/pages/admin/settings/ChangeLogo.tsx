@@ -64,7 +64,7 @@ function ChangeLogo(props: ChangeProfilePictureModalProps) {
       <Modal isOpen={isOpen} onClose={handleCloseModal}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Changer de photo de profil</ModalHeader>
+          <ModalHeader>Changer le logo de l'application</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <input type="file" accept="image/*" onChange={handleFileChange} />
