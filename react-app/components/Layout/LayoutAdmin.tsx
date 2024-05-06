@@ -157,7 +157,7 @@ function Layout({ children }: LayoutProps): JSX.Element {
 
   return (
     <ChakraProvider theme={theme}>
-      <Flex bg="#F8F8F8" height="100vh">
+      <Flex bg="#F8F8F8" height="100vh" overflow="scroll">
         <SidebarAdmin logoPath={logoPath} />
         <Flex
           height="100vh"

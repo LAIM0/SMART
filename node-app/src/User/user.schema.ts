@@ -38,7 +38,7 @@ export class User {
   @Prop()
   resetPasswordExpires: Date;
 
-  @Prop({ default: "profile-picture-default.png-1713713349070-217063153" })
+  @Prop({ default: "profile-picture-default.png" })
   profilePicturePath: string;
 
   @Prop()

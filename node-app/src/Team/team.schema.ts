@@ -11,7 +11,7 @@ export class Team {
   @Prop({default:''})
   leaderId?: string 
 
-  @Prop({ default: "team_default.png-1714465892341-126362164" })
+  @Prop({ default: "team-picture-default.png" })
   picturePath:string;
 }
 

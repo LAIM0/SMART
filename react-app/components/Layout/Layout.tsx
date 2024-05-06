@@ -157,10 +157,14 @@ function Layout({ children }: LayoutProps): JSX.Element {
 
   return (
     <ChakraProvider theme={theme}>
-      <Flex bg="#F8F8F8" height="100vh">
+      <Flex
+        bg="#F8F8F8"
+        height="100vh"
+        overflow="scroll"
+        mb={windowWidth < 500 ? '120px' : 'auto'}
+      >
         <Sidebar logoPath={logoPath} />
         <Flex
-          height="100%"
           marginLeft={windowWidth < 500 ? '0px' : '250px'}
           flexDirection="column"
           justifyContent="left"

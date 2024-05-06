@@ -25,9 +25,10 @@ function ChallengeCard({
       boxShadow="sm"
       borderRadius={12}
       bg={isRecentlyCompleted ? 'secondary.100' : 'white'}
-      p={4}
+      p={8}
       gap={2}
       flex={1}
+      alignContent="space-between"
       maxWidth="500px"
       minWidth="300px"
       transition=" box-shadow 0.3s ease"
@@ -36,11 +37,14 @@ function ChallengeCard({
         cursor: 'pointer',
       }}
     >
-      <Text as="h2">{challenge.title}</Text>
+      <Text as="h2" fontSize={18}>
+        {challenge.title}
+      </Text>
 
       <Text
         minHeight="40px"
         mb="4px"
+        color={isRecentlyCompleted ? 'black' : '"#7E8998"'}
         sx={{
           display: '-webkit-box',
           WebkitBoxOrient: 'vertical',
@@ -51,7 +55,7 @@ function ChallengeCard({
         {challenge.description}
       </Text>
       <Box>
-        <Flex gap={2}>
+        <Flex gap={3}>
           <Box bg="primary.300" py="8px" px="16px" borderRadius={8}>
             <Text as="h4" color="white">
               {challenge.points} pts

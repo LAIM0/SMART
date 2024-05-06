@@ -43,7 +43,9 @@ function FormCreateChallenge({ refresh }: Props) {
   const [pointsError, setPointsError] = useState(false);
   const [category, setCategory] = useState('');
   const [categoryError, setCategoryError] = useState(false);
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(
+    moment(new Date()).endOf('day').toDate()
+  );
   const [periodicityError, setPeriodicityError] = useState(false);
   const [themeChallengeError, setThemeChallengeError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>(
