@@ -42,10 +42,9 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
       </Box>
       {displayColorPicker && (
         <Box
-          onClick={handleClose}
           position="absolute"
           zIndex="2"
-          top="0"
+          top="10"
           left="0"
           bottom="0"
           right="0"
