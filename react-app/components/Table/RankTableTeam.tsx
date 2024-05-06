@@ -29,7 +29,7 @@ function RankTableTeam() {
   const imageSize = useBreakpointValue({ base: '60px', md: '100px' });
   const flexGap = useBreakpointValue({ base: '5', md: '10' });
   const paddingLeft = useBreakpointValue({ base: '7', md: '10' });
-  const paddingRight = useBreakpointValue({ base: '3', md: '10' });
+  const paddingRight = useBreakpointValue({ base: '3', md: '4' });
   const paddingY = useBreakpointValue({ base: '3', md: '4' });
 
   return (
@@ -65,17 +65,16 @@ function RankTableTeam() {
           </Flex>
           <Square
             backgroundColor="primary.300"
-            shadow="md"
-            borderRadius="lg"
+            borderRadius="48px"
             size={imageSize}
           >
             {teamUnit.team.picturePath ? (
               <Image
-                boxSize="80%"
+                boxSize="100%"
                 objectFit="cover"
                 src={`http://localhost:3001/users/profile-picture/${teamUnit.team.picturePath}`}
                 alt={`${teamUnit.team.name} icon`}
-                borderRadius="lg"
+                borderRadius="md"
               />
             ) : (
               <Icon
