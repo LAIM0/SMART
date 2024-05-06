@@ -37,7 +37,7 @@ function RankTableUser() {
   const imageSize = useBreakpointValue({ base: '60px', md: '100px' });
   const flexGap = useBreakpointValue({ base: '5', md: '10' });
   const paddingLeft = useBreakpointValue({ base: '7', md: '10' });
-  const paddingRight = useBreakpointValue({ base: '3', md: '10' });
+  const paddingRight = useBreakpointValue({ base: '3', md: '4' });
   const paddingY = useBreakpointValue({ base: '3', md: '4' });
 
   return (
@@ -57,33 +57,33 @@ function RankTableUser() {
           wrap="nowrap"
         >
           <Flex direction="row" gap={flexGap}>
-  <Box fontSize="36px" fontWeight="extraBold">
-    {index + 1}
-  </Box>
-  <Flex direction="column" justify="center">
-    <Text fontSize={fontSizeResponse} fontWeight="semiBold">
-      {`${player.user.firstName} ${player.user.lastName}`}
-    </Text>
-    <Flex direction="row" gap={2}>
-      <Text color="#7E8998" fontWeight="semiBold" isTruncated>
-        {player.score} pts
-      </Text>
-      <Text color="secondary.300" fontWeight="semiBold" isTruncated>
-        Niveau {player.user.level}
-      </Text>
-    </Flex>
-    <Text color="primary.300" fontWeight="semiBold" isTruncated>
-      {player.teamName}
-    </Text>
-  </Flex>
-</Flex>
+            <Box fontSize="36px" fontWeight="extraBold">
+              {index + 1}
+            </Box>
+            <Flex direction="column" justify="center">
+              <Text fontSize={fontSizeResponse} fontWeight="semiBold">
+                {`${player.user.firstName} ${player.user.lastName}`}
+              </Text>
+              <Flex direction="row" gap={2}>
+                <Text color="#7E8998" fontWeight="semiBold" isTruncated>
+                  {player.score} pts
+                </Text>
+                <Text color="secondary.300" fontWeight="semiBold" isTruncated>
+                  Niveau {player.user.level}
+                </Text>
+              </Flex>
+              <Text color="primary.300" fontWeight="semiBold" isTruncated>
+                {player.teamName}
+              </Text>
+            </Flex>
+          </Flex>
 
           <Image
             boxSize={imageSize}
             objectFit="cover"
             src={`http://localhost:3001/users/profile-picture/${player.user.profilePicturePath}`}
             alt="Pas de photo de profil"
-            borderRadius="lg"
+            borderRadius="md"
             ml={2}
           />
         </Flex>
