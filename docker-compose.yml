@@ -27,8 +27,9 @@ services:
       - MONGO_HOSTNAME=mongo
       - MONGO_PORT=27017
       - MONGO_DB=dbEcoexya
-      - DEFAULT_ADMIN_USERNAME= admin@coexya.com
-      - DEFAULT_ADMIN_PASSWORD= 321admin
+      - DEFAULT_ADMIN_USERNAME=admin@coexya.com
+      - DEFAULT_ADMIN_PASSWORD=321admin
+      - DEFAULT_PASSWORD_USER=ecoexya24
       - MAIL_HOST=sandbox.smtp.mailtrap.io
       - MAIL_PORT=2525
       - MAIL_USER=212b96f3519993

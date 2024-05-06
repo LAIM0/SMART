@@ -24,7 +24,7 @@ export const addUser = async (newUser: User) => {
   try {
     const response = await axios.post(`${baseURL}/users/signup`, {
       ...newUser,
-      passwordHash: 'Ecoexya24',
+      passwordHash: process.env.DEFAULT_PASSWORD_USER,
     });
     return response.data;
   } catch (error) {
