@@ -31,7 +31,17 @@ import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
 import { diskStorage } from 'multer';
 import { Category } from 'src/Category/category.schema';
 import { Types } from 'mongoose';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiQuery,
+  ApiParam,
+  ApiBearerAuth,
+  ApiConsumes,
+} from '@nestjs/swagger';
+
 
 @ApiTags('Users')
 @Controller('users')
@@ -41,11 +51,15 @@ export class UserController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Retrieve all users' })
+  @ApiResponse({ status: 200, description: 'Successfully retrieved all users', type: [User] })
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
 
   @Get('/welcome')
+  @ApiOperation({ summary: 'Welcome message' })
+  @ApiResponse({ status: 200, description: 'Welcome message for the first user or no users found' })
   async welcome(): Promise<string> {
     const users = await this.userService.findAll();
     if (users.length > 0) {
@@ -56,6 +70,10 @@ export class UserController {
     }
   }
   @Post('/signup')
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiBody({ type: CreateUserDto, description: 'Data for new user registration' })
+  @ApiResponse({ status: 201, description: 'User successfully registered', type: Object })
+  @ApiResponse({ status: 400, description: 'Bad request, unable to register user' })
   async addUser(
     @Body() createUserDto: CreateUserDto,
   ): Promise<{ msg: string; userName: string }> {
@@ -88,6 +106,10 @@ export class UserController {
   }
 
   @Post('reset-password')
+  @ApiOperation({ summary: 'Reset user password' })
+  @ApiBody({ type: ResetPasswordDto, description: 'Data required for resetting password' })
+  @ApiResponse({ status: 200, description: 'Password reset successful' })
+  @ApiResponse({ status: 400, description: 'Bad request, unable to reset password' })
   async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
   ): Promise<{ msg: string }> {
@@ -104,6 +126,9 @@ export class UserController {
   }
 
   @Get('/score')
+  @ApiOperation({ summary: 'Get user score' })
+  @ApiQuery({ name: 'userId', type: String, required: true, description: 'User ID to fetch the score for' })
+  @ApiResponse({ status: 200, description: 'Score retrieved successfully', type: Object })
   async score(
     @Query() scoreCheckDto: ScoreCheckDto,
   ): Promise<{ score: number }> {
@@ -112,6 +137,9 @@ export class UserController {
   }
 
   @Get('/update-all-levels')
+  @ApiOperation({ summary: 'Update all user levels' })
+  @ApiResponse({ status: 200, description: 'All user levels updated successfully', type: Object })
+  @ApiResponse({ status: 500, description: 'Internal server error occurred while updating user levels' })
   async updateAllLevels(): Promise<{ success: boolean; error?: string }> {
     try {
       await this.userService.updateAllLevels();
@@ -126,6 +154,9 @@ export class UserController {
   }
 
   @Get('/level')
+  @ApiOperation({ summary: 'Get user level' })
+  @ApiQuery({ name: 'userId', type: String, required: true, description: 'User ID to fetch the level for' })
+  @ApiResponse({ status: 200, description: 'Level retrieved successfully', type: Object })
   async getLevel(
     @Query() levelCheckDto: LevelCheckDto,
   ): Promise<{ success: boolean; level?: number; error?: string }> {
@@ -135,11 +166,16 @@ export class UserController {
 
   //Get / ranking -- classement des user ordre décroissant de points
   @Get('/ranking')
+  @ApiOperation({ summary: 'Get user rankings' })
+  @ApiResponse({ status: 200, description: 'User rankings retrieved successfully', type: Array })
   async ranking(): Promise<{ user: User; score: number; teamName: string }[]> {
     return this.userService.getRanking();
   }
 
   @Get('/scoreByCategory/:userId')
+  @ApiOperation({ summary: 'Get user score by category' })
+  @ApiParam({ name: 'userId', type: String, required: true, description: 'User ID to fetch scores for' })
+  @ApiResponse({ status: 200, description: 'Scores by category retrieved successfully', type: Array })
   async scoreByCategory(
     @Param('userId') userId: Types.ObjectId,
   ): Promise<{ category: Category; score: number }[]> {
@@ -149,6 +185,10 @@ export class UserController {
   //Post / Login
   @UseGuards(LocalAuthGuard)
   @Post('/login')
+  @ApiOperation({ summary: 'User login' })
+  @ApiBody({ description: 'User login credentials' })
+  @ApiResponse({ status: 200, description: 'User logged in successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   login(@Request() req): any {
     return { User: req.user, msg: 'User logged in' };
   }
@@ -156,11 +196,17 @@ export class UserController {
   //Get / protected
   @UseGuards(AuthenticatedGuard)
   @Get('/protected')
+  @ApiOperation({ summary: 'Access protected content' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Protected content accessed' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   getHello(@Request() req): string {
     return req.user;
   }
   //Get / logout
   @Get('/logout')
+  @ApiOperation({ summary: 'User logout' })
+  @ApiResponse({ status: 200, description: 'User logged out successfully' })
   logout(@Request() req): any {
     req.session.destroy();
     return { msg: 'The user session has ended' };
@@ -168,6 +214,9 @@ export class UserController {
 
   @UseGuards(AuthenticatedGuard)
   @Get('me')
+  @ApiOperation({ summary: 'Get logged-in user information' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Logged-in user information returned', type: Object })
   getLoggedInUser(@Request() req) {
     const { id, userName, firstName } = req.user; // Supposons que req.user contient l'id et le nom d'utilisateur de l'utilisateur connecté
 
@@ -177,6 +226,9 @@ export class UserController {
 
   @Get('check')
   @UseGuards(AuthenticatedGuard)
+  @ApiOperation({ summary: 'Check user authentication status' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Authentication status returned', type: Object })
   checkAuthentication(@Request() req) {
     // L'utilisateur est authentifié si cette fonction est appelée
     // Si cette fonction est appelée, cela signifie que le garde a permis l'accès
@@ -185,6 +237,9 @@ export class UserController {
   }
 
   @Post('forgot-password')
+  @ApiOperation({ summary: 'Send password reset link' })
+  @ApiBody({ schema: { type: 'object', properties: { email: { type: 'string', format: 'email' } } } })
+  @ApiResponse({ status: 200, description: 'Password reset email sent if user exists' })
   async forgotPassword(@Body('email') email: string) {
     const token = await this.userService.generateUserToken(email);
     await this.userService.sendResetPasswordEmail(email, token);
@@ -196,6 +251,9 @@ export class UserController {
 
   @Get('check/admin')
   @UseGuards(AdminAuthGuard, AuthenticatedGuard)
+  @ApiOperation({ summary: 'Check admin user authentication status' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Admin authentication status returned', type: Object })
   checkAdminAuthentication(@Request() req) {
     // if(req.user.isAdmin){
     //   return { isAdminLoggedIn: true };
@@ -208,6 +266,9 @@ export class UserController {
 
   @Get('check/adminTeam')
   @UseGuards(AdminTeamAuthGuard, AuthenticatedGuard)
+  @ApiOperation({ summary: 'Check admin team user authentication status' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Admin team authentication status returned', type: Object })
   checkAdminTeamAuthentication(@Request() req) {
     // if(req.user.isAdminTeam){
     //   return { isAdminTeamLoggedIn: true };
@@ -220,6 +281,11 @@ export class UserController {
 
   @UseGuards(AdminAuthGuard)
   @Delete('delete/:userId')
+  @ApiOperation({ summary: 'Delete a user' })
+  @ApiParam({ name: 'userId', type: 'string', required: true, description: 'User ID of the user to delete' })
+  @ApiResponse({ status: 204, description: 'User successfully deleted' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 400, description: 'Cannot delete default administrator' })
   async deleteUser(
     @Param('userId') userId: string,
   ): Promise<{ message: string }> {
@@ -243,6 +309,11 @@ export class UserController {
   }
 
   @Put(':userId/team')
+  @ApiOperation({ summary: 'Update user team' })
+  @ApiParam({ name: 'userId', type: 'string', required: true, description: 'User ID to update team for' })
+  @ApiBody({ schema: { properties: { teamId: { type: 'string', description: 'New team ID for the user' } } } })
+  @ApiResponse({ status: 200, description: 'Team updated successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid data or operation failed' })
   async updateUserTeam(
     @Param('userId') userId: string,
     @Body('teamId') teamId: string,
@@ -263,6 +334,11 @@ export class UserController {
   }
 
   @Put(':userId/admin')
+  @ApiOperation({ summary: 'Update user admin status' })
+  @ApiParam({ name: 'userId', type: 'string', required: true, description: 'User ID to update admin status for' })
+  @ApiBody({ schema: { properties: { isAdmin: { type: 'boolean', description: 'New admin status' } } } })
+  @ApiResponse({ status: 200, description: 'Admin status updated successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid data or operation failed' })
   async updateUserAdminStatus(
     @Param('userId') userId: string,
     @Body('isAdmin') isAdmin: boolean,
@@ -284,6 +360,10 @@ export class UserController {
   }
 
   @Get('byId/:userId')
+  @ApiOperation({ summary: 'Find user by ID', description: 'Retrieves a user by their unique identifier (userId).' })
+  @ApiParam({ name: 'userId', type: 'string', required: true, description: 'The unique identifier of the user to retrieve' })
+  @ApiResponse({ status: 200, description: 'User found successfully', type: User })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async findById(@Param('userId') userId: string): Promise<User> {
     return this.userService.findById(userId);
   }
@@ -303,6 +383,10 @@ export class UserController {
       }),
     }),
   )
+  @ApiOperation({ summary: 'Upload user profile picture' })
+  @ApiParam({ name: 'userId', type: 'string', required: true, description: 'User ID to associate picture with' })
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({ status: 200, description: 'Profile picture uploaded successfully' })
   async uploadProfilePicture(
     @Request() req,
     @Param('userId') userId: string,
@@ -318,6 +402,9 @@ export class UserController {
   }
 
   @Get('profile-picture/:profilePicture')
+  @ApiOperation({ summary: 'Retrieve a user profile picture' })
+  @ApiParam({ name: 'profilePicture', type: 'string', required: true, description: 'Filename of the profile picture to retrieve' })
+  @ApiResponse({ status: 200, description: 'Profile picture retrieved successfully' })
   FindProfilePicture(
     @Param('profilePicture') profilePicture,
     @Response() res,
@@ -326,6 +413,11 @@ export class UserController {
   }
 
   @Put('update/:userId')
+  @ApiOperation({ summary: 'Update user profile' })
+  @ApiParam({ name: 'userId', type: 'string', required: true, description: 'User ID' })
+  @ApiBody({ type: UpdateUserDto, description: 'Data to update the user profile' })
+  @ApiResponse({ status: 200, description: 'Profile updated successfully' })
+  @ApiResponse({ status: 400, description: 'Error updating profile' })
   async updateUserProfile(
     @Param('userId') userId: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -343,6 +435,10 @@ export class UserController {
   }
 
   @Get('validate-email')
+  @ApiOperation({ summary: 'Validate email with token' })
+  @ApiQuery({ name: 'token', type: 'string', required: true, description: 'Validation token' })
+  @ApiResponse({ status: 200, description: 'Email validated successfully' })
+  @ApiResponse({ status: 400, description: 'Validation failed' })
   async validateEmailWithToken(
     @Query('token') token: string,
     @Res() res: Response,
@@ -359,6 +455,9 @@ export class UserController {
   }
 
   @Post('send-validatation-email')
+  @ApiOperation({ summary: 'Send email validation' })
+  @ApiBody({ schema: { type: 'object', properties: { email: { type: 'string', format: 'email' } } } })
+  @ApiResponse({ status: 200, description: 'Validation email sent successfully' })
   async validateEmail(@Body('email') email: string) {
     const token = await this.userService.generateUserToken(email);
     await this.userService.sendvalidationEmail(email, token);
@@ -369,6 +468,9 @@ export class UserController {
   }
 
   @Post('initialize-password')
+  @ApiOperation({ summary: 'Initialize password' })
+  @ApiBody({ schema: { type: 'object', properties: { email: { type: 'string', format: 'email' } } } })
+  @ApiResponse({ status: 200, description: 'Initialization email sent successfully' })
   async initializePassword(@Body('email') email: string) {
     const token = await this.userService.generateUserToken(email);
     await this.userService.sendInitializePasswordEmail(email, token);
@@ -379,6 +481,10 @@ export class UserController {
   }
 
   @Get('getByTeam/:teamId')
+  @ApiOperation({ summary: 'Get users by team ID' })
+  @ApiParam({ name: 'teamId', type: 'string', required: true, description: 'Team ID' })
+  @ApiResponse({ status: 200, description: 'Users fetched successfully', type: [User] })
+  @ApiResponse({ status: 404, description: 'Team not found' })
   async findByTeamId(@Param('teamId') teamId: string): Promise<User[]> {
     return this.userService.findByTeamId(teamId);
   }
