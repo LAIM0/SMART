@@ -54,6 +54,7 @@ function ChangeTeamPictureModal(props: ChangeTeamPictureModalProps) {
           <Image
             src={`http://localhost:3001/teams/profile-picture/${teamPicture}`}
             alt="Profile Picture"
+            objectFit="cover"
             boxSize="150px"
             borderRadius="xl"
           />
