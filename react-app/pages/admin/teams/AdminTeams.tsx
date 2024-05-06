@@ -261,32 +261,36 @@ function AdminTeams() {
                   transition="transform 0.3s ease-in-out"
                 />
               </Th>
-              <Th> Nombre d'utilsateurs<IconButton
-                ml="0px"
-                mt="-4px"
-                aria-label="filter"
-                icon={<TriangleDownIcon />}
-                bg="transparent"
-                onClick={() =>
-                  setFilterByTeamLeader((prevState) => (prevState + 1) % 3)
-                }
-                _hover={{ bg: 'transparent' }}
-                color={
-                  filterByTeamLeader === Filter.INACTIVE
-                    ? 'primary.300'
-                    : filterByTeamLeader === Filter.ASC
-                      ? 'secondary.300'
-                      : 'redCoexya'
-                }
-                transform={
-                  filterByTeamLeader === Filter.INACTIVE
-                    ? 'rotate(270deg)'
-                    : filterByTeamLeader === Filter.ASC
-                      ? 'rotate(180deg)'
-                      : 'auto'
-                }
-                transition="transform 0.3s ease-in-out"
-              /></Th>
+              <Th>
+                {' '}
+                Nombre d'utilsateurs
+                <IconButton
+                  ml="0px"
+                  mt="-4px"
+                  aria-label="filter"
+                  icon={<TriangleDownIcon />}
+                  bg="transparent"
+                  onClick={() =>
+                    setFilterByTeamLeader((prevState) => (prevState + 1) % 3)
+                  }
+                  _hover={{ bg: 'transparent' }}
+                  color={
+                    filterByTeamLeader === Filter.INACTIVE
+                      ? 'primary.300'
+                      : filterByTeamLeader === Filter.ASC
+                        ? 'secondary.300'
+                        : 'redCoexya'
+                  }
+                  transform={
+                    filterByTeamLeader === Filter.INACTIVE
+                      ? 'rotate(270deg)'
+                      : filterByTeamLeader === Filter.ASC
+                        ? 'rotate(180deg)'
+                        : 'auto'
+                  }
+                  transition="transform 0.3s ease-in-out"
+                />
+              </Th>
               <Th> </Th>
             </Tr>
           </Thead>
@@ -299,7 +303,7 @@ function AdminTeams() {
                 <Td>
                   {team.leaderName
                     ? team.leaderName.charAt(0).toUpperCase() +
-                    team.leaderName.slice(1)
+                      team.leaderName.slice(1)
                     : 'Aucun'}
                 </Td>
                 <Td> {team.userCount ? team.userCount : '0'}</Td>
@@ -315,7 +319,8 @@ function AdminTeams() {
                       </Button>
                       <Button
                         marginLeft="16px"
-                        colorScheme="red"
+                        bg="redCoexya"
+                        color="white"
                         onClick={() => handleOpenConfirmationDeleteModal(team)}
                       >
                         Supprimer

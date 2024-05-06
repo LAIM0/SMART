@@ -175,7 +175,7 @@ export default function LoginForm() {
             </Button>
           )}
           {loginResponse && loginResponse.status === 'error' && (
-            <Box color="red.500">{loginResponse.message}</Box>
+            <Box color="redCoexya">{loginResponse.message}</Box>
           )}
         </Box>
       </Box>

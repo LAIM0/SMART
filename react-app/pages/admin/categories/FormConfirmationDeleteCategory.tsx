@@ -33,7 +33,7 @@ function FormConfirmationDeleteCategory({
           L&apos;ensemble des défis {categoryToDelete?.categoryName} vont passer
           dans Autre.
         </Flex>
-        <Button colorScheme="red" color="white" onClick={handleSubmit}>
+        <Button bg="redCoexya" color="white" onClick={handleSubmit}>
           Confirmer la supression
         </Button>
       </Flex>

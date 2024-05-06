@@ -452,7 +452,8 @@ function AdminUsers() {
                 Annuler
               </Button>
               <Button
-                colorScheme="red"
+                bg="redCoexya"
+                color="white"
                 ml={2}
                 onClick={() => {
                   handleDeleteUser();
