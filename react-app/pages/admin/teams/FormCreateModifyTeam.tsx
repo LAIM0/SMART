@@ -146,7 +146,7 @@ function FormCreateModifyTeam({
           </Button>
         )}
         {teamToModify !== null && teamHasNoUsers && (
-          <Text color="red">
+          <Text color="redCoexya">
             Il n&apos;y a aucun utilisateur dans cette équipe.
           </Text>
         )}

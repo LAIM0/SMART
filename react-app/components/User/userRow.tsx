@@ -1,6 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-// UserRow.tsx
-
 import React from 'react';
 import { Tr, Td, Select, Switch, Button, Flex, Text } from '@chakra-ui/react';
 import TeamData from '../../interfaces/teamInterface';
@@ -48,7 +46,7 @@ function UserRow({
         </Flex>
       </Td>
       <Td>
-        <Button colorScheme="red" onClick={() => onDelete(user._id)}>
+        <Button bg="redCoexya" color="white" onClick={() => onDelete(user._id)}>
           Supprimer
         </Button>
       </Td>

@@ -142,7 +142,8 @@ function AdminCategories() {
                     </Button>
                     <Button
                       marginLeft="16px"
-                      colorScheme="red"
+                      bg="redCoexya"
+                      color="white"
                       onClick={() =>
                         handleOpenConfirmationDeleteModal(category)
                       }

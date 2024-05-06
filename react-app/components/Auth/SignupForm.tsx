@@ -236,7 +236,7 @@ export default function SignupForm() {
             <Button variant="link" mt={4} onClick={handleLoginClick}>
               J'ai déjà un compte
             </Button>
-            {error && <Box color="red.500">{error}</Box>}
+            {error && <Box color="redCoexya">{error}</Box>}
           </form>
         </Box>
       </Box>

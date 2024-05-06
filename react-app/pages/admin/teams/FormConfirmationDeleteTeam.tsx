@@ -33,7 +33,7 @@ function FormConfirmationDeleteTeam({
           L&apos;ensemble des membres de {teamToDelete?.name} vont passer
           l&apos;équipe par défaut.
         </Flex>
-        <Button colorScheme="red" color="white" onClick={handleSubmit}>
+        <Button bg="redCoexya" color="white" onClick={handleSubmit}>
           Confirmer la supression
         </Button>
       </Flex>
