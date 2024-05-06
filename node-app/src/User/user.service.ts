@@ -1,6 +1,4 @@
 import {
-  forwardRef,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -12,9 +10,6 @@ import { CompletedService } from 'src/Completed/completed.service';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcryptjs';
 import { TeamService } from 'src/Team/team.service';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as multer from 'multer';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Category, CategoryDocument } from 'src/Category/category.schema';
 import { CategoryService } from 'src/Category/category.service';
@@ -321,6 +316,7 @@ export class UserService {
         isAdmin: true,
         teamId: '',
         firstLogin: false,
+        passWordInitialized: true,
       });
       await newUser.save();
     }
