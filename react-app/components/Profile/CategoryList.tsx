@@ -13,6 +13,9 @@ function CategoryList({ listScore }: CategoryListProps) {
     base: 'center',
     md: 'flex-start',
   });
+
+  const sortedList = [...listScore].sort((a, b) => b.score - a.score);
+
   return (
     <Flex
       flexDirection="row"
@@ -21,15 +24,13 @@ function CategoryList({ listScore }: CategoryListProps) {
       justifyContent={justifyContent}
       mb="24px"
     >
-      {listScore.map(
-        (item) =>
-          item.score !== 0 && (
-            <CategoryCard
-              categoryName={item.category.categoryName}
-              score={item.score}
-            />
-          )
-      )}
+      {sortedList.map((item) => (
+        <CategoryCard
+          key={item.category.id}
+          categoryName={item.category.categoryName}
+          score={item.score}
+        />
+      ))}
     </Flex>
   );
 }
