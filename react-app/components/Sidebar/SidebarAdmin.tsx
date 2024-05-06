@@ -4,13 +4,12 @@ import {
   Flex,
   IconProps,
   Image,
+  Spacer,
   Text,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import logoApp from './Ecoexya.png';
 import {
   FolderIcon,
-  PodiumIcon,
   SettingsIcon,
   StarIcon,
   TeamIcon,
@@ -144,6 +143,16 @@ function Sidebar({ logoPath }: SidebarProps) {
           </Text>
         </Flex>
       ))}
+      <Spacer />
+      <Text
+        fontSize="lg"
+        color="primary.300"
+        fontWeight="semibold"
+        fontStyle="italic"
+        textAlign="center"
+      >
+        administrateur
+      </Text>
     </Flex>
   );
 }
