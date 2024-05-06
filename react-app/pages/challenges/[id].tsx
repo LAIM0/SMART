@@ -9,8 +9,8 @@ import {
   IconButton,
   Button,
   ChakraProvider,
+  useTheme,
 } from '@chakra-ui/react';
-import theme from '../../styles/theme';
 import Layout from '../../components/Layout/Layout';
 import ChallengeData from '../../interfaces/challengeInterface';
 import { UserData } from '../../interfaces/userInterface';
@@ -108,128 +108,134 @@ function Challenge() {
     checkCompletedChallenge();
   }, [user, router.query.id]);
 
-  return (
-    <ChakraProvider theme={theme}>
-      <Layout>
-        <Flex
-          zIndex={5}
-          position="relative"
-          height="100vh"
-          bg="tertiary"
-          flexDirection="column"
-        >
-          <Flex
-            flexDirection="column"
-            h="25vh"
-            bg="primary.100"
-            pr="32px"
-            pl="32px"
-            justifyContent="flex-end"
-            gap="8px"
-            py="32px"
-          >
-            <IconButton
-              isRound
-              variant="solid"
-              bg="white"
-              aria-label="Done"
-              fontSize="20px"
-              icon={<ArrowBackIcon />}
-              width="fit-content"
-              onClick={() => router.push('/challenges')}
-            />
-            <Text as="h1" mb="0px">
-              {currentChallenge?.title}
-            </Text>
-            <Flex gap={2}>
-              <Box
-                width="auto"
-                bg="primary.300"
-                color="white"
-                px="16px"
-                py="8px"
-                borderRadius={8}
-              >
-                <Text as="h4" color="white">
-                  {currentChallenge?.points} pts
-                </Text>
-              </Box>
-              <Box
-                width="auto"
-                bg="secondary.300"
-                color="white"
-                px="16px"
-                py="8px"
-                borderRadius={8}
-              >
-                <Text as="h4" color="white">
-                  {' '}
-                  {isCompleted && 'Déjà réalisé'}
-                  {!isCompleted &&
-                    currentChallenge &&
-                    currentChallenge.endDate &&
-                    (dateGap(currentChallenge.endDate) === 0
-                      ? 'Dernier jour pour le faire !'
-                      : `Il vous reste ${dateGap(currentChallenge.endDate)} jours`)}
-                  {!isCompleted &&
-                    (!currentChallenge || !currentChallenge.endDate) &&
-                    'Chargement'}
-                </Text>
-              </Box>
-            </Flex>
-          </Flex>
-          <Flex
-            gap={4}
-            flexDirection="column"
-            pr="32px"
-            pl="32px"
-            py="16px"
-            position="relative"
-          >
-            <Text as="h2">Description</Text>
-            <p>{currentChallenge?.description}</p>
-            <Text as="h2">Ressources</Text>
-            <Text>{currentChallenge?.pedagogicalExplanation}</Text>
+  // Convertir la couleur hexadécimale en RGB
+  function hexToRgb(hex: string) {
+    // Supprimer le caractère '#' du début
+    hex = hex.replace(/^#/, '');
 
-            <Button
-              bg={isCompleted ? '#FFFFFF' : 'secondary.300'}
-              _hover={{
-                boxShadow: isCompleted
-                  ? '0 0px 0px rgba(0,0,0,0)'
-                  : '0 8px 24px rgba(51, 193, 177, 1)',
-              }}
-              position={windowWidth < 500 ? 'fixed' : 'absolute'}
-              right={windowWidth < 500 ? '50%' : '54px'}
-              transform={windowWidth < 500 ? 'translate(50%,0)' : 'auto'}
-              top={windowWidth < 500 ? 'auto' : '-30px'}
-              bottom={windowWidth < 500 ? '160px' : '#FFFFFF'}
-              fontSize="h3"
-              fontWeight="semiBold"
-              px="32px"
-              py="24px"
-              borderRadius="16px"
-              transition=" box-shadow 0.3s ease"
-              width="fit-content"
-              border="2px solid"
-              borderColor="secondary.300"
-              color={isCompleted ? 'secondary.300' : '#FFFFFF'}
-              boxShadow={isCompleted ? 'null' : 'button'}
-              onClick={() => {
-                if (isCompleted) {
-                  deleteCompleted();
-                } else {
-                  createCompleted();
-                }
-                setIsCompleted(!isCompleted);
-              }}
-              disabled
+    // Extraire les valeurs R, G et B
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+
+    // Retourner les valeurs RGB
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  return (
+    <Layout>
+      <Flex
+        zIndex={5}
+        position="relative"
+        height="100vh"
+        bg="tertiary"
+        flexDirection="column"
+      >
+        <Flex
+          flexDirection="column"
+          h="25vh"
+          bg="primary.100"
+          pr="32px"
+          pl="32px"
+          justifyContent="flex-end"
+          gap="8px"
+          py="32px"
+        >
+          <IconButton
+            isRound
+            variant="solid"
+            bg="white"
+            aria-label="Done"
+            fontSize="20px"
+            icon={<ArrowBackIcon />}
+            width="fit-content"
+            onClick={() => router.push('/challenges')}
+          />
+          <Text as="h1" mb="0px">
+            {currentChallenge?.title}
+          </Text>
+          <Flex gap={2}>
+            <Box
+              width="auto"
+              bg="primary.300"
+              color="white"
+              px="16px"
+              py="8px"
+              borderRadius={8}
             >
-              {isCompleted ? 'Défi validé' : 'Valider le défi'}
-            </Button>
+              <Text as="h4" color="white">
+                {currentChallenge?.points} pts
+              </Text>
+            </Box>
+            <Box
+              width="auto"
+              bg="secondary.300"
+              color="white"
+              px="16px"
+              py="8px"
+              borderRadius={8}
+            >
+              <Text as="h4" color="white">
+                {' '}
+                {isCompleted && 'Déjà réalisé'}
+                {!isCompleted &&
+                  currentChallenge &&
+                  currentChallenge.endDate &&
+                  (dateGap(currentChallenge.endDate) === 0
+                    ? 'Dernier jour pour le faire !'
+                    : `Il vous reste ${dateGap(currentChallenge.endDate)} jours`)}
+                {!isCompleted &&
+                  (!currentChallenge || !currentChallenge.endDate) &&
+                  'Chargement'}
+              </Text>
+            </Box>
           </Flex>
         </Flex>
-      </Layout>
-    </ChakraProvider>
+        <Flex
+          gap={4}
+          flexDirection="column"
+          pr="32px"
+          pl="32px"
+          py="16px"
+          position="relative"
+        >
+          <Text as="h2">Description</Text>
+          <p>{currentChallenge?.description}</p>
+          <Text as="h2">Ressources</Text>
+          <Text>{currentChallenge?.pedagogicalExplanation}</Text>
+
+          <Button
+            bg={isCompleted ? '#FFFFFF' : 'secondary.300'}
+            position={windowWidth < 500 ? 'fixed' : 'absolute'}
+            right={windowWidth < 500 ? '50%' : '54px'}
+            transform={windowWidth < 500 ? 'translate(50%,0)' : 'auto'}
+            top={windowWidth < 500 ? 'auto' : '-30px'}
+            bottom={windowWidth < 500 ? '160px' : '#FFFFFF'}
+            fontSize="h3"
+            fontWeight="semiBold"
+            px="32px"
+            py="24px"
+            borderRadius="16px"
+            transition=" box-shadow 0.3s ease"
+            width="fit-content"
+            border="2px solid"
+            borderColor="secondary.300"
+            color={isCompleted ? 'secondary.300' : '#FFFFFF'}
+            onClick={() => {
+              if (isCompleted) {
+                deleteCompleted();
+              } else {
+                createCompleted();
+              }
+              setIsCompleted(!isCompleted);
+            }}
+            disabled
+          >
+            {isCompleted ? 'Défi validé' : 'Valider le défi'}
+          </Button>
+        </Flex>
+      </Flex>
+    </Layout>
   );
 }
 export default Challenge;

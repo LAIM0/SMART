@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import { CategoryService } from './Category/category.service';
 import { TeamService } from './Team/team.service';
 import { SettingsService } from './Settings/settings.service';
+import { SchedulerService } from './Scheduler/scheduler.service';
 
 
 async function bootstrap() {
@@ -49,5 +50,9 @@ async function bootstrap() {
   await app.get(TeamService).seedTeam();
   await app.get(SettingsService).seedSettings();
 
+  //Lancement du CRON pour les défis périodiques
+  await app.get(SchedulerService).scheduleDailyUpdates();
+  await app.get(SchedulerService).scheduleWeeklyUpdates();
+  await app.get(SchedulerService).scheduleMonthlyUpdates();
 }
 bootstrap();
