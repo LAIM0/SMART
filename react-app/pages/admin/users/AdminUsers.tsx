@@ -23,6 +23,7 @@ import {
 } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import { TriangleDownIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
 import {
   fetchUsers,
   addUser,
@@ -38,17 +39,20 @@ import User from '../../../interfaces/userAdminInterface';
 import UserSearch from '../../../components/User/searchbar';
 import UserRow from '../../../components/User/userRow';
 import AddUserModal from '../../../components/User/addUserModal';
-import { initializePassword } from '../../../api/AuthApiManager';
+import {
+  handleAdminRouting,
+  initializePassword,
+} from '../../../api/AuthApiManager';
 
 function isAxiosError(error: any): error is AxiosError {
   return error.isAxiosError !== undefined;
 }
 
 function AdminUsers() {
-  // const router = useRouter();
-  // useEffect(() => {
-  //   handleAdminRouting(router);
-  // }, []);
+  const router = useRouter();
+  useEffect(() => {
+    handleAdminRouting(router);
+  }, []);
 
   const [users, setUsers] = useState<User[]>([]);
   const [teams, setTeams] = useState<TeamData[]>([]);

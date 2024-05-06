@@ -13,6 +13,7 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { TriangleDownIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
 import FormCreateChallenge from '../../../components/Challenges/FormCreateChallenge';
 import ChallengeData from '../../../interfaces/challengeInterface';
 import dateGap from '../../../utils/mathFunctions';
@@ -21,8 +22,13 @@ import { Filter } from '../../../utils/constants';
 import FormCreateChallengeIA from '../../../components/Challenges/FormCreateChallengeIA';
 import CategoryData from '../../../interfaces/categoryInterface';
 import CategoryApiManager from '../../../api/CategoryApiManager';
+import { handleAdminRouting } from '../../../api/AuthApiManager';
 
 function AdminChallenges() {
+  const router = useRouter();
+  useEffect(() => {
+    handleAdminRouting(router);
+  }, []);
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
   const [currentChallenges, setCurrentChallenges] = useState<ChallengeData[]>(
     []
