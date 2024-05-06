@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Box,
   Button,
@@ -11,7 +11,7 @@ import {
   Image,
   FormErrorMessage,
 } from '@chakra-ui/react';
-import logoApp from '../Sidebar/Ecoexya.png';
+import { LogoContext } from '../Layout/LayouAuth';
 
 interface ResetPasswordFormProps {
   token: string;
@@ -76,7 +76,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
 
       localStorage.setItem(
         'resetErrorMessage',
-        'Les mots de passe sont differents'
+        'Les mots de passe sont différents'
       );
     }
   };
@@ -94,7 +94,12 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ token }) => {
         alignItems="center"
       >
         <Box textAlign="center">
-          <Image src={logoApp.src} w="160px" alt="logo" m={4} />
+          <Image
+            src={`http://localhost:3001/users/profile-picture/${useContext(LogoContext)}`}
+            w="160px"
+            alt="logo"
+            m={4}
+          />
         </Box>
         <FormControl isRequired>
           <FormLabel>Nouveau mot de passe</FormLabel>

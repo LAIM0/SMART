@@ -14,7 +14,6 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { ViewIcon } from '@chakra-ui/icons';
-import logoApp from '../Sidebar/Ecoexya.png';
 import ForgotPasswordForm from './ForgotPasswordForm';
 import { LogoContext } from '../Layout/LayouAuth';
 

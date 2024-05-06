@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Flex,
   Box,
@@ -17,7 +17,7 @@ import {
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { ViewIcon } from '@chakra-ui/icons';
-import logoApp from '../Sidebar/Ecoexya.png';
+import { LogoContext } from '../Layout/LayouAuth';
 import { sendValitaionEmail } from '../../api/AuthApiManager';
 
 export default function SignupForm() {
@@ -116,7 +116,12 @@ export default function SignupForm() {
           flexDirection="column"
           alignItems="center"
         >
-          <Image src={logoApp.src} w="160px" alt="logo" m={4} />
+          <Image
+            src={`http://localhost:3001/users/profile-picture/${useContext(LogoContext)}`}
+            w="160px"
+            alt="logo"
+            m={4}
+          />
         </Box>
         <Box my={4} textAlign="left">
           <form onSubmit={handleSignup}>

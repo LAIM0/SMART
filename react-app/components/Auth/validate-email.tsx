@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import { Box, Button, Flex, Text, Image } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { validateEmail } from '../../api/AuthApiManager';
-import logoApp from '../Sidebar/Ecoexya.png';
+import { LogoContext } from '../Layout/LayouAuth';
 
 function EmailValidationPage() {
   const router = useRouter();
@@ -49,7 +49,12 @@ function EmailValidationPage() {
         alignItems="center"
       >
         <Box textAlign="center">
-          <Image src={logoApp.src} w="160px" alt="logo" m={4} />
+          <Image
+            src={`http://localhost:3001/users/profile-picture/${useContext(LogoContext)}`}
+            w="160px"
+            alt="logo"
+            m={4}
+          />
         </Box>
         <Text as="h1" mb={4}>
           Vérification de votre adresse email!
