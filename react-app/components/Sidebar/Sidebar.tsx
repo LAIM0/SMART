@@ -85,7 +85,6 @@ function Sidebar({ logoPath }: SidebarProps) {
           objectFit="contain"
           src={`http://localhost:3001/users/profile-picture/${logoPath}`}
           alt={logoPath}
-          borderRadius="lg"
         />
       )}
       {Pages.map((page) => (

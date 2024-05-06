@@ -186,7 +186,7 @@ function Team() {
         </Box>
       </Flex>
       <Box>
-        <Text as="h2" marginBottom={['8px', '16px']}>
+        <Text as="h2" marginBottom={['16px', '16px']}>
           Membres de l&apos;équipe
         </Text>
         {/* Tableau pour afficher la liste des utilisateurs de l'équipe */}
