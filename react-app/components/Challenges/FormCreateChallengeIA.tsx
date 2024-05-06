@@ -46,6 +46,9 @@ function FormCreateChallenge({ refresh }: Props) {
   const [endDate, setEndDate] = useState(new Date());
   const [periodicityError, setPeriodicityError] = useState(false);
   const [themeChallengeError, setThemeChallengeError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>(
+    'La thématique est requise'
+  );
   const [periodicity, setPeriodicity] = useState<Periodicity>(
     Periodicity.PUNCTUAL
   );
@@ -143,7 +146,7 @@ function FormCreateChallenge({ refresh }: Props) {
     }
   }, [periodicity]);
 
-  const [themeChallenge, setThemeChallenge] = useState('Alimentation');
+  const [themeChallenge, setThemeChallenge] = useState('');
   const [proposition, setProposition] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -186,12 +189,20 @@ function FormCreateChallenge({ refresh }: Props) {
         requestBody,
         requestOptions
       );
+      if (response.status !== 200) {
+        throw new Error(
+          'Plus de crédits disponibles, veuillez patienter quelques temps'
+        );
+      }
       console.log(response.data);
       setProposition(response.data[0].generated_text);
       setPoints(difficulty * 5);
       // Faites quelque chose avec les données de la réponse ici
     } catch (error) {
       console.error('Erreur lors de la requête API:', error);
+      setErrorMessage(
+        error instanceof Error ? error.message : 'An error occurred'
+      );
     }
   }
 
