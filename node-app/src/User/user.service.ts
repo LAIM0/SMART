@@ -18,12 +18,14 @@ import * as multer from 'multer';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Category, CategoryDocument } from 'src/Category/category.schema';
 import { CategoryService } from 'src/Category/category.service';
+import { ImageDocument } from 'src/Image/image.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
+    @InjectModel(Image.name) private imageModel: Model<ImageDocument>,
     private completedService: CompletedService,
     private mailService: MailService,
     private teamService: TeamService,
@@ -38,7 +40,7 @@ export class UserService {
     isAdmin: boolean,
     teamId: string,
     firstLogin: boolean,
-    passWordInitialized: boolean
+    passWordInitialized: boolean,
   ): Promise<User> {
     console.log('createUser');
     const newUser = new this.userModel({
@@ -411,5 +413,35 @@ export class UserService {
         `Error finding users for team ID ${teamId}: ${error.message}`,
       );
     }
+  }
+
+  async addImageToUser(userId: string, imageBuffer: Buffer): Promise<User> {
+    const newImage = new this.imageModel({ imageData: imageBuffer });
+    const savedImage = await newImage.save();
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { imageId: savedImage._id },
+      { new: true },
+    );
+  }
+
+  async updateUserImage(userId: string, imageBuffer: Buffer): Promise<User> {
+    const user = await this.userModel.findById(userId);
+    const updatedImage = new this.imageModel({
+      imageData: imageBuffer,
+      _id: user.profilePicture,
+    });
+    await updatedImage.save();
+    return user;
+  }
+
+  async removeUserImage(userId: string): Promise<User> {
+    const user = await this.userModel.findById(userId);
+    await this.imageModel.findByIdAndDelete(user.profilePicture);
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { imageId: null },
+      { new: true },
+    );
   }
 }
