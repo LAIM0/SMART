@@ -20,7 +20,7 @@ interface Page {
 
 const Pages: Page[] = [
   {
-    name: 'Classement',
+    name: 'Top',
     url: '/ranking',
     icon: PodiumIcon,
   },
@@ -94,10 +94,10 @@ function Sidebar({ logoPath }: SidebarProps) {
           flexDirection={windowWidth < 500 ? 'column' : 'row'}
           key={page.name}
           py="4"
-          px="6"
           gap="16px"
           borderRadius="md"
           alignItems="center"
+          pl={windowWidth < 500 ? 'auto' : '16px'}
           fontSize={windowWidth < 500 ? '12px' : 'auto'}
           color={router.pathname.includes(page.url) ? 'white' : 'grey.800'}
           fontWeight={router.pathname.includes(page.url) ? 'bold' : 'light'}

@@ -31,7 +31,7 @@ function Ranking() {
 
   return (
     <Flex p="32px" flexDirection="column">
-      <Text as="h1">Classement</Text>
+      <Text as="h1">Top</Text>
       <Flex
         justify={switchButtonAlignment}
         gap={3}
