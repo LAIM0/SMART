@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Flex, Text, Button, useToast } from '@chakra-ui/react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 import SettingsApiManager from '../../../api/SettingsApiManager';
 import { SettingsData } from '../../../interfaces/settingsInterface';
 import ColorPicker from '../../../components/Buttons/ColorPicker';
 import ChangeLogo from './ChangeLogo';
-import axios from 'axios';
+import { handleAdminRouting } from '../../../api/AuthApiManager';
 
 function Settings() {
+  const router = useRouter();
+  useEffect(() => {
+    handleAdminRouting(router);
+  }, []);
   const [color1, setColor1] = useState<string>();
   const [color2, setColor2] = useState<string>();
   const [logo, setLogo] = useState<string | null>(null);
@@ -137,7 +143,7 @@ function Settings() {
         Valider les nouvelles couleurs
       </Button>
       <Flex flexDirection="column" gap="4px">
-        <Text as="h2">Logo de l'app</Text>
+        <Text as="h2">Logo de l&apos;app</Text>
         <Text mb="4px">Cliquez ci-dessous pour modifier</Text>
         <ChangeLogo
           onSubmit={handleUploadProfilePicture}

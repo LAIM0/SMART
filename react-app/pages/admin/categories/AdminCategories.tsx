@@ -18,12 +18,18 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import FormCreateModifyCategory from './FormCreateModifyCategory';
 import FormConfirmationDeleteCategory from './FormConfirmationDeleteCategory';
 import CategoryData from '../../../interfaces/categoryInterface';
 import CategoryApiManager from '../../../api/CategoryApiManager';
+import { handleAdminRouting } from '../../../api/AuthApiManager';
 
 function AdminCategories() {
+  const router = useRouter();
+  useEffect(() => {
+    handleAdminRouting(router);
+  }, []);
   const [categories, setCategories] = useState<CategoryData[]>([]);
   const [currentCategory, setCurrentCategory] = useState<CategoryData | null>(
     null

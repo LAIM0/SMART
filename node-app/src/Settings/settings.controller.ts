@@ -7,30 +7,13 @@ import {
   Controller,
   Get,
   Post,
-  UseGuards,
   Request,
   Put,
-  Delete,
-  Param,
   UploadedFile,
   UseInterceptors,
-  Response,
-  Query,
-  Res,
 } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';
-import { AuthenticatedGuard } from 'src/Auth/authenticated.guard';
-import { LocalAuthGuard } from 'src/Auth/local.auth.guard';
-import { AdminAuthGuard } from 'src/Auth/admin.guard';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
-import { join } from 'path';
-import { AdminTeamAuthGuard } from 'src/Auth/adminTeam';
-import { HttpException } from '@nestjs/common';
-import { HttpStatus } from '@nestjs/common';
 import { diskStorage } from 'multer';
-import { Observable, of } from 'rxjs';
-import { Category } from 'src/Category/category.schema';
-import { Types } from 'mongoose';
 
 @ApiTags('Settings')
 @Controller('settings')

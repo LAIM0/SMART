@@ -8,7 +8,8 @@ import { TeamUpdateDto } from './dto/teamUpdate.dto';
 import { join } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiConsumes } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiConsumes, ApiQuery } from '@nestjs/swagger';
+import { User } from '../User/user.schema';
 
 
 @ApiTags('Teams')
@@ -32,6 +33,9 @@ export class TeamController {
   }
 
   @Post('default')
+  @ApiOperation({ summary: 'Create default team', description: 'Creates a default team with predefined attributes.' })
+  @ApiResponse({ status: 201, description: 'Default team created successfully' })
+  @ApiResponse({ status: 400, description: 'Unable to create default team' })
   async createDefaultTeam() {
     try {
       const defaultTeamDto: CreateTeamDto = {
@@ -45,6 +49,10 @@ export class TeamController {
   }
 
   @Get('getUsers')
+  @ApiOperation({ summary: 'Get users by team', description: 'Retrieves all users associated with a specified team.' })
+  @ApiQuery({ name: 'teamId', type: 'string', required: true, description: 'Team ID to fetch users for' })
+  @ApiResponse({ status: 200, description: 'Users of the team retrieved successfully', type: [User] })
+  @ApiResponse({ status: 404, description: 'Team not found' })
   async getUsers(@Query() teamIdDto: TeamIdDto) {
     try {
       return this.teamService.getUsers(teamIdDto);
@@ -54,6 +62,9 @@ export class TeamController {
   }
 
   @Get('ranking')
+  @ApiOperation({ summary: 'Get team ranking', description: 'Retrieves ranking of teams based on scores.' })
+  @ApiResponse({ status: 200, description: 'Team rankings retrieved successfully', type: Array })
+  @ApiResponse({ status: 400, description: 'Unable to retrieve rankings' })
   async getRanking(): Promise<{ team: Team; score: number }[]> {
     try {
       return this.teamService.getRanking();
@@ -63,6 +74,10 @@ export class TeamController {
   }
 
   @Post('/create')
+  @ApiOperation({ summary: 'Create a team', description: 'Creates a new team with provided data.' })
+  @ApiBody({ type: CreateTeamDto, description: 'Data for creating a new team' })
+  @ApiResponse({ status: 201, description: 'Team created successfully' })
+  @ApiResponse({ status: 400, description: 'Error creating team' })
   async createTeam(@Body() teamData: CreateTeamDto) {
     return this.teamService.create(teamData);
   }

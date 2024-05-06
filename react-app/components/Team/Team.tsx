@@ -22,6 +22,7 @@ function Team() {
   const [team, setTeam] = useState<TeamData>();
   const [isTeamLeader, setisTeamLeader] = useState(false);
   const router = useRouter();
+  
   useEffect(() => {
     handleAuthRouting(router);
   }, []);

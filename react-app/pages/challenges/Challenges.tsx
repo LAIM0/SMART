@@ -12,9 +12,13 @@ import dateGap from '../../utils/mathFunctions';
 import CategoryApiManager from '../../api/CategoryApiManager';
 import ChallengeCard from '../../components/Challenges/ChallengeCard';
 import { UserData } from '../../interfaces/userInterface';
+import { handleAuthRouting } from '../../api/AuthApiManager';
 
 function Challenges() {
   const router = useRouter();
+  useEffect(() => {
+    handleAuthRouting(router);
+  }, []);
   const Tous: CategoryData = {
     categoryName: 'Tous',
     id: 'Tous',
@@ -110,11 +114,11 @@ function Challenges() {
       const timeB = b.creationDate;
       if (timeA > timeB) {
         return -1;
-      } else if (timeA < timeB) {
-        return 1;
-      } else {
-        return 0;
       }
+      if (timeA < timeB) {
+        return 1;
+      }
+      return 0;
     });
     setOrderedCategories(temp);
   }, [categories]);
