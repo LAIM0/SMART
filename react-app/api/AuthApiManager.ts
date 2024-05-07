@@ -12,7 +12,7 @@ export const checkAuthentication = async () => {
     return response.data;
   } catch (error) {
     console.error(
-      "Erreur lors de la vérification de l'authentification:",
+      "Authentication verification error:",
       error
     );
     throw error;
@@ -28,7 +28,7 @@ export const handleAuthRouting = async (router: NextRouter) => {
     }
   } catch (error) {
     console.error(
-      "Erreur lors de la vérification de l'authentification:",
+      "Authentication verification error:",
       error
     );
     localStorage.setItem('preLoginRoute', window.location.pathname);
@@ -45,7 +45,7 @@ export const checkAdminAuthentication = async () => {
     return response.data;
   } catch (error) {
     console.error(
-      "Erreur lors de la vérification de l'authentification admin:",
+      "Admin authentication verification error:",
       error
     );
     throw error;
@@ -62,7 +62,7 @@ export const handleAdminRouting = async (router: NextRouter) => {
     }
   } catch (error) {
     console.error(
-      "Erreur lors de la vérification de l'authentification:",
+      "Authentication verification error:",
       error
     );
     localStorage.setItem('preLoginRoute', window.location.pathname);
@@ -81,7 +81,7 @@ export const resetPassword = async (email: string) => {
     return response.data;
   } catch (error) {
     throw new Error(
-      "Une erreur s'est produite lors de l'envoi de la demande de réinitialisation de mot de passe"
+      "An error occurred when sending the password reset request"
     );
   }
 };
@@ -97,7 +97,7 @@ export const sendValitaionEmail = async (email: string) => {
     return response.data;
   } catch (error) {
     throw new Error(
-      "Une erreur s'est produite lors de l'envoi de la demande de validation de votre email"
+      "An error occurred while sending your email validation request"
     );
   }
 };
@@ -106,7 +106,7 @@ export const validateEmail = async (token: string | undefined) => {
   console.log(token);
   try {
     if (!token) {
-      throw new Error('Token non défini');
+      throw new Error('Undefined token');
     }
 
     const response = await axios.get(`${baseURL}/users/validate-email`, {
@@ -118,7 +118,7 @@ export const validateEmail = async (token: string | undefined) => {
     return response.data;
   } catch (error) {
     throw new Error(
-      "Une erreur s'est produite lors de la vérification de votre email"
+      "An error occurred while checking your email"
     );
   }
 };
@@ -133,7 +133,7 @@ export const initializePassword = async (email: string) => {
     return response.data;
   } catch (error) {
     throw new Error(
-      "Une erreur s'est produite lors de l'envoi de la demande d'initialisation de mot de passe"
+      "An error occurred while sending the password initialization request"
     );
   }
 };
