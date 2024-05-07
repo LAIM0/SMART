@@ -4,7 +4,6 @@ import { CompletedService } from './completed.service';
 import { CompletedController } from './completed.controller';
 import { CompletedSchema } from './completed.schema';
 import { UserSchema } from 'src/User/user.schema';
-import { ChallengeModule } from 'src/Challenge/challenge.module';
 import { ChallengeService } from 'src/Challenge/challenge.service';
 import { Challenge, ChallengeSchema } from 'src/Challenge/challenge.schema';
 

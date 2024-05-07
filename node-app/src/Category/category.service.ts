@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Category, CategoryDocument } from './category.schema';
-import { CategoryInterface, ChallengeCountResponse } from './interfaces/category.interface';
+import { CategoryInterface } from './interfaces/category.interface';
 import { Challenge, ChallengeDocument } from 'src/Challenge/challenge.schema';
 
 @Injectable()
@@ -35,14 +35,14 @@ export class CategoryService {
       const categoryToUpdate = await this.categoryModel.findById(CategoryId);
 
       if (!categoryToUpdate) {
-        throw new Error("La catégorie à mettre à jour n'existe pas.");
+        throw new Error("The category to be updated does not exist.");
       }
 
       Object.assign(categoryToUpdate, categoryData);
 
       return await categoryToUpdate.save();
     } catch (error) {
-      throw new Error('Erreur lors de la modification de la catégorie : ' + error.message);
+      throw new Error('Error modifying category : ' + error.message);
     }
   }
 
@@ -50,19 +50,18 @@ export class CategoryService {
     const categoryToDelete = await this.categoryModel.findById(CategoryId);
 
     if (!categoryToDelete) {
-      throw new Error("La catégorie spécifiée n'existe pas.");
+      throw new Error("The specified category does not exist.");
     }
 
     if (categoryToDelete.categoryName === 'Autre') {
-      throw new Error("Vous n'êtes pas autorisé à supprimer cette entité.");
+      throw new Error("You are not authorized to delete this entity.");
     }
 
     try {
-      // Rechercher la catégorie par son nom "Autre"
       const otherCategory = await this.categoryModel.findOne({ categoryName: 'Autre' });
 
       if (!otherCategory) {
-        throw new Error("La catégorie 'Autre' n'existe pas.");
+        throw new Error("The 'Autre' category does not exist.");
       }
 
       // Récupérer les défis de la catégorie à supprimer
@@ -77,9 +76,9 @@ export class CategoryService {
       // Supprimer la catégorie
       await this.categoryModel.deleteOne({ _id: CategoryId });
 
-      console.log('Données supprimées avec succès');
+      console.log('Data successfully deleted');
     } catch (error) {
-      console.error('Erreur lors de la suppression des données :', error);
+      console.error('Error deleting data :', error);
       throw error;
     }
   }
@@ -89,7 +88,7 @@ export class CategoryService {
       const count = (await this.challengeModel.find({ category: CategoryId }).exec()).length
       return count;
     } catch (error) {
-      throw new Error('Erreur lors du dénombrement de challenge dans la catégorie : ' + error.message);
+      throw new Error('Error when counting challenges in the category : ' + error.message);
     }
   }
 

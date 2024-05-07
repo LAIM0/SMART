@@ -6,7 +6,6 @@ import { CompletedInterface } from './interfaces/completed.interface';
 import { User } from 'src/User/user.schema';
 import { ChallengeService } from 'src/Challenge/challenge.service';
 import { Challenge } from 'src/Challenge/challenge.schema';
-import { UserCheckDto } from './dto/get-complete-user.dto';
 
 @Injectable()
 export class CompletedService {
@@ -64,7 +63,6 @@ export class CompletedService {
     userId: Types.ObjectId,
     challengeId: Types.ObjectId,
   ): Promise<void> {
-    console.log('params pour la suppression', userId, challengeId);
     await this.completedModel.deleteOne({
       userId: userId,
       challengeId: challengeId,
