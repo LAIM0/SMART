@@ -7,9 +7,9 @@ WORKDIR /app
 # Copier les fichiers package.json et package-lock.json dans le conteneur
 COPY package*.json ./
 
-# Installer les dépendances du projet, y compris Express
+# Installer les dépendances du projet
 RUN npm install
-RUN npm install @nestjs/cli
+
 # Copier le reste des fichiers du projet dans le répertoire de travail du conteneur
 COPY . .
 
@@ -23,5 +23,4 @@ EXPOSE 3001
 
 ENTRYPOINT ["./build-app-nest.sh"]
 # Définir la commande pour démarrer l'application
-#CMD ["node", "app/server.js"]
-#CMD ["npm", "run", "start:prod"]
+# CMD ["npm", "run", "start:prod"]

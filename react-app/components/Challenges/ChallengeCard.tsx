@@ -1,0 +1,88 @@
+import React from 'react';
+import { Box, Card, Text, Flex } from '@chakra-ui/react';
+import dateGap from '../../utils/mathFunctions';
+import ChallengeData from '../../interfaces/challengeInterface';
+
+interface ChallengeCardProps {
+  challenge: ChallengeData;
+  completionDate: Date;
+  onClick: () => void;
+  type: 'toComplete' | 'recentlyCompleted';
+}
+
+function ChallengeCard({
+  challenge,
+  completionDate,
+  onClick,
+  type,
+}: ChallengeCardProps) {
+  const isRecentlyCompleted = type === 'recentlyCompleted';
+
+  return (
+    <Card
+      key={challenge.id}
+      onClick={onClick}
+      boxShadow="sm"
+      borderRadius={12}
+      bg={isRecentlyCompleted ? 'secondary.100' : 'white'}
+      p={8}
+      gap={2}
+      flex={1}
+      alignContent="space-between"
+      maxWidth="500px"
+      minWidth="300px"
+      transition=" box-shadow 0.3s ease"
+      _hover={{
+        boxShadow: 'md',
+        cursor: 'pointer',
+      }}
+    >
+      <Text as="h2" fontSize={18}>
+        {challenge.title}
+      </Text>
+
+      <Text
+        minHeight="40px"
+        mb="4px"
+        color={isRecentlyCompleted ? 'black' : '"#7E8998"'}
+        sx={{
+          display: '-webkit-box',
+          WebkitBoxOrient: 'vertical',
+          WebkitLineClamp: 2,
+          overflow: 'hidden',
+        }}
+      >
+        {challenge.description}
+      </Text>
+      <Box>
+        <Flex gap={3}>
+          <Box bg="primary.300" py="8px" px="16px" borderRadius={8}>
+            <Text as="h4" color="white">
+              {challenge.points} pts
+            </Text>
+          </Box>
+
+          <Box
+            bg={isRecentlyCompleted ? 'white' : 'secondary.300'}
+            py="8px"
+            px="16px"
+            borderRadius={8}
+          >
+            <Text as="h4" color={isRecentlyCompleted ? 'primary.300' : 'white'}>
+              {isRecentlyCompleted
+                ? `Relevé ${dateGap(completionDate) === 0 ? "aujourd'hui" : `il y a ${dateGap(completionDate) * -1} jours`}`
+                : (() => {
+                    if (dateGap(challenge.endDate) === 0) {
+                      return "Aujourd'hui";
+                    }
+                    return `${dateGap(challenge.endDate)} jours`;
+                  })()}
+            </Text>
+          </Box>
+        </Flex>
+      </Box>
+    </Card>
+  );
+}
+
+export default ChallengeCard;

@@ -1,7 +1,6 @@
-version: '3.8'
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:7.0.9
     container_name: mongo
     ports:
       - "27017:27017"
@@ -28,6 +27,13 @@ services:
       - MONGO_HOSTNAME=mongo
       - MONGO_PORT=27017
       - MONGO_DB=dbEcoexya
+      - DEFAULT_ADMIN_USERNAME=admin@coexya.com
+      - DEFAULT_ADMIN_PASSWORD=321admin
+      - DEFAULT_PASSWORD_USER=ecoexya24
+      - MAIL_HOST=sandbox.smtp.mailtrap.io
+      - MAIL_PORT=2525
+      - MAIL_USER=212b96f3519993
+      - MAIL_PASSWORD=f7db70e15d24e7
     networks:
       - mynetwork
 
