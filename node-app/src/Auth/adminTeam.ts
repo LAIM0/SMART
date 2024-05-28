@@ -1,11 +1,11 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
-import { UserService } from 'src/User/user.service'; // Assurez-vous d'importer le service UserService ou tout autre service nécessaire
+import { UserService } from 'src/User/user.service';
 
 @Injectable()
 export class AdminTeamAuthGuard implements CanActivate {
-  constructor(private readonly userService: UserService) {} // Injectez le service UserService ou tout autre service nécessaire
+  constructor(private readonly userService: UserService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     console.log('adminTeamauthguard');

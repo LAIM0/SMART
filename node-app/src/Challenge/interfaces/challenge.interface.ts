@@ -9,7 +9,7 @@ export interface ChallengeInterface {
   pedagogicalExplanation?: string;
   photo?: string;
   endDate?: Date;
-  periodicity?: Periodicity; // Ajout de la propriété periodicity avec le type Periodicity
+  periodicity?: Periodicity;
 }
 
 export interface ChallengeData {
@@ -21,6 +21,6 @@ export interface ChallengeData {
   pedagogicalExplanation?: string;
   photo?: string;
   endDate?: Date;
-  periodicity?: Periodicity; // Ajout de la propriété periodicity avec le type Periodicity
+  periodicity?: Periodicity;
 }
 

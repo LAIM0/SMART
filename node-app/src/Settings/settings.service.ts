@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Settings, SettingsDocument } from './settings.schema';
@@ -26,14 +26,14 @@ export class SettingsService {
       console.log(settings);
       const settingsToUpdate = settings[0];
       if (!settingsToUpdate) {
-        throw new Error("Le setting à mettre à jour n'existe pas.");
+        throw new Error("The setting to be updated does not exist");
       }
 
       Object.assign(settingsToUpdate, settingsData);
 
       return await settingsToUpdate.save();
     } catch (error) {
-      throw new Error('Erreur lors de la modification des settings : ' + error.message);
+      throw new Error('Error modifying settings : ' + error.message);
     }
   }
 
@@ -55,7 +55,7 @@ export class SettingsService {
       console.log(settings);
       const settingsToUpdate = settings[0];
       if (!settingsToUpdate) {
-        throw new Error("Le setting à mettre à jour n'existe pas.");
+        throw new Error("The setting to be updated does not exist.");
       }
     settingsToUpdate.logo = data.logoPath;
     return settingsToUpdate.save();

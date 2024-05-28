@@ -1,4 +1,3 @@
-// scheduler.service.ts
 import { Injectable } from '@nestjs/common';
 import * as cron from 'node-cron';
 import { ChallengeService } from'src/Challenge/challenge.service';

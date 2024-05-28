@@ -24,7 +24,7 @@ CompletedSchema.virtual('id').get(function () {
 
 // Confiuration pour s'assurer que le virtuel 'id' est inclus lors des conversions en JSON
 CompletedSchema.set('toJSON', {
-  virtuals: true, // S'assure que les champs virtuels sont inclus
+  virtuals: true,
   versionKey: false, // Ne pas inclure __v
   transform: function (doc, ret) {
     delete ret._id; // Supprimer _id

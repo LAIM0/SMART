@@ -1,5 +1,4 @@
 import { IsNumber, IsNotEmpty, IsOptional, IsString, IsEnum } from 'class-validator';
-import { Types } from 'mongoose';
 import { Periodicity } from 'utils/constants';
 
 export class CreateChallengeDto {
@@ -31,5 +30,5 @@ export class CreateChallengeDto {
 
   @IsEnum(Periodicity)
   @IsOptional()
-  periodicity?: Periodicity; // Ajout de la propriété periodicity avec le type Periodicity
+  periodicity?: Periodicity;
 }

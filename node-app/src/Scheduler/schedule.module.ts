@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { SchedulerService } from './scheduler.service';
 import { SchedulerController } from './scheduler.controller';
 import { ChallengeService } from 'src/Challenge/challenge.service';
-import { ChallengeModule } from 'src/Challenge/challenge.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Challenge, ChallengeSchema } from 'src/Challenge/challenge.schema';
 import { CompletedSchema } from 'src/Completed/completed.schema';

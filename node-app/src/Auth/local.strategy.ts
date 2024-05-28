@@ -14,7 +14,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
         console.log("LocalStrategy");
         const user = await this.authService.validateUser(userName, password);
         if (!user) {
-            console.log("pas autporisé local strat");
+            console.log("Unauthorized");
           throw new UnauthorizedException();
         }
         return user;

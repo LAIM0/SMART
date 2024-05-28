@@ -169,7 +169,7 @@ export class UserService {
   async generateUserToken(email: string): Promise<string> {
     const user = await this.userModel.findOne({ email });
     if (!user) {
-      throw new Error('Utilisateur non trouvé');
+      throw new Error('User not found');
     }
     const resetToken = crypto.randomBytes(20).toString('hex');
     user.resetPasswordToken = resetToken;
@@ -200,7 +200,7 @@ export class UserService {
       resetPasswordExpires: { $gt: new Date() },
     });
     if (!user) {
-      throw new Error('Token invalide ou expiré');
+      throw new Error('Invalid or expired token');
     }
     const salt = bcrypt.genSaltSync(10);
     user.passwordHash = bcrypt.hashSync(newPassword, salt);
@@ -217,7 +217,7 @@ export class UserService {
     });
     console.log(user);
     if (!user) {
-      throw new Error('Token invalide ou expiré');
+      throw new Error('Invalid or expired token');
     }
     user.firstLogin = false;
     user.resetPasswordToken = undefined;
@@ -264,7 +264,7 @@ export class UserService {
       // Vérifiez si l'utilisateur existe
       const user = await this.userModel.findById(userId);
       if (!user) {
-        throw new Error("L'utilisateur n'existe pas");
+        throw new Error("User not found");
       }
       // Supprimez l'utilisateur de la base de données
       await this.userModel.findByIdAndDelete(userId);
@@ -341,7 +341,7 @@ export class UserService {
   ): Promise<void> {
     const user = await this.userModel.findById(userId); // Utilisez votre modèle Mongoose pour trouver l'utilisateur par ID
     if (!user) {
-      throw new NotFoundException('Utilisateur non trouvé');
+      throw new NotFoundException('User not found');
     }
 
     // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO

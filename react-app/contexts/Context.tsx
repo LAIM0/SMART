@@ -44,7 +44,7 @@ export const useGlobalState = (): GlobalState => {
   const context = useContext(GlobalStateContext);
   if (!context) {
     throw new Error(
-      'useGlobalState doit être utilisé dans un composant enveloppé avec GlobalStateProvider'
+      'useGlobalState must be used in a component wrapped with GlobalStateProvider'
     );
   }
   return context;

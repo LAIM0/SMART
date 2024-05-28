@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-import { UserService } from '../User/user.service';
 
 @Injectable()
 export class MailService {
@@ -46,19 +45,3 @@ export class MailService {
     });
   }
 }
-
-/*
-Pour ajouter dans un controller un mail:
-Par exemple envoyer un email de bienvenue à un user:
-
-    await this.mailService.sendWelcomeEmail(userData.email);
-
-
-Pour tester des mails j'ai créer un mailtrap c'est une boite de reception pour ce genre de test
-Voilà les id:
-leo.aimonetto@insa-lyon.fr
-2tGsBPXEC@$e2Q.
-
-Du coup en envoyant un mail à n'importe qui vous le retrouverez dans le compte
-mailtrap (l'utilisateur final ne le recevra pas).
- */

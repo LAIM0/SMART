@@ -42,9 +42,9 @@ export class ChallengeService {
     try {
       this.challengeModel.deleteOne({ _id: id });
       await this.challengeModel.deleteOne({ _id: id });
-      console.log('Données supprimées avec succès');
+      console.log('Data successfully deleted');
     } catch (error) {
-      console.error('Erreur lors de la suppression des données :', error);
+      console.error('Error deleting data :', error);
       throw error;
     }
   }
@@ -70,7 +70,7 @@ export class ChallengeService {
       delete newChallengeData._id; // Supprimer l'ID pour éviter les doublons dans la base de données
 
       const newChallenge = await this.create(newChallengeData);
-      console.log('Nouveau challenge créé:', newChallenge);
+      console.log('New challenge created :', newChallenge);
     });
   }
 
@@ -89,7 +89,7 @@ export class ChallengeService {
       delete newChallengeData._id; // Supprimer l'ID pour éviter les doublons dans la base de données
 
       const newChallenge = await this.create(newChallengeData);
-      console.log('Nouveau challenge créé:', newChallenge);
+      console.log('New challenge created :', newChallenge);
     });
   }
 
@@ -108,7 +108,7 @@ export class ChallengeService {
       delete newChallengeData._id; // Supprimer l'ID pour éviter les doublons dans la base de données
 
       const newChallenge = await this.create(newChallengeData);
-      console.log('Nouveau challenge créé:', newChallenge);
+      console.log('New challenge created :', newChallenge);
     });
   }
 }
