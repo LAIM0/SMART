@@ -253,15 +253,18 @@ function Challenges() {
             flexWrap="wrap"
             gap="16px"
           >
-            {challengesToShow.map((challenge) => (
-              <ChallengeCard
-                completionDate={today}
-                type="toComplete"
-                key={challenge.id}
-                challenge={challenge}
-                onClick={() => handleClickCard(challenge)}
-              />
-            ))}
+            {challengesToShow.map(
+              (challenge) =>
+                !completedChallengesIds.includes(challenge.id) && (
+                  <ChallengeCard
+                    completionDate={today}
+                    type="toComplete"
+                    key={challenge.id}
+                    challenge={challenge}
+                    onClick={() => handleClickCard(challenge)}
+                  />
+                )
+            )}
           </Flex>
         ) : (
           <Text as="p">Aucun challenge à relever pour le moment</Text>
