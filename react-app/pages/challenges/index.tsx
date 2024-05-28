@@ -1,7 +1,7 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import Layout from '../../components/Layout/Layout';
 import theme from '../../styles/theme';
-import Challenges from './Challenges';
+import Challenges from '../../components/Challenges/Challenges';
 
 const index: React.FC = () => {
   return (

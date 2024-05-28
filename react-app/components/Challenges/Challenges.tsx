@@ -10,7 +10,7 @@ import ChallengeData from '../../interfaces/challengeInterface';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import dateGap from '../../utils/mathFunctions';
 import CategoryApiManager from '../../api/CategoryApiManager';
-import ChallengeCard from '../../components/Challenges/ChallengeCard';
+import ChallengeCard from './ChallengeCard';
 import { UserData } from '../../interfaces/userInterface';
 import { handleAuthRouting } from '../../api/AuthApiManager';
 
