@@ -20,7 +20,7 @@ class CategoryApiManager {
       return response.data;
     } catch (error) {
       throw new Error(
-        `Erreur lors de la récupération de la categories "${id}" : ${error}`
+        `Error retrieving categories "${id}" : ${error}`
       );
     }
   }
@@ -34,7 +34,7 @@ class CategoryApiManager {
       return response.data;
     } catch (error) {
       throw new Error(
-        `Erreur lors de la récupération des categories: ${error}`
+        `Error retrieving categories: ${error}`
       );
     }
   }
@@ -48,7 +48,7 @@ class CategoryApiManager {
       return response.data;
     } catch (error) {
       throw new Error(
-        `Erreur lors de la récupération des categories: ${error}`
+        `Error retrieving categories : ${error}`
       );
     }
   }
@@ -60,7 +60,7 @@ class CategoryApiManager {
     try {
       await ApiMethods.post(ENDPOINTS.CATEGORY.CATEGORY_CREATE(), newCategory);
     } catch (error) {
-      throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
+      throw new Error(`Error retrieving categories: ${error}`);
     }
   }
 
@@ -72,7 +72,7 @@ class CategoryApiManager {
         dataWithoutId
       );
     } catch (error) {
-      throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
+      throw new Error(`Category creation error: ${error}`);
     }
   }
 
@@ -81,7 +81,7 @@ class CategoryApiManager {
       await axios.delete(`http://localhost:3001/categories/delete/${id}`);
     } catch (error) {
       throw new Error(
-        `Erreur lors de la suppression de la catégorie: ${error}`
+        `Error deleting category : ${error}`
       );
     }
   }
@@ -95,7 +95,7 @@ class CategoryApiManager {
       return response.data;
     } catch (error) {
       throw new Error(
-        `Erreur lors de la récupération des categories: ${error}`
+        `Error retrieving categories : ${error}`
       );
     }
   }

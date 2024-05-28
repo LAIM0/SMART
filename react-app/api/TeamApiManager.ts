@@ -9,7 +9,7 @@ class TeamApiManager {
       const response = await axios.get(`${baseURL}/teams`);
       return response.data;
     } catch (error) {
-      console.error('Erreur lors de la récupération des équipes:', error);
+      console.error('Error when retrieving teams:', error);
       throw error;
     }
   };
@@ -20,7 +20,7 @@ class TeamApiManager {
       return response.data;
     } catch (error) {
       console.error(
-        'Erreur lors de la récupération du classement par équipes:',
+        'Error when retrieving team rankings:',
         error
       );
       throw error;
@@ -32,7 +32,7 @@ class TeamApiManager {
     try {
       await axios.post(`${baseURL}/teams`, dataWithoutId);
     } catch (error) {
-      throw new Error(`Erreur lors de la création de l'équipe: ${error}`);
+      throw new Error(`Error creating team: ${error}`);
     }
   }
 
@@ -48,7 +48,7 @@ class TeamApiManager {
         { withCredentials: true }
       );
     } catch (error) {
-      throw new Error(`Erreur lors de la modification de l'équipe: ${error}`);
+      throw new Error(`Team modification error: ${error}`);
     }
   }
 
@@ -56,7 +56,7 @@ class TeamApiManager {
     try {
       await axios.delete(`http://localhost:3001/teams/delete/${id}`);
     } catch (error) {
-      throw new Error(`Erreur lors de la suppression de l'équipe: ${error}`);
+      throw new Error(`Team deletion error: ${error}`);
     }
   }
 }

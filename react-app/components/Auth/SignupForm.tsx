@@ -129,7 +129,7 @@ export default function SignupForm() {
               <FormLabel>Prénom</FormLabel>
               <Input
                 type="firstName"
-                placeholder="Laurie"
+                placeholder="Berthille"
                 size="lg"
                 onChange={(event) => setFirstName(event.currentTarget.value)}
               />
@@ -138,7 +138,7 @@ export default function SignupForm() {
               <FormLabel>Nom</FormLabel>
               <Input
                 type="lastName"
-                placeholder="BLEUTON"
+                placeholder="SELLIER"
                 size="lg"
                 onChange={(event) => setLastName(event.currentTarget.value)}
               />
@@ -147,7 +147,7 @@ export default function SignupForm() {
               <FormLabel>Email</FormLabel>
               <Input
                 type="email"
-                placeholder="laurie.bleuton@coexya.eu"
+                placeholder="berthille.sellier@coexya.eu"
                 size="lg"
                 onChange={(event) => setUsername(event.currentTarget.value)}
               />

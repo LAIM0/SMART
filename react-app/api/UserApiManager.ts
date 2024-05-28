@@ -7,7 +7,7 @@ export const fetchUsers = async () => {
     const response = await axios.get(`${baseURL}/users`);
     return response.data;
   } catch (error) {
-    console.error('Erreur lors de la récupération des utilisateurs:', error);
+    console.error('Error retrieving users:', error);
     throw error;
   }
 };

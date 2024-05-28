@@ -3,7 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Team, TeamDocument } from './team.schema';
 import { Model, Types } from 'mongoose';
-import { ModifyTeamDto, CreateTeamDto, TeamDto } from '../Team/dto/team.dto';
+import { CreateTeamDto, TeamDto } from './dto/team.dto';
 import { User, UserDocument } from 'src/User/user.schema';
 import { TeamIdDto } from './dto/teamId.dto';
 import { CompletedService } from 'src/Completed/completed.service';
@@ -117,7 +117,7 @@ export class TeamService {
   ): Promise<void> {
     const team = await this.teamModel.findById(teamId); // Utilisez votre modèle Mongoose pour trouver l'utilisateur par ID
     if (!team) {
-      throw new NotFoundException('Utilisateur non trouvé');
+      throw new NotFoundException('User not found');
     }
     // Mettez à jour les champs du profil avec les nouvelles valeurs du DTO
     team.name = updateTeamDto.name;
@@ -132,11 +132,11 @@ export class TeamService {
     const teamToDelete = await this.teamModel.findById(TeamId);
 
     if (!teamToDelete) {
-      throw new Error("L'équipe spécifiée n'existe pas.");
+      throw new Error("The specified team does not exist.");
     }
 
     if (teamToDelete.name === 'Équipe par défaut') {
-      throw new Error("Vous n'êtes pas autorisé à supprimer cette entité.");
+      throw new Error("You are not authorized to delete this entity.");
     }
 
     try {
@@ -144,7 +144,7 @@ export class TeamService {
       const defaultTeam = await this.teamModel.findOne({ name: 'Équipe par défaut' });
 
       if (!defaultTeam) {
-        throw new Error("L'équipe par défaut n'existe pas.");
+        throw new Error("The default team does not exist.");
       }
 
       // Récupérer les utilisateurs de l'équipe à supprimer
@@ -159,9 +159,9 @@ export class TeamService {
       // Supprimer l'équipe
       await this.teamModel.deleteOne({ _id: TeamId });
 
-      console.log('Données supprimées avec succès');
+      console.log('Data successfully deleted');
     } catch (error) {
-      console.error('Erreur lors de la suppression des données :', error);
+      console.error('Error when deleting data :', error);
       throw error;
     }
   }
@@ -185,12 +185,8 @@ export class TeamService {
 
     if (!existingTeam) {
 
-      // Créer une instance par défaut
       const defaultTeam = new this.teamModel({ name: 'Équipe par défaut' });
-
-      // Insérer dans la base de données
       await defaultTeam.save();
     }
   }
-  // Other CRUD methods
 }

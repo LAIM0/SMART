@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Query, Param, Request, Response, HttpException, HttpStatus, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Query, Param, Response, HttpException, HttpStatus, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { Team } from './team.schema';
 import { TeamDto, CreateTeamDto } from './dto/team.dto';

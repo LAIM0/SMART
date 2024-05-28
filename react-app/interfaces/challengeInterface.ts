@@ -8,7 +8,7 @@ interface ChallengeData {
   points: number;
   endDate: Date;
   pedagogicalExplanation: string;
-  periodicity: Periodicity; // Ajout de la propriété periodicity avec le type Periodicity
+  periodicity: Periodicity;
 }
 
 export default ChallengeData;

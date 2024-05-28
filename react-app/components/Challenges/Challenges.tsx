@@ -10,7 +10,7 @@ import ChallengeData from '../../interfaces/challengeInterface';
 import CompletedApiManager from '../../api/CompletedApiManager';
 import dateGap from '../../utils/mathFunctions';
 import CategoryApiManager from '../../api/CategoryApiManager';
-import ChallengeCard from '../../components/Challenges/ChallengeCard';
+import ChallengeCard from './ChallengeCard';
 import { UserData } from '../../interfaces/userInterface';
 import { handleAuthRouting } from '../../api/AuthApiManager';
 
@@ -253,15 +253,18 @@ function Challenges() {
             flexWrap="wrap"
             gap="16px"
           >
-            {challengesToShow.map((challenge) => (
-              <ChallengeCard
-                completionDate={today}
-                type="toComplete"
-                key={challenge.id}
-                challenge={challenge}
-                onClick={() => handleClickCard(challenge)}
-              />
-            ))}
+            {challengesToShow.map(
+              (challenge) =>
+                !completedChallengesIds.includes(challenge.id) && (
+                  <ChallengeCard
+                    completionDate={today}
+                    type="toComplete"
+                    key={challenge.id}
+                    challenge={challenge}
+                    onClick={() => handleClickCard(challenge)}
+                  />
+                )
+            )}
           </Flex>
         ) : (
           <Text as="p">Aucun challenge à relever pour le moment</Text>

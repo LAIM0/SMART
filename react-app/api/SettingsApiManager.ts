@@ -12,7 +12,7 @@ class SettingsApiManager {
       console.log(response);
       return response.data;
     } catch (error) {
-      throw new Error(`Erreur lors de la récupération des settings: ${error}`);
+      throw new Error(`Error retrieving settings: ${error}`);
     }
   }
 
@@ -20,7 +20,7 @@ class SettingsApiManager {
     try {
       await ApiMethods.post(ENDPOINTS.SETTINGS.SETTINGS_CREATE(), settingsData);
     } catch (error) {
-      throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
+      throw new Error(`Category creation error: ${error}`);
     }
   }
 
@@ -32,7 +32,7 @@ class SettingsApiManager {
       );
       return response.data;
     } catch (error) {
-      throw new Error(`Erreur lors de la création de la catégorie: ${error}`);
+      throw new Error(`Category creation error: ${error}`);
     }
   }
 }
