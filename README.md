@@ -7,7 +7,7 @@ Students: **Yanice BOADY, Antoine VRAUX, Léo AIMONETTO, Mathéo LINNE, Maxime B
 During the first year of our Master in Computer Science at INSA Lyon, our team has embarked on an ambitious project in collaboration with Coexya, aiming to design an application that fosters employee engagement in Corporate Social Responsibility (CSR) challenges. It was a tough challenge, having to create a whole app, form design to deployment.
 To understand better what we did, you can look at the mockup here :
 https://www.figma.com/proto/j4R51Td64BZLwUGOxrG22b/Wireframe?type=design&node-id=165-971&t=Wv2S3ZSnfZGExtDc-0&scaling=scale-down&page-id=24%3A191
-![Mockups_app](./images/Mockups_Ecoexya.png)
+![Mockups_app](./Mockups_Ecoexya.png)
 
 ## Project Goal
 This project aimed to develop an application for Coexya, with the following objectives:
