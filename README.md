@@ -1,6 +1,7 @@
 # The SMART Project
 
 Students: **Yanice BOADY, Antoine VRAUX, Léo AIMONETTO, Mathéo LINNE, Maxime BRUN**
+![Summary of the project](./Poster.pdf)
 
 ## Description 
 
